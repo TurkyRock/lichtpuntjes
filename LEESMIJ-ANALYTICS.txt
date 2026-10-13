@@ -1,0 +1,80 @@
+LICHTPUNTJES – GOOGLE ANALYTICS 4
+Meet-ID: G-3JSRH397WV
+
+INSTALLATIE
+1. Maak een back-up van lichtpunt-schoon.
+2. Pak deze ZIP uit IN lichtpunt-schoon. Voeg de mappen samen en vervang
+   gelijknamige bestanden. Verwijder niet complete bestaande mappen.
+3. Voer in PowerShell in lichtpunt-schoon uit:
+
+   php artisan optimize:clear
+
+4. Ververs met Ctrl+F5. Voeg geen losse Google-tag of Tag Manager toe.
+
+De ID staat in config/analytics.php. Je hoeft .env niet te vervangen.
+Optioneel kun je .env gebruiken om de ID te wijzigen of alles uit te zetten:
+GOOGLE_ANALYTICS_ID=G-3JSRH397WV
+GOOGLE_ANALYTICS_ENABLED=true
+Met GOOGLE_ANALYTICS_ENABLED=false staat de koppeling uit. Voer daarna
+php artisan optimize:clear uit. Bij een bestaande afwijkende ID in .env
+overschrijft deze de ingebouwde ID; pas die dus aan indien nodig.
+
+IN GOOGLE ANALYTICS
+- Beheerder > Gegevensstreams > jouw webstream: zet Verbeterde meting UIT.
+  Dit is nodig om aanvullende automatische metingen te voorkomen.
+- Houd Google Signals en Google Ads-koppelingen uit.
+- Controleer Beheerder > Gegevensinstellingen / Gegevensverzameling en
+  -wijziging > Gegevensbehoud: kies twee maanden voor gebeurtenisgegevens
+  en zet verlengen bij nieuwe activiteit uit. Benamingen kunnen verschillen.
+  Dit is een dashboardinstelling, niet iets wat het websitescript kan afdwingen.
+- Beperk het delen van data in accountinstellingen tot wat je echt nodig hebt.
+- Verifieer de leveranciersafspraken en privacyinstellingen voor de lancering.
+  Het beleid is nog een concept en zegt eerlijk dat de bewaartermijn bij
+  Google vóór de lancering bevestigd moet worden. Geaggregeerde rapporten
+  kunnen langer blijven bestaan dan individuele gebeurtenisgegevens.
+
+TESTEN
+Open de homepage, kies Sta bezoekersstatistieken toe en bekijk
+Google Analytics > Rapporten > Realtime. Open vervolgens een artikel:
+er hoort een article_view-gebeurtenis bij te komen. Je eigen lokale bezoek
+komt ook in deze property terecht. De website-URL van de stream kun je later
+wijzigen naar je uiteindelijke domein; het meet-ID blijft hetzelfde.
+
+Via Cookie-instellingen > Alleen noodzakelijk stopt de koppeling en
+vernieuwt de homepage. Analytics-cookies worden verwijderd. Open de site
+zonder toestemming en controleer in browserontwikkeltools bij Netwerk dat
+geen gtag/js- of Analytics-verzamelverzoeken worden verstuurd. Kijk ook
+na toestemming in Netwerk of de verzoeken daadwerkelijk slagen: een
+adblocker of browserbeperking kan statistieken tegenhouden.
+
+WERKING
+- Alleen de homepage laadt de koppeling, na geldige toestemming (v2).
+- Geen Google-verzoek vóór toestemming en geen cookieless pings na weigeren.
+- Homepagebezoeken, sessies en terugkerende browsers worden gemeten; het
+  openen van een artikel geeft article_view met openbaar nummer en categorie.
+- Account-, login-, registratie-, beheer-, privacy- en schrijfpagina's zijn
+  niet getagd. Geen accountnamen, e-mails, reacties of verhaalteksten worden
+  bewust aan Analytics toegevoegd.
+- URL-query's en hashes worden niet naar GA doorgegeven; van de verwijzer
+  wordt alleen het domein doorgegeven. Paginatitel is vast: Lichtpuntjes.
+- Cookiecodes zijn geen volledige anonimisering: Google verwerkt gebruiks-
+  gegevens. Daarom wordt expliciet toestemming gevraagd en Google genoemd.
+- Google Signals en advertentiepersonalisatie staan uit in de tag.
+- De Analytics-cookies zijn hostgebonden en verlopen na 180 dagen zonder
+  verlenging bij elk bezoek. De toestemming verloopt ook na 180 dagen.
+- Intrekken zet de Google-disableflag, verwijdert hostcookies en vernieuwt
+  de pagina om taglisteners te stoppen. Andere open tabbladen ontvangen dit
+  via BroadcastChannel als de browser deze functie ondersteunt.
+- Wie weigert of cookies wist is niet of minder goed te herkennen. De cijfers
+  zijn dus geen volledige telling van alle bezoekers of unieke personen.
+
+Deze update bevat ook de recente Zelfgeschreven-categorie, gebalanceerde
+feed, Ons verhaal-tekst, lege-staattekst en startpagina-pop-up. Geen zoekveld,
+advertenties of databasemigraties toegevoegd. .env, database en foto's blijven
+in jouw project; dit pakket bevat geen geheime sleutels.
+
+VALIDATIE
+110 PHP-tests / 861 assertions geslaagd. Bestaande frontendcontroles,
+startpagina-timing en de Analytics-toestemmingsflows slagen. Geen echte
+metingen verstuurd tijdens de tests. De ontvangst in jouw Google-property
+moet je met bovenstaande realtime-test controleren.

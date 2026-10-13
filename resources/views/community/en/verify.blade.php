@@ -1,0 +1,2 @@
+@extends('community.en.layout')
+@section('content')<section class="panel auth-panel"><h1>First, confirm your little ray of sunshine.</h1><p>Use the link in your confirmation email. Then you can comment and earn bright points. Check your spam folder too.</p><form method="post" action="{{ route('verification.send') }}">@csrf<button>Send the link again</button></form><p><a href="/profiel?lang=en">Go to my profile</a></p></section>@endsection

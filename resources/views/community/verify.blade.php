@@ -1,0 +1,2 @@
+@extends('community.layout')
+@section('content')<section class="panel auth-panel"><h1>Eerst even je zonnestraal bevestigen.</h1><p>Gebruik de link in je bevestigingsmail. Daarna kun je reageren en lichtpunten verdienen. Controleer ook je spammap.</p><form method="post" action="{{ route('verification.send') }}">@csrf<button>Stuur de link opnieuw</button></form><p><a href="/profiel">Naar mijn profiel</a></p></section>@endsection

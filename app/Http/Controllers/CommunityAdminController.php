@@ -1,0 +1,13 @@
+<?php
+namespace App\Http\Controllers;
+use App\Models\Comment;
+use App\Models\User;
+use App\Services\CommentModerator;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+class CommunityAdminController extends Controller {
+ private function owner(Request $r):void {abort_unless($r->user()?->is_admin,403);}
+ public function index(Request $r){$this->owner($r);$v=$r->validate(['status'=>'sometimes|in:doubt,pending,rejected,approved','q'=>'nullable|string|max:100']);$status=$v['status']??'doubt';$q=Comment::with(['user','article'])->where('status',$status);if(!empty($v['q']))$q->where('body','like','%'.$v['q'].'%');return view(\App\Support\CommunityViews::name('admin'),['comments'=>$q->latest()->paginate(20)->withQueryString(),'filter'=>$status,'counts'=>Comment::selectRaw('status, count(*) as total')->groupBy('status')->pluck('total','status')]);}
+ public function decide(Request $r,Comment $comment,CommentModerator $moderator){$this->owner($r);$v=$r->validate(['decision'=>'required|in:approved,rejected,doubt','note'=>'required|string|min:3|max:1000']);$moderator->decide($comment,$v['decision'],$r->user(),$v['note']);return back()->with('status','Reactie bijgewerkt. De beslissing staat in het moderatielog.');}
+ public function suspend(Request $r,User $user){$this->owner($r);abort_if($user->id===$r->user()->id||$user->is_admin,422,'Je eigen beheeraccount blijft actief.');$v=$r->validate(['suspended'=>'required|boolean']);DB::transaction(function()use($user,$v){$user->forceFill(['is_suspended'=>(bool)$v['suspended']])->save();if($v['suspended']){foreach(DB::table('user_article_likes')->where('user_id',$user->id)->orderBy('article_id')->get() as $like){$a=\App\Models\Article::whereKey($like->article_id)->lockForUpdate()->first();$deleted=DB::table('user_article_likes')->where('id',$like->id)->delete();if($a&&$deleted&&$a->likes_count>0)$a->decrement('likes_count');}}},3);return back()->with('status',$v['suspended']?'Account gepauzeerd. Reacties zijn verborgen.':'Account weer actief.');}
+}

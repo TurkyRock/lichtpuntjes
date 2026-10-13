@@ -1,0 +1,46 @@
+LICHTPUNT – ZELFGESCHREVEN EN EEN GEBALANCEERDE HOMEPAGE
+
+Update voor de opgeschoonde versie in C:\Users\e_tur\Herd\lichtpunt-schoon.
+
+1. Stop de worker met Ctrl+C. Stop ook eventueel actieve imports/scheduler.
+2. Maak een kopie van de map lichtpunt-schoon als back-up.
+3. Pak deze ZIP uit IN lichtpunt-schoon. Voeg app, resources en tests samen
+   met de bestaande mappen en vervang de gelijknamige bestanden.
+   Verwijder of vervang niet de complete app- of resources-map.
+4. Open PowerShell in lichtpunt-schoon en voer uit:
+
+   php artisan optimize:clear
+
+5. Start de worker opnieuw in een afzonderlijk PowerShell-venster:
+
+   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+   .\Start-Worker.ps1
+
+6. Ververs de website met Ctrl+F5.
+
+Er zijn geen migraties of nieuwe API-sleutels nodig. Deze update bevat geen
+.env, database, afbeeldingen of dependencies.
+
+GEDRAG
+- Geen onderwerpkeuze bij schrijven of aanpassen van een eigen verhaal.
+- Zelfgeschreven naast Alle lichtpuntjes, met dezelfde filterstijl.
+- Ook bestaande gebruikersverhalen vallen onder Zelfgeschreven.
+- Onderwerpcategorieën bevatten geïmporteerd nieuws; eigen verhalen vallen
+  exclusief onder Zelfgeschreven.
+- Alle lichtpuntjes toont één verhaal per beschikbare categorie per ronde.
+  Categorieën die leeg raken worden overgeslagen. Alle artikelen blijven
+  bereikbaar via paginering, zonder duplicaten bij een onveranderde collectie.
+- Nieuwste, Meest gelezen en Meeste likes bepalen de volgorde BINNEN elke
+  categorie. De beste artikelen van elke ronde worden ook volgens die
+  sortering onderling geordend. Alle lichtpuntjes is dus een gebalanceerde
+  selectie, geen globale ranglijst. Een specifiek categoriefilter sorteert
+  de volledige categorie op datum, leesbeurten of likes.
+- Nieuwe of verwijderde berichten en veranderende likes/leesbeurten kunnen
+  tijdens het bladeren de volgorde veranderen, zoals bij gewone paginering.
+
+TECHNIEK EN CONTROLE
+SQL ROW_NUMBER rangschikt categorieën zonder alle artikelteksten in geheugen
+te laden. Geschikt voor de bestaande SQLite-installatie en MySQL 8+.
+Geen wijziging van AI-keuring, illustraties, privacy of toegangscontrole.
+22 gerichte tests / 202 assertions en de bestaande frontendcontroles geslaagd.
+Niet uitgevoerd op jouw Windows-pc en nog geen live visuele controle.

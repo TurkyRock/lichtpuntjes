@@ -1,0 +1,71 @@
+<?php
+use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use App\Http\Controllers\NewsEngagementController as News;
+use App\Http\Controllers\CommunityAuthController as Accounts;
+use App\Http\Controllers\CommunityController as Community;
+use App\Http\Controllers\CommunityAdminController as Admin;
+use App\Http\Middleware\CommunityActive;
+Route::middleware([\App\Http\Middleware\CommunityLocale::class,\App\Http\Middleware\CookiePrivacy::class])->group(function(){
+Route::get('/',fn()=>view('lichtpunt'));
+Route::post('/cookies/keuze',[\App\Http\Controllers\CookieChoiceController::class,'store'])->middleware('throttle:30,1,cookies:');
+Route::get('/privacy',fn()=>view('community.privacy'));
+Route::middleware('auth')->group(function(){
+ Route::get('/privacy/verzoeken',[\App\Http\Controllers\PrivacyController::class,'index']);
+ Route::post('/privacy/verzoeken',[\App\Http\Controllers\PrivacyController::class,'store'])->middleware('throttle:3,60,privacy:');
+ Route::get('/beheer/privacy',[\App\Http\Controllers\PrivacyController::class,'admin']);
+ Route::post('/beheer/privacy/{id}',[\App\Http\Controllers\PrivacyController::class,'resolve'])->whereNumber('id');
+});
+Route::get('/huisregels',fn()=>view(\App\Support\CommunityViews::name('rules')));
+Route::get('/news/feed',[News::class,'index'])->middleware('throttle:120,1');
+Route::get('/news/{article}/story',[News::class,'story'])->whereNumber('article');
+Route::get('/news/{article}/comments',[Community::class,'comments'])->whereNumber('article')->middleware('throttle:120,1');
+Route::post('/news/{article}/read',[News::class,'read'])->whereNumber('article')->middleware('throttle:120,1,news-read:');
+// OAuth callbacks may return as an Apple cross-site POST. Only this endpoint is
+// exempt from form CSRF: Socialite verifies state (and Apple verifies its nonce).
+Route::match(['get','post'], '/auth/{provider}/callback', [\App\Http\Controllers\SocialAuthController::class,'callback'])
+ ->whereIn('provider', ['google','apple','microsoft'])
+ ->middleware(['guest','throttle:20,1,social-callback:'])
+ ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class]);
+Route::middleware('guest')->group(function(){
+ Route::get('/auth/{provider}/redirect', [\App\Http\Controllers\SocialAuthController::class,'start'])->whereIn('provider',['google','apple','microsoft'])->middleware('throttle:10,1,social-start:');
+ Route::get('/aanmelden/afronden', [\App\Http\Controllers\SocialAuthController::class,'form']);
+ Route::post('/aanmelden/afronden', [\App\Http\Controllers\SocialAuthController::class,'complete'])->middleware('throttle:6,1,social-complete:');
+ Route::get('/inloggen',fn()=>view(\App\Support\CommunityViews::name('auth'),['mode'=>'login']))->name('login');
+ Route::post('/inloggen',[Accounts::class,'login'])->middleware('throttle:6,1');
+ Route::get('/aanmelden',fn(Request $r)=>view(\App\Support\CommunityViews::name('auth'),['mode'=>'register','invite'=>preg_match('/^[a-f0-9]{32}$/',(string)$r->query('invite'))?$r->query('invite'):null]));
+ Route::post('/aanmelden',[Accounts::class,'register'])->middleware('throttle:5,1');
+ Route::get('/wachtwoord-vergeten',fn()=>view(\App\Support\CommunityViews::name('auth'),['mode'=>'forgot']))->name('password.request');
+ Route::post('/wachtwoord-vergeten',[Accounts::class,'forgot'])->middleware('throttle:3,1')->name('password.email');
+ Route::get('/reset-password/{token}',fn(Request $r,string $token)=>view(\App\Support\CommunityViews::name('auth'),['mode'=>'reset','token'=>$token,'email'=>$r->query('email')]))->name('password.reset');
+ Route::post('/reset-password',[Accounts::class,'reset'])->middleware('throttle:6,1')->name('password.update');
+});
+Route::post('/uitloggen',[Accounts::class,'logout'])->middleware('auth');
+Route::middleware(['auth',CommunityActive::class])->group(function(){
+ Route::get('/profiel',[Community::class,'profile']);
+ Route::post('/news/{article}/melden',[\App\Http\Controllers\LightspotController::class,'report'])->whereNumber('article')->middleware(['verified','throttle:3,60,lightspot-report:']);
+ Route::get('/mijn-lichtpuntjes',[\App\Http\Controllers\LightspotController::class,'index']);
+ Route::get('/lichtpuntje/schrijven',[\App\Http\Controllers\LightspotController::class,'create']);
+ Route::post('/lichtpuntje/schrijven',[\App\Http\Controllers\LightspotController::class,'store'])->middleware(['verified','throttle:3,60,lightspot-create:']);
+ Route::get('/mijn-lichtpuntjes/{submission}/aanpassen',[\App\Http\Controllers\LightspotController::class,'edit'])->whereNumber('submission');
+ Route::post('/mijn-lichtpuntjes/{submission}/aanpassen',[\App\Http\Controllers\LightspotController::class,'update'])->whereNumber('submission')->middleware(['verified','throttle:3,60,lightspot-edit:']);
+ Route::post('/mijn-lichtpuntjes/{submission}/herbeoordeling',[\App\Http\Controllers\LightspotController::class,'appeal'])->whereNumber('submission')->middleware(['verified','throttle:3,60,lightspot-appeal:']);
+ Route::get('/beheer/lichtpuntjes',[\App\Http\Controllers\LightspotController::class,'admin'])->middleware('verified');
+ Route::post('/beheer/lichtpuntjes/{submission}',[\App\Http\Controllers\LightspotController::class,'decide'])->whereNumber('submission')->middleware(['verified','throttle:30,1,lightspot-admin:']);
+
+ Route::post('/comments/{comment}/revise',[Community::class,'revise'])->whereNumber('comment')->middleware(['verified','throttle:4,1,comment-revise:']);
+ Route::post('/comments/{comment}/appeal',[Community::class,'appeal'])->whereNumber('comment')->middleware('throttle:5,1');
+ Route::post('/huisregels/accepteren',[Community::class,'accept']);
+ Route::get('/email/verify',fn()=>view(\App\Support\CommunityViews::name('verify')))->name('verification.notice');
+ Route::get('/email/verify/{id}/{hash}',function(EmailVerificationRequest $r){$r->fulfill();return redirect('/profiel')->with('status','E-mail bevestigd. Laat het zonnetje maar schijnen!');})->middleware(['signed','throttle:6,1'])->name('verification.verify');
+ Route::post('/email/verification-notification',[Accounts::class,'resend'])->middleware('throttle:3,1')->name('verification.send');
+ Route::post('/news/{article}/like',[News::class,'like'])->whereNumber('article')->middleware('throttle:30,1');
+ Route::post('/news/{article}/comments',[Community::class,'store'])->whereNumber('article')->middleware(['verified','throttle:4,1']);
+ Route::post('/news/{article}/share',[Community::class,'share'])->whereNumber('article')->middleware(['verified','throttle:10,1,news-share:']);
+ Route::get('/beheer',[Admin::class,'index'])->middleware('verified');
+ Route::post('/beheer/comments/{comment}',[Admin::class,'decide'])->whereNumber('comment')->middleware(['verified','throttle:60,1']);
+ Route::post('/beheer/users/{user}',[Admin::class,'suspend'])->whereNumber('user')->middleware(['verified','throttle:20,1']);
+});
+
+});

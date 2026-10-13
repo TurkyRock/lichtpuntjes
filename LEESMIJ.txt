@@ -1,0 +1,28 @@
+COOKIEBELEID EN KEUZE VOOR GOOGLE ANALYTICS
+
+1. Maak een back-up van lichtpunt-schoon.
+2. Pak deze ZIP uit IN lichtpunt-schoon. Voeg app, resources en tests samen
+   met de bestaande mappen en vervang alleen gelijknamige bestanden.
+3. Voer uit: php artisan optimize:clear
+4. Ververs met Ctrl+F5.
+
+De toestemmingknop is groen met witte letters. De weigeringknop blijft even
+breed, direct zichtbaar en in één klik bruikbaar. Er is geen vooraf
+gekozen toestemming. NL/EN-teksten leggen doel, Google, intrekken en
+gebruik zonder statistieken uit.
+
+Toestemmingversie v2: eerdere v1-keuzes worden niet gebruikt als toestemming
+voor de uitgebreidere statistieken. Bezoekers kiezen opnieuw. De keuze
+blijft 180 dagen geldig. Ook de bestaande leestellingen vereisen deze keuze.
+
+LET OP: Deze update voegt geen Analytics-script toe en verstuurt geen data
+naar Google Analytics. De metings-ID ontbreekt nog. Daarom is het beleid
+transparant over de geplande, nog inactieve koppeling. Bij activering zijn
+nog nodig: toestemminggestuurd laden en stoppen, verwijderen van Analytics-
+cookies bij intrekken, privacyvriendelijke meetinstellingen, bescherming
+van privépagina's en URL's, passende beveiligingsheaders en het invullen van
+de werkelijke bewaartermijn en leveranciersafspraken. Als Analytics buiten
+deze update om is toegevoegd, moet het beleid met de echte instellingen
+worden afgestemd. Plaats geen los script dat de cookiekeuze omzeilt.
+
+11 gerichte tests / 143 assertions geslaagd. Geen migraties nodig.

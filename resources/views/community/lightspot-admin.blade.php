@@ -1,0 +1,12 @@
+@extends('community.layout')
+@section('content')
+<h1>De verhalenbalie</h1><p>Eigen lichtpuntjes van de community. Twijfel en storingen blijven privé. Goedkeuren start zo nodig vertaling en illustratie.</p><p><a href="/beheer">Naar reacties beheren</a></p>
+<div class="row">@foreach(['reported'=>'Meldingen','doubt'=>'Twijfel','pending'=>'Wachtend','image_wait'=>'Illustratie wacht','rejected'=>'Afgewezen','published'=>'Geplaatst'] as $key=>$label)<a class="button {{ $filter===$key?'':'quiet' }}" href="/beheer/lichtpuntjes?status={{ $key }}">{{ $label }} ({{ $counts[$key]??0 }})</a>@endforeach</div>
+@forelse($submissions as $s)<section class="panel" style="margin-top:24px"><p class="small">#{{ $s->id }} · {{ $s->user->name }} · {{ $s->created_at }} · Revisie {{ $s->revision }}</p><h2>{{ $s->title }}</h2><p class="comments">{{ $s->body }}</p><div class="sunny"><strong>AI: {{ $s->confidence===null?'geen compleet oordeel':round($s->confidence*100).'%' }}</strong><p>{{ $s->reason['nl']??'' }}</p>@if($s->ai_error)<p>Servicefout. Dit is geen inhoudelijke afwijzing.</p><p class="small">{{ $s->processing_error }}</p>@endif @if($s->appealed_at)<p>De schrijver heeft een menselijke beoordeling gevraagd.</p>@endif</div>
+<div>@foreach($s->reports->where('resolved',false) as $report)<p class="errors">Privémelding: {{ $report->note }}</p>@endforeach</div>
+@if($s->moderator_note)<p>Laatste beheernotitie: {{ $s->moderator_note }}</p>@endif
+<form method="post" action="/beheer/lichtpuntjes/{{ $s->id }}">@csrf<label>Beslissing<select name="decision" required><option value="" disabled selected>Kies een beslissing</option><option value="image_wait">Goedkeuren / illustratie opnieuw klaarzetten</option><option value="rejected">Afwijzen / van de site halen</option><option value="doubt">In twijfel houden</option></select></label><label>Feedback voor de schrijver<textarea name="note" minlength="3" maxlength="1000" required></textarea></label><p><button>Bewaar beslissing</button></p></form>
+<details><summary>Beoordelingsgeschiedenis</summary>@foreach($s->reviews as $review)<p class="small">{{ $review->created_at }} · {{ $review->decision }} · {{ $review->note }}</p>@endforeach</details></section>
+@empty<p>Deze bak is leeg.</p>@endforelse
+<div class="pagination">@if($submissions->previousPageUrl())<a href="{{ $submissions->previousPageUrl() }}">← Vorige</a>@endif @if($submissions->hasMorePages())<a href="{{ $submissions->nextPageUrl() }}">Volgende →</a>@endif</div>
+@endsection
