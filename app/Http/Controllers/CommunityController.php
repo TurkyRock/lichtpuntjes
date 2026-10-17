@@ -11,14 +11,24 @@ class CommunityController extends Controller {
  public function profile(Request $r,Lightpoints $points){
   $u=$r->user();if(!$u->invite_code)$u->forceFill(['invite_code'=>bin2hex(random_bytes(16))])->save();
   $events=DB::table('lightpoint_events')->where('user_id',$u->id)->orderByDesc('id')->limit(25)->get();
-  return view(\App\Support\CommunityViews::name('profile'),['user'=>$u,'progress'=>$points->summary($u),'events'=>$events,'achievementKinds'=>DB::table('lightpoint_events')->where('user_id',$u->id)->where('active',true)->distinct()->pluck('kind'),'comments'=>Comment::where('user_id',$u->id)->with('article')->orderByDesc('id')->paginate(3)]);
+  $accountSection=$r->query('section','overview');
+  if(!in_array($accountSection,['overview','badges','comments','invite','points'],true))$accountSection='overview';
+  return view(\App\Support\CommunityViews::name('profile'),['user'=>$u,'accountSection'=>$accountSection,'progress'=>$points->summary($u),'events'=>$events,'achievementKinds'=>DB::table('lightpoint_events')->where('user_id',$u->id)->where('active',true)->distinct()->pluck('kind'),'comments'=>Comment::where('user_id',$u->id)->with('article')->orderByDesc('id')->paginate(3)->appends(['section'=>'comments','lang'=>app()->getLocale()])]);
  }
  public function accept(Request $r){$r->validate(['intentions'=>'accepted']);$r->user()->forceFill(['community_accepted_at'=>now(),'community_version'=>'2026-10-10'])->save();return back()->with('status','Fijn dat je meedoet aan een vriendelijke plek.');}
  public function comments(Request $r,Article $article){
-  abort_unless(Article::visible()->whereKey($article->id)->exists(),404);$r->validate(['page'=>'sometimes|integer|min:1|max:100000']);
-  $comments=Comment::where('article_id',$article->id)->where('status','approved')->whereHas('user',fn($q)=>$q->where('is_suspended',false))->with(['user','parent.user'])->latest()->paginate(20);
+  abort_unless(Article::visible()->whereKey($article->id)->exists(),404);$v=$r->validate(['page'=>'sometimes|integer|min:1|max:100000','parent_id'=>'nullable|integer|min:1']);
+  $parentId=$v['parent_id']??null;
+  $visible=fn()=>Comment::where('article_id',$article->id)->visible();
+  if($parentId)abort_unless($visible()->whereKey($parentId)->exists(),404);
+  $query=$visible();
+  if($parentId)$query->where('parent_id',$parentId);
+  else $query->where(fn($q)=>$q->whereNull('parent_id')->orWhereDoesntHave('parent',fn($p)=>$p->visible()->where('article_id',$article->id)));
+  $comments=$query->with(['user','parent.user'])->withCount(['replies'=>fn($q)=>$q->visible()->where('article_id',$article->id)]);
+  if($parentId)$comments->oldest('id');else $comments->latest('id');
+  $comments=$comments->paginate(20);
   $own=$r->user()?Comment::where('article_id',$article->id)->where('user_id',$r->user()->id)->where('status','!=','approved')->latest()->limit(5)->get(['id','body','status']):[];
-  return response()->json(['comments'=>$comments->getCollection()->map(fn($c)=>['id'=>(string)$c->id,'name'=>$c->user->name,'body'=>$c->body,'date'=>$c->created_at->toIso8601String(),'parent_id'=>$c->parent_id?(string)$c->parent_id:null,'parent'=>($c->parent&&$c->parent->status==='approved'&&!$c->parent->user->is_suspended)?['name'=>$c->parent->user->name,'body'=>mb_substr($c->parent->body,0,180)]:null]),'own'=>$own,'page'=>$comments->currentPage(),'last_page'=>$comments->lastPage(),'total'=>$comments->total(),'can_comment'=>(bool)($r->user()?->hasVerifiedEmail()&&$r->user()?->community_accepted_at&&!$r->user()?->is_suspended)])->header('Cache-Control','private, no-store');
+  return response()->json(['comments'=>$comments->getCollection()->map(fn($c)=>['id'=>(string)$c->id,'name'=>$c->user->name,'body'=>$c->body,'date'=>$c->created_at->toIso8601String(),'replies_count'=>$c->replies_count,'parent_id'=>$c->parent_id?(string)$c->parent_id:null,'parent'=>($c->parent&&$c->parent->status==='approved'&&!$c->parent->user->is_suspended)?['name'=>$c->parent->user->name,'body'=>mb_substr($c->parent->body,0,180)]:null]),'own'=>$parentId?[]:$own,'page'=>$comments->currentPage(),'last_page'=>$comments->lastPage(),'items_total'=>$comments->total(),'total'=>$visible()->count(),'can_comment'=>(bool)($r->user()?->hasVerifiedEmail()&&$r->user()?->community_accepted_at&&!$r->user()?->is_suspended)])->header('Cache-Control','private, no-store');
  }
  public function store(Request $r,Article $article,CommentModerator $moderator){
   $this->contributor($r);abort_unless(Article::visible()->whereKey($article->id)->exists(),404);
@@ -59,7 +69,7 @@ class CommunityController extends Controller {
   $moderator->review($comment);$comment->refresh();
   $en=app()->getLocale()==='en';
   $message=match($comment->status){'approved'=>$en?'Your revised comment was approved and is published.':'Je aangepaste reactie is goedgekeurd en staat erbij!','rejected'=>$en?'This version was not published. See the feedback below.':'Deze versie is niet geplaatst. Bekijk hieronder de feedback.',default=>$en?'Your revised comment is awaiting a human review.':'Je aangepaste reactie wacht op een menselijke blik.'};
-  return redirect('/profiel')->with('status',$message);
+  return redirect('/profiel?'.http_build_query(['lang'=>app()->getLocale(),'section'=>'comments']))->with('status',$message);
  }
  public function share(Request $r,Article $article,Lightpoints $points){
   $this->contributor($r);abort_unless(Article::visible()->whereKey($article->id)->exists(),404);

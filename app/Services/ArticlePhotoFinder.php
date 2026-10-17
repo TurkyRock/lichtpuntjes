@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\{Cache,File};
 class ArticlePhotoFinder {
  public function current(Article $a):bool {
   $p=$a->photo??[];$url=$p['url']??'';
-  return !empty($p['generated'])&&($p['style']??'')===LichtpuntIllustrationPrompt::STYLE&&in_array($p['model']??'',app(ArticleImageGenerator::class)->acceptedModels(),true)&&($p['subject_hash']??'')===hash('sha256',app(LichtpuntIllustrationPrompt::class)->positive($a))&&preg_match('~^/news-images/[a-f0-9]{64}\.(jpg|png)$~',$url)&&is_file(public_path(ltrim($url,'/')))&&hash_file('sha256',public_path(ltrim($url,'/')))===($p['sha256']??'');
+  return !empty($p['generated'])&&in_array($p['style']??'',[LichtpuntIllustrationPrompt::STYLE,LichtpuntIllustrationPrompt::PHOTO_STYLE],true)&&($p['style']??'')===app(LichtpuntIllustrationPrompt::class)->style($a)&&in_array($p['model']??'',app(ArticleImageGenerator::class)->acceptedModels(),true)&&($p['subject_hash']??'')===hash('sha256',app(LichtpuntIllustrationPrompt::class)->positive($a))&&preg_match('~^/news-images/[a-f0-9]{64}\.(jpg|png)$~',$url)&&is_file(public_path(ltrim($url,'/')))&&hash_file('sha256',public_path(ltrim($url,'/')))===($p['sha256']??'');
  }
  public function attach(Article $article,bool $realOnly=false,bool $replaceAi=false,bool $force=false):bool {
   if($realOnly)throw new NewsServiceException('Externe fotozoekdiensten zijn verwijderd. Gebruik news:illustrations.');

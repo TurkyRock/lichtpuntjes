@@ -55,7 +55,7 @@ class NewsEngagementController extends Controller {
         $liked=$request->user()?DB::table('user_article_likes')->where('user_id',$request->user()->id)->whereIn('article_id',$items->getCollection()->pluck('id'))->pluck('article_id')->all():[];
         return response()->json([
             'articles'=>$items->getCollection()->map(fn($a)=>[
-                'id'=>(string)$a->id,'cat'=>$a->origin==='community'?'community':$a->category,'date'=>$a->published_at?->format('Y-m-d'),
+                'id'=>(string)$a->id,'story_urls'=>\App\Support\StorySeo::urls($a),'cat'=>$a->origin==='community'?'community':$a->category,'date'=>$a->published_at?->format('Y-m-d'),
                 'origin'=>$a->origin,'source'=>$a->source_name,'url'=>$a->source_url,'nl'=>$a->nl,'en'=>$a->en,'photo'=>$a->photo,
                 'views_count'=>(int)$a->views_count,'likes_count'=>(int)$a->likes_count,
                 'liked'=>in_array($a->id,$liked),
@@ -66,7 +66,7 @@ class NewsEngagementController extends Controller {
     }
     public function read(Request $request, Article $article) {
         abort_unless(Article::visible()->whereKey($article->id)->exists(),404);
-        if($request->user()&&!$request->user()->is_suspended&&$request->user()->community_accepted_at)app(\App\Services\Lightpoints::class)->award($request->user(),'read:'.now('Europe/Amsterdam')->toDateString(),'read',1,'Je dagelijkse dosis goed nieuws',1);
+        if($request->user()&&!$request->user()->is_suspended&&$request->user()->community_accepted_at)app(\App\Services\Lightpoints::class)->award($request->user(),'read:'.now('Europe/Amsterdam')->toDateString().':'.$article->id,'read',1,'Je dagelijkse dosis goed nieuws',5);
         if(!\App\Support\CookieChoice::allowed($request))return response()->json(['views_count'=>(int)$article->views_count,'counted'=>false])->header('Cache-Control','private, no-store');
         $visitor=$this->visitor($request);
         $stats=DB::transaction(function()use($article,$visitor){
@@ -81,7 +81,7 @@ class NewsEngagementController extends Controller {
     }
     public function story(Request $request,Article $article){
         abort_unless(Article::visible()->whereKey($article->id)->exists(),404);
-        return response()->json(['id'=>(string)$article->id,'cat'=>$article->origin==='community'?'community':$article->category,'date'=>$article->published_at?->format('Y-m-d'),'origin'=>$article->origin,'source'=>$article->source_name,'url'=>$article->source_url,'nl'=>$article->nl,'en'=>$article->en,'photo'=>$article->photo,'views_count'=>(int)$article->views_count,'likes_count'=>(int)$article->likes_count,'liked'=>$request->user()?DB::table('user_article_likes')->where('user_id',$request->user()->id)->where('article_id',$article->id)->exists():false])->header('Cache-Control','private, no-store');
+        return response()->json(['id'=>(string)$article->id,'story_urls'=>\App\Support\StorySeo::urls($article),'cat'=>$article->origin==='community'?'community':$article->category,'date'=>$article->published_at?->format('Y-m-d'),'origin'=>$article->origin,'source'=>$article->source_name,'url'=>$article->source_url,'nl'=>$article->nl,'en'=>$article->en,'photo'=>$article->photo,'views_count'=>(int)$article->views_count,'likes_count'=>(int)$article->likes_count,'liked'=>$request->user()?DB::table('user_article_likes')->where('user_id',$request->user()->id)->where('article_id',$article->id)->exists():false])->header('Cache-Control','private, no-store');
     }
     public function like(Request $request, Article $article) {
         abort_unless(Article::visible()->whereKey($article->id)->exists(),404);

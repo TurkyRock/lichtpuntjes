@@ -23,7 +23,7 @@ class ComfyUiImageGenerator {
    '4'=>['class_type'=>'CheckpointLoaderSimple','inputs'=>['ckpt_name'=>config('news_images.checkpoint')]],
    '5'=>['class_type'=>'EmptyLatentImage','inputs'=>['width'=>1024,'height'=>576,'batch_size'=>1]],
    '6'=>['class_type'=>'CLIPTextEncode','inputs'=>['text'=>$prompt->positive($article),'clip'=>['4',1]]],
-   '7'=>['class_type'=>'CLIPTextEncode','inputs'=>['text'=>$prompt->negative(),'clip'=>['4',1]]],
+   '7'=>['class_type'=>'CLIPTextEncode','inputs'=>['text'=>$prompt->negative($article),'clip'=>['4',1]]],
    '8'=>['class_type'=>'VAEDecode','inputs'=>['samples'=>['3',0],'vae'=>['4',2]]],
    '9'=>['class_type'=>'SaveImage','inputs'=>['filename_prefix'=>'lichtpunt-'.$article->id.'-'.$seed,'images'=>['8',0]]],
   ];
@@ -58,6 +58,6 @@ class ComfyUiImageGenerator {
   File::ensureDirectoryExists(public_path('news-images'));$name=$hash.'.'.$ext;
   $tmp=public_path('news-images/'.$hash.'.'.\Illuminate\Support\Str::uuid().'.tmp');
   try {if(!is_file(public_path('news-images/'.$name))&&(File::put($tmp,$bytes)===false||!rename($tmp,public_path('news-images/'.$name))))throw new NewsServiceException('Illustratie opslaan mislukt. Controleer schrijfrechten.');}finally{if(is_file($tmp))File::delete($tmp);}
-  return ['url'=>'/news-images/'.$name,'sha256'=>$hash,'generated'=>true,'illustrative'=>true,'creator'=>'AI / lokale ComfyUI','model'=>config('news_images.checkpoint'),'style'=>LichtpuntIllustrationPrompt::STYLE,'seed'=>$seed,'subject_hash'=>hash('sha256',$prompt->positive($article)),'description'=>'Lichtpuntjes-illustratie bij: '.($article->nl['title']??$article->source_title),'created_at'=>now()->toIso8601String()];
+  return ['url'=>'/news-images/'.$name,'sha256'=>$hash,'generated'=>true,'illustrative'=>true,'creator'=>'AI / lokale ComfyUI','model'=>config('news_images.checkpoint'),'style'=>$prompt->style($article),'seed'=>$seed,'subject_hash'=>hash('sha256',$prompt->positive($article)),'description'=>($prompt->style($article)===LichtpuntIllustrationPrompt::PHOTO_STYLE?'AI-gegenereerd sfeerbeeld bij: ':'Lichtpuntjes-illustratie bij: ').($article->nl['title']??$article->source_title),'created_at'=>now()->toIso8601String()];
  }
 }

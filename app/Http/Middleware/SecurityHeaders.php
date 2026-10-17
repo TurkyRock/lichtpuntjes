@@ -6,6 +6,7 @@ class SecurityHeaders {
  public function handle(Request $request,Closure $next){
   $nonce=base64_encode(random_bytes(24));$request->attributes->set('csp_nonce',$nonce);
   $response=$next($request);
+  if(!$request->isMethod('GET')||$request->is('news/*','beheer','beheer/*','profiel','mijn-lichtpuntjes','mijn-lichtpuntjes/*','auth/*','inloggen','aanmelden','aanmelden/*','lichtpuntje/*','email/*','reset-password/*','wachtwoord-vergeten','privacy/verzoeken')||$response->getStatusCode()>=400)$response->headers->set('X-Robots-Tag','noindex');
   $response->headers->set('X-Content-Type-Options','nosniff');
   $response->headers->set('X-Frame-Options','DENY');
   $response->headers->set('Referrer-Policy','strict-origin-when-cross-origin');

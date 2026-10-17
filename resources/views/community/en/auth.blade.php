@@ -1,7 +1,7 @@
 @extends('community.en.layout')
 @section('content')
 @include('shared.privacy-note')<section class="panel auth-panel"><h1>{{ ['register'=>'Come on in. Bring your smile.','login'=>'Welcome back, sunshine.','forgot'=>'Forgot your password?','reset'=>'A fresh start.'][$mode] }}</h1>
-@if($mode==='register')@include('community.en.intentions')@endif
+@if($mode==='register')@include('community.en.intentions')@include('community.points-explained')@endif
 @if(in_array($mode, ['register','login']))
 @include('community.social-buttons')
 @endif

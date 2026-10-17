@@ -18,7 +18,7 @@ class CloudflareIllustrator {
  private function url(string $path):string {return 'https://api.cloudflare.com/client/v4/accounts/'.$this->account().'/ai/'.$path;}
  private function successful($r):void {
   if($r->successful()&&$r->json('success')===true)return;
-  $codes=array_column(is_array($r->json('errors'))?$r->json('errors'):[],'code');
+  $codes=array_map('strval',array_column(is_array($r->json('errors'))?$r->json('errors'):[],'code'));
   $reason=match($r->status()){
    401=>'API-token ongeldig of verlopen.',
    403=>'Toegang geweigerd. Controleer Account ID en Workers AI Read/Edit-rechten voor dit account.',
@@ -26,6 +26,11 @@ class CloudflareIllustrator {
    429=>'Daglimiet of snelheidslimiet bereikt. Probeer later opnieuw.',
    default=>in_array(1106,$codes)?'Daglimiet of capaciteit bereikt. Probeer later opnieuw.':'Aanvraag mislukt (HTTP '.$r->status().'). De batch stopt; hervat later met dezelfde opdracht.'
   };
+  $quotaText=strtolower(json_encode($r->json('errors')));
+  if(in_array('4006',$codes,true)&&(str_contains($quotaText,'daily free allocation')||str_contains($quotaText,'daily quota'))){
+   app(DailyIllustrationBudget::class)->exhausted();
+   throw new ImageBudgetException('AI-puntjes: het gratis Cloudflare-tegoed is vandaag op. We hervatten na de dagelijkse aanvulling.');
+  }
   $details=[];
   foreach(array_slice(is_array($r->json('errors'))?$r->json('errors'):[],0,2) as $error){
    if(!is_array($error))continue;
@@ -59,7 +64,8 @@ class CloudflareIllustrator {
     if(!is_array($saved)||!is_string($saved['day']??null)||!is_int($saved['requests']??null)||$saved['requests']<0)throw new NewsServiceException('Cloudflare: dagteller is ongeldig. Geen aanvraag verstuurd.');
     if($saved['day']===$day)$state=$saved;
    }
-   if($state['requests']>=100)throw new NewsServiceException('Cloudflare: lokale limiet van 100 aanvragen per UTC-dag bereikt. Hervat morgen.');
+   $max=(int)config('news_cycle.cloudflare_attempts',50);
+   if($state['requests']>=$max)throw new ImageBudgetException('AI-puntjes: Cloudflare heeft de lokale limiet van '.$max.' aanvragen per UTC-dag bereikt. We hervatten morgen.');
    $state['requests']++;File::ensureDirectoryExists(dirname($path));$tmp=$path.'.tmp';
    if(File::put($tmp,json_encode($state,JSON_THROW_ON_ERROR))===false||!rename($tmp,$path))throw new NewsServiceException('Cloudflare: dagteller opslaan mislukt. Geen aanvraag verstuurd.');
   }finally{$lock->release();}
@@ -108,6 +114,6 @@ class CloudflareIllustrator {
   foreach(Article::where('id','!=',$a->id)->whereNotNull('photo')->cursor() as $other){$url=$other->photo['url']??'';if(preg_match('~^/news-images/[a-f0-9]{64}\.(jpg|png)$~',$url)&&is_file(public_path(ltrim($url,'/')))&&hash_file('sha256',public_path(ltrim($url,'/')))===$hash)throw new NewsServiceException('Deze illustratie wordt al gebruikt. Bestaande afbeelding blijft staan.');}
   File::ensureDirectoryExists(public_path('news-images'));$file=public_path('news-images/'.$hash.'.'.$ext);$tmp=$file.'.'.\Illuminate\Support\Str::uuid().'.tmp';
   try{if(!is_file($file)&&(File::put($tmp,$bytes)===false||!rename($tmp,$file)))throw new NewsServiceException('Illustratie opslaan mislukt. Controleer schrijfrechten.');}finally{if(is_file($tmp))File::delete($tmp);}
-  return ['url'=>'/news-images/'.$hash.'.'.$ext,'sha256'=>$hash,'generated'=>true,'illustrative'=>true,'creator'=>'AI / Cloudflare','model'=>self::MODEL,'style'=>LichtpuntIllustrationPrompt::STYLE,'seed'=>null,'subject_hash'=>hash('sha256',$prompt->positive($a)),'description'=>'Lichtpuntjes-illustratie bij: '.($a->nl['title']??$a->source_title),'created_at'=>now()->toIso8601String(),'provider'=>'cloudflare'];
+  return ['url'=>'/news-images/'.$hash.'.'.$ext,'sha256'=>$hash,'generated'=>true,'illustrative'=>true,'creator'=>'AI / Cloudflare','model'=>self::MODEL,'style'=>$prompt->style($a),'seed'=>null,'subject_hash'=>hash('sha256',$prompt->positive($a)),'description'=>($prompt->style($a)===LichtpuntIllustrationPrompt::PHOTO_STYLE?'AI-gegenereerd sfeerbeeld bij: ':'Lichtpuntjes-illustratie bij: ').($a->nl['title']??$a->source_title),'created_at'=>now()->toIso8601String(),'provider'=>'cloudflare'];
  }
 }

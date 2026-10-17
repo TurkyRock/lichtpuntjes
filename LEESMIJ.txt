@@ -1,28 +1,35 @@
-COOKIEBELEID EN KEUZE VOOR GOOGLE ANALYTICS
+JOUW LICHTPUNTJE - UITKLAPBARE ANTWOORDEN
 
-1. Maak een back-up van lichtpunt-schoon.
-2. Pak deze ZIP uit IN lichtpunt-schoon. Voeg app, resources en tests samen
-   met de bestaande mappen en vervang alleen gelijknamige bestanden.
-3. Voer uit: php artisan optimize:clear
-4. Ververs met Ctrl+F5.
+Installeren over de bestaande versie met de nieuwe homepage en het dagverhaal.
+Maak eerst een back-up. Kopieer de bestanden met behoud van mapstructuur naar
+de projectmap; vervang alleen gelijknamige bestanden.
 
-De toestemmingknop is groen met witte letters. De weigeringknop blijft even
-breed, direct zichtbaar en in één klik bruikbaar. Er is geen vooraf
-gekozen toestemming. NL/EN-teksten leggen doel, Google, intrekken en
-gebruik zonder statistieken uit.
+Voer vanuit de projectmap uit:
+php artisan view:clear
 
-Toestemmingversie v2: eerdere v1-keuzes worden niet gebruikt als toestemming
-voor de uitgebreidere statistieken. Bezoekers kiezen opnieuw. De keuze
-blijft 180 dagen geldig. Ook de bestaande leestellingen vereisen deze keuze.
+Op Plesk: gebruik dezelfde PHP-binary en gebruiker als de website. Jimmy kan zo
+nodig PHP-FPM/OPcache herladen als gewijzigde PHP-bestanden niet worden opgepakt.
+Geen nieuwe databasekolommen of migratie nodig voor deze update: parent_id
+bestaat al in de versie met antwoorden op reacties.
 
-LET OP: Deze update voegt geen Analytics-script toe en verstuurt geen data
-naar Google Analytics. De metings-ID ontbreekt nog. Daarom is het beleid
-transparant over de geplande, nog inactieve koppeling. Bij activering zijn
-nog nodig: toestemminggestuurd laden en stoppen, verwijderen van Analytics-
-cookies bij intrekken, privacyvriendelijke meetinstellingen, bescherming
-van privépagina's en URL's, passende beveiligingsheaders en het invullen van
-de werkelijke bewaartermijn en leveranciersafspraken. Als Analytics buiten
-deze update om is toegevoegd, moet het beleid met de echte instellingen
-worden afgestemd. Plaats geen los script dat de cookiekeuze omzeilt.
+GEDRAG
+- Onder het artikel staat Reacties (totaal), inclusief openbare antwoorden.
+- De hoofdlijst bevat de oorspronkelijke reacties, nieuwste eerst.
+- Antwoorden staan onder hun eigen reactie, standaard ingeklapt.
+- De knop toont het aantal directe openbare antwoorden, bijvoorbeeld
+  '2 antwoorden bekijken'. Een antwoord op een antwoord heeft een eigen knop.
+- Antwoorden worden pas opgehaald na uitklappen; oudste eerst per gesprek.
+- Zowel hoofdreacties als antwoorden hebben paginering van maximaal 20 per pagina.
+- Alleen goedgekeurde reacties van niet-geschorste gebruikers tellen mee.
+- Als een ouderreactie is ingetrokken, kan een nog openbaar antwoord als losse
+  reactie zichtbaar blijven. De verborgen tekst van de ouder wordt niet getoond.
+- Bestaande reacties hoeven niet opnieuw te worden ingevoerd of AI-gekeurd.
 
-11 gerichte tests / 143 assertions geslaagd. Geen migraties nodig.
+De eerdere homepagewijzigingen (compact groen vlak, Meeste likes, de slogan
+'Een beetje meer licht in je dag.' en de illustratiebijschriften) zijn inbegrepen.
+
+CONTROLE
+Bestaande moderatie-/antwoordtests geslaagd. Drie aanvullende backendtests voor
+structuur, tellingen, paginering en verborgen ouders geslaagd. Frontendcontroles
+voor uit-/inklappen, meerdere niveaus, conceptbehoud, aantallen en NL/EN geslaagd.
+Er zijn geen echte API-aanvragen gedaan en geen live serverwijzigingen uitgevoerd.

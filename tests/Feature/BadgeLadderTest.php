@@ -20,7 +20,8 @@ class BadgeLadderTest extends TestCase {
   $stages=BadgeCatalog::stages('nl');$this->assertCount(16,$stages);$this->assertCount(16,array_unique(array_column($stages,'id')));
   foreach($stages as $b)$this->assertFileExists(public_path(ltrim($b['icon'],'/')));
   $this->assertSame([5,15,150],array_column(BadgeCatalog::homePreview(),'points'));
-  $response=$this->get('/')->assertOk();foreach(BadgeCatalog::homePreview() as $b)$response->assertSee($b['icon'])->assertSee($b['name']);
+  $this->get('/')->assertOk()->assertDontSee('id="earnTitle"',false);
+  $response=$this->actingAs($this->user())->get('/profiel?section=badges')->assertOk();foreach(BadgeCatalog::homePreview() as $b)$response->assertSee($b['icon'])->assertSee($b['name']);
  }
  public function test_all_thresholds_and_final_progress():void {
   $u=$this->user();$p=app(Lightpoints::class);$last=0;
@@ -32,37 +33,38 @@ class BadgeLadderTest extends TestCase {
  }
  public function test_profile_displays_ladder_and_private_rejection_reason():void {
   $u=$this->user();$c=Comment::create(['user_id'=>$u->id,'article_id'=>$this->article()->id,'body'=>'Oude reactie','status'=>'rejected','ai_reason'=>'Een persoonlijke aanval hoort hier niet.']);
-  $this->actingAs($u)->get('/profiel')->assertOk()->assertSee('Lichtpuntenladder')->assertSee('Een persoonlijke aanval hoort hier niet.')->assertSee('/comments/'.$c->id.'/revise');
-  $this->actingAs($this->user())->get('/profiel')->assertOk()->assertDontSee('Een persoonlijke aanval hoort hier niet.');
+  $this->actingAs($u)->get('/profiel?section=badges')->assertOk()->assertSee('Lichtpuntenladder')->assertDontSee('Een persoonlijke aanval hoort hier niet.');
+  $this->get('/profiel?section=comments')->assertOk()->assertSee('Een persoonlijke aanval hoort hier niet.')->assertSee('/comments/'.$c->id.'/revise');
+  $this->actingAs($this->user())->get('/profiel?section=comments')->assertOk()->assertDontSee('Een persoonlijke aanval hoort hier niet.');
   $this->getJson('/news/'.$c->article_id.'/comments')->assertOk()->assertDontSee('Een persoonlijke aanval hoort hier niet.');
  }
  public function test_author_can_revise_but_others_cannot():void {
   $u=$this->user();$c=Comment::create(['user_id'=>$u->id,'article_id'=>$this->article()->id,'body'=>'Oude reactie','status'=>'rejected','ai_reason'=>'Negatief']);
   $this->actingAs($this->user())->post('/comments/'.$c->id.'/revise',['body'=>'Wat mooi!'])->assertForbidden();
-  $this->ai('approve');$this->actingAs($u)->post('/comments/'.$c->id.'/revise',['body'=>'Wat mooi!'])->assertRedirect('/profiel');
+  $this->ai('approve');$this->actingAs($u)->post('/comments/'.$c->id.'/revise',['body'=>'Wat mooi!'])->assertRedirect('/profiel?lang=nl&section=comments');
   $this->assertSame('approved',$c->fresh()->status);$this->assertSame('Wat mooi!',$c->fresh()->body);
   $this->assertSame(1,app(Lightpoints::class)->summary($u)['points']);$this->assertDatabaseCount('comments',1);$this->assertDatabaseCount('comment_reviews',1);
  }
  public function test_resubmission_does_not_bypass_review_or_duplicate_points():void {
   $u=$this->user();$c=Comment::create(['user_id'=>$u->id,'article_id'=>$this->article()->id,'body'=>'Wat mooi!','status'=>'approved']);$p=app(Lightpoints::class);$p->comment($c);
   app(CommentModerator::class)->decide($c,'rejected',$this->user(),'Bij nader inzien niet positief');$this->ai('approve');
-  $this->actingAs($u)->post('/comments/'.$c->id.'/revise',['body'=>'Wat een mooie prestatie!'])->assertRedirect('/profiel');
+  $this->actingAs($u)->post('/comments/'.$c->id.'/revise',['body'=>'Wat een mooie prestatie!'])->assertRedirect('/profiel?lang=nl&section=comments');
   $this->assertDatabaseCount('lightpoint_events',1);$this->assertSame(1,$p->summary($u)['points']);
   $this->post('/comments/'.$c->id.'/revise',['body'=>'Nog een versie!'])->assertUnprocessable();
  }
  public function test_unchanged_text_is_not_sent_to_ai_and_ai_rejection_stays_private():void {
   $u=$this->user();$c=Comment::create(['user_id'=>$u->id,'article_id'=>$this->article()->id,'body'=>'Oude reactie','status'=>'rejected']);
   $this->actingAs($u)->post('/comments/'.$c->id.'/revise',['body'=>'Oude reactie'])->assertSessionHasErrors('body');
-  $this->ai('reject');$this->post('/comments/'.$c->id.'/revise',['body'=>'Andere reactie'])->assertRedirect('/profiel');
+  $this->ai('reject');$this->post('/comments/'.$c->id.'/revise',['body'=>'Andere reactie'])->assertRedirect('/profiel?lang=nl&section=comments');
   $this->assertSame('rejected',$c->fresh()->status);$this->assertSame(0,app(Lightpoints::class)->summary($u)['points']);
  }
  public function test_english_profile_uses_the_same_assets_and_localised_titles():void {
-  $this->actingAs($this->user())->get('/profiel?lang=en')->assertOk()->assertSee('The bright points ladder')->assertSee('/images/badges/smile.svg')->assertSee('Smile starter');
+  $this->actingAs($this->user())->get('/profiel?lang=en&section=badges')->assertOk()->assertSee('The bright points ladder')->assertSee('/images/badges/smile.svg')->assertSee('Smile starter');
  }
  public function test_demo_account_is_local_only_idempotent_and_not_admin():void {
   $this->article();$this->app->instance('env','production');$this->artisan('lichtpunt:demo-account')->assertExitCode(1);$this->assertDatabaseCount('users',0);
   $this->app->instance('env','local');$this->artisan('lichtpunt:demo-account')->assertExitCode(0);$this->artisan('lichtpunt:demo-account')->assertExitCode(0);
   $u=User::where('email','erik.demo@lichtpunt.test')->firstOrFail();$this->assertFalse($u->is_admin);$this->assertTrue($u->hasVerifiedEmail());$this->assertSame(115,app(Lightpoints::class)->summary($u)['points']);$this->assertDatabaseCount('users',1);$this->assertDatabaseCount('comments',2);$this->assertDatabaseMissing('comments',['user_id'=>$u->id,'status'=>'approved']);
-  $this->actingAs($u)->get('/profiel')->assertOk()->assertSee('Demokeuring');
+  $this->actingAs($u)->get('/profiel?section=comments')->assertOk()->assertSee('Demokeuring');
  }
 }

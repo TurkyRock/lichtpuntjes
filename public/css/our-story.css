@@ -1,0 +1,35 @@
+#about.story-scrapbook{display:block;position:relative;isolation:isolate;background:#edf0e5;padding:32px;scroll-margin-top:24px}
+#about .story-book-title{display:flex;align-items:center;justify-content:space-between;gap:25px;margin-bottom:26px}
+#about .story-book-title h2{font:600 34px/1.1 Georgia,serif;letter-spacing:-1px;margin:10px 0 0;color:#153e39}
+#about .story-book-title .eyebrow{font-size:11px}
+#about .story-book-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:24px}
+#about .story-paper{position:relative;isolation:isolate;min-width:0;padding:27px;filter:drop-shadow(0 5px 6px #183d3926)}
+#about .story-paper::before{content:"";position:absolute;inset:0;z-index:-1;background-color:var(--story-sheet,#fffaf0);background-image:url('/images/button-paper-grain.svg');background-blend-mode:multiply;-webkit-mask:var(--story-edge) center/100% 100% no-repeat;mask:var(--story-edge) center/100% 100% no-repeat}
+#about{--story-edge:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 300' preserveAspectRatio='none'%3E%3Cfilter id='edge' x='-5%25' y='-8%25' width='110%25' height='116%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045 .12' numOctaves='3' seed='11' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='12' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Crect x='7' y='7' width='986' height='286' fill='white' filter='url(%23edge)'/%3E%3C/svg%3E")}
+#about .story-paper h3{font:600 25px/1.15 Georgia,serif;letter-spacing:-.5px;margin:0 0 15px;color:#153e39;overflow-wrap:anywhere}
+#about .story-paper p{font:400 15px/1.75 system-ui,sans-serif;margin:0;color:#4e655f}
+#about .story-paper p+p{margin-top:13px}
+#about .story-paper-tag{display:inline-block;flex-shrink:0;padding:10px 17px;--story-sheet:#ffdb71;font:650 11px/1.4 system-ui;letter-spacing:1.2px;text-transform:uppercase;color:#153e39;transform:rotate(3deg)}
+#about .story-intro{transform:rotate(-.8deg)}
+#about .story-quote{--story-sheet:#dce8d1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:23px;padding:32px 25px;transform:rotate(1.4deg)}
+#about .story-source{--story-sheet:#dce6d1;transform:rotate(.7deg);padding-left:33px}
+#about .story-ai{transform:rotate(-.6deg)}
+#about .story-tape{position:absolute;z-index:2;background-color:#e6c98ec9;background-image:repeating-linear-gradient(3deg,transparent 0 3px,#fff6dc30 3px 4px);box-shadow:0 2px 2px #5b47341a;pointer-events:none;clip-path:polygon(3% 0,98% 5%,96% 32%,100% 58%,96% 100%,1% 95%,4% 68%,0 40%)}
+#about .story-intro>.story-tape{width:67px;height:23px;top:-8px;left:25px;transform:rotate(-12deg)}
+#about .story-quote>.story-tape{width:96px;height:31px;top:-11px;right:18px;transform:rotate(9deg)}
+#about .story-source>.story-tape{width:31px;height:61px;top:29px;left:-5px;transform:rotate(-13deg)}
+#about .story-ai>.story-tape{width:57px;height:20px;top:-7px;right:27px;transform:rotate(-5deg)}
+#about .story-quote-label{font:650 11px/1.4 system-ui;letter-spacing:1.6px;text-transform:uppercase;color:#4b675c;text-align:center}
+#about .story-letter-word{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;max-width:100%;padding:5px 3px}
+#about .story-letter-word span{display:inline-block;padding:5px;font:700 clamp(25px,3vw,38px)/1.1 Georgia,serif;transform:rotate(-6deg);background:#ffdc71;color:#153e39;box-shadow:0 2px 2px #23493f21;clip-path:polygon(2% 1%,98% 0,100% 98%,0 95%)}
+#about .story-letter-word span:nth-child(3n+2){transform:translateY(4px) rotate(5deg);background:#fffaf0;font-family:system-ui;font-size:clamp(23px,2.8vw,35px)}
+#about .story-letter-word span:nth-child(3n){transform:rotate(-2deg);background:#00766b;color:#fffaf0;font-family:'Segoe Print','Comic Sans MS',cursive;font-size:clamp(23px,2.8vw,35px)}
+#about .story-handwritten{font:500 clamp(23px,2.4vw,29px)/1.45 'Segoe Print','Comic Sans MS',cursive;color:#244d40;text-align:center;max-width:340px}
+#about .story-paper-sun{display:block;position:relative;width:84px;height:84px;flex:none;transform:rotate(-8deg);filter:drop-shadow(1px 3px 2px #9a7a2533)}
+#about .story-sun-ray{position:absolute;left:50%;bottom:50%;width:10px;height:40px;transform-origin:50% 100%;transform:translateX(-50%) rotate(var(--ray-turn));background:#e8b83d;background-image:url('/images/button-paper-grain.svg');background-blend-mode:multiply;clip-path:polygon(12% 2%,100% 0,85% 100%,0 93%)}
+#about .story-sun-ray:nth-child(2n){width:8px;height:37px;background-color:#f3c853}
+#about .story-sun-disc{position:absolute;inset:22px;border-radius:48% 53% 46% 51%;background:#ffdb68;background-image:url('/images/button-paper-grain.svg');background-blend-mode:multiply;box-shadow:inset -3px -3px 0 #e9b742,0 2px 2px #9a7a2533;transform:rotate(13deg)}
+@media(max-width:900px){#about .story-letter-word{gap:3px}#about .story-letter-word span{font-size:29px;padding:5px 4px}#about .story-letter-word span:nth-child(3n+2),#about .story-letter-word span:nth-child(3n){font-size:27px}#about .story-paper h3{font-size:23px}}
+@media(max-width:700px){#about.story-scrapbook{padding:24px}#about .story-book-title{display:block;margin-bottom:29px}#about .story-book-title h2{font-size:31px}#about .story-paper-tag{margin-top:20px;max-width:100%;white-space:normal}#about .story-book-grid{grid-template-columns:minmax(0,1fr);gap:27px}#about .story-paper{padding:25px}#about .story-source{padding-left:33px}#about .story-quote{padding:30px 23px}#about .story-letter-word span{font-size:32px}#about .story-letter-word span:nth-child(3n+2),#about .story-letter-word span:nth-child(3n){font-size:30px}}
+@media(max-width:380px){#about.story-scrapbook{padding:18px}#about .story-paper{padding:23px}#about .story-source{padding-left:29px}#about .story-letter-word{gap:2px}#about .story-letter-word span{font-size:25px;padding:5px 3px}#about .story-letter-word span:nth-child(3n+2),#about .story-letter-word span:nth-child(3n){font-size:23px}#about .story-handwritten{font-size:22px}}
+@media(forced-colors:active){#about .story-paper::before{background:Canvas;border:1px solid CanvasText;mask:none;-webkit-mask:none}#about .story-paper{filter:none}#about .story-letter-word span{background:Canvas;color:CanvasText}#about .story-tape{display:none}}

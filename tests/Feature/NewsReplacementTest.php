@@ -25,8 +25,27 @@ class NewsReplacementTest extends TestCase {
   $this->assertNotNull($old->fresh());$this->assertSame(1,Article::where('status','published')->count());$this->assertSame(100,Article::where('status','replacement')->count());
  }
  public function test_complete_collection_replaces_old_news_once_and_writes_backup():void {
-  $old=$this->article('old');$community=$this->article('community','community_pending');$community->update(['origin'=>'community']);$ids=$this->prepare100($old);$before=File::glob(storage_path('app/news-replacement-backups/*.json'));$this->mock(NewsImporter::class,fn($m)=>$m->shouldNotReceive('fetchPage'));
-  try{$this->artisan('news:replace')->expectsOutputToContain('100 nieuwe positieve artikelen')->assertExitCode(0);$this->assertNull($old->fresh());$this->assertSame(100,Article::where('status','published')->count());$this->assertSame(101,Article::count());$this->assertNotNull($community->fresh());$backup=array_values(array_diff(File::glob(storage_path('app/news-replacement-backups/*.json')),$before));$this->assertCount(1,$backup);$data=json_decode(File::get($backup[0]),true);$this->assertSame($old->id,$data['tables']['articles'][0]['id']);$this->artisan('news:replace')->expectsOutputToContain('niets opnieuw verwijderd')->assertExitCode(0);$this->assertSame(101,Article::count());$this->assertNotNull($community->fresh());}
+  $old=$this->article('old');$hidden=$this->article('hidden-old');$hidden->update(['hidden_at'=>now()]);$community=$this->article('community','community_pending');$community->update(['origin'=>'community']);$ids=$this->prepare100($old);$before=File::glob(storage_path('app/news-replacement-backups/*.json'));$this->mock(NewsImporter::class,fn($m)=>$m->shouldNotReceive('fetchPage'));
+  try{$this->artisan('news:replace')->expectsOutputToContain('100 nieuwe positieve artikelen')->assertExitCode(0);$this->assertNull($old->fresh());$this->assertSame(100,Article::visible()->count());$this->assertNotNull($hidden->fresh());$this->assertSame(102,Article::count());$this->assertNotNull($community->fresh());$backup=array_values(array_diff(File::glob(storage_path('app/news-replacement-backups/*.json')),$before));$this->assertCount(1,$backup);$data=json_decode(File::get($backup[0]),true);$this->assertSame($old->id,$data['tables']['articles'][0]['id']);$this->artisan('news:replace')->expectsOutputToContain('niets opnieuw verwijderd')->assertExitCode(0);$this->assertSame(102,Article::count());$this->assertNotNull($community->fresh());}
   finally{foreach(array_diff(File::glob(storage_path('app/news-replacement-backups/*.json')),$before) as $f)$this->files[]=$f;}
  }
+ public function test_publish_ready_publishes_75_without_api_calls_and_batch_can_finish():void {
+  $old=$this->article('old');$ids=$this->prepare100($old);$photos=Article::whereIn('id',array_slice($ids,75))->get()->mapWithKeys(fn($a)=>[$a->id=>$a->photo])->all();
+  Article::whereIn('id',array_slice($ids,75))->update(['photo'=>null]);
+  $this->mock(NewsImporter::class,function($m){$m->shouldNotReceive('fetchPage');$m->shouldNotReceive('assess');});
+  $this->partialMock(\App\Services\ArticlePhotoFinder::class,fn($m)=>$m->shouldNotReceive('attach'));
+  $this->artisan('news:replace',['--publish-ready'=>true])->expectsOutputToContain('75 nieuwe berichten alvast gepubliceerd')->assertExitCode(0);
+  $this->assertSame(75,Article::whereIn('id',$ids)->where('status','published')->count());$this->assertSame(25,Article::where('status','replacement')->count());$this->assertNotNull($old->fresh());
+  $this->artisan('news:replace',['--publish-ready'=>true])->expectsOutputToContain('0 nieuwe berichten alvast gepubliceerd')->assertExitCode(0);
+  $this->assertFalse(json_decode(File::get($this->state),true)['finished']);
+  $before=File::glob(storage_path('app/news-replacement-backups/*.json'));
+  $this->partialMock(\App\Services\ArticlePhotoFinder::class,fn($m)=>$m->shouldReceive('attach')->times(25)->andReturnUsing(function($a)use($photos){$a->update(['photo'=>$photos[$a->id]]);return true;}));
+  try{$this->artisan('news:replace')->expectsOutputToContain('100 nieuwe positieve artikelen')->assertExitCode(0);$this->assertSame(100,Article::where('status','published')->count());$this->assertNull($old->fresh());$this->assertTrue(json_decode(File::get($this->state),true)['finished']);}
+  finally{foreach(array_diff(File::glob(storage_path('app/news-replacement-backups/*.json')),$before) as $f)$this->files[]=$f;}
+ }
+ public function test_publish_ready_without_batch_does_not_start_an_import():void {
+  $this->mock(NewsImporter::class,function($m){$m->shouldNotReceive('fetchPage');$m->shouldNotReceive('assess');});
+  $this->artisan('news:replace',['--publish-ready'=>true])->expectsOutputToContain('Geen bestaande vervangingsbatch')->assertExitCode(0);$this->assertFalse(File::exists($this->state));
+ }
+
 }

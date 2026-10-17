@@ -15,6 +15,6 @@ class Analytics
     public static function eligible(Request $request): bool
     {
         // Account pages, authentication, user submissions and administration are never tagged.
-        return self::id() !== null && $request->getPathInfo() === '/';
+        return self::id() !== null && ($request->getPathInfo() === '/' || $request->getPathInfo() === '/en' || $request->is('nl/onderwerp/*','en/topics/*'));
     }
 }

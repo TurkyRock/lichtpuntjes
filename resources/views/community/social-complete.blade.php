@@ -17,7 +17,7 @@
 @endif
 @if($existing || $errors->has('existing_password'))
 <p>{{ $en ? 'Already a member? Your points and comments stay with your existing account. Confirm your password once to connect this sign-in option.' : 'Al lid? Je lichtpunten en reacties blijven bij je bestaande account. Bevestig eenmalig je wachtwoord om deze inlogoptie te koppelen.' }}</p>
-<label for="existing-password">{{ $en ? 'Existing Lichtpunt password' : 'Bestaand Lichtpunt-wachtwoord' }}</label>
+<label for="existing-password">{{ $en ? 'Existing Jouw Lichtpuntje password' : 'Bestaand Jouw Lichtpuntje-wachtwoord' }}</label>
 <input id="existing-password" name="existing_password" type="password" autocomplete="current-password" maxlength="128" required>
 <p class="small"><a href="/wachtwoord-vergeten?lang={{ app()->getLocale() }}">{{ $en ? 'Forgot your password?' : 'Wachtwoord vergeten?' }}</a></p>
 @endif

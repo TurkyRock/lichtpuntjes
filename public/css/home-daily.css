@@ -1,0 +1,50 @@
+/* Cards fill their image area; the upper subject has priority over the lower crop. */
+.grid .card .picture{height:auto;aspect-ratio:4/3;position:relative;overflow:hidden;background:#f5f7ef}
+.grid .card .picture img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:50% 0%}
+.daily-highlights{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px;margin:0 0 22px}
+.highlight-card{min-width:0;border:1px solid #e0e6dc;border-radius:17px;background:#fff;overflow:hidden;display:flex;flex-direction:column;cursor:pointer}
+.highlight-card:hover,.highlight-card:focus-within{border-color:#99bab1}
+.highlight-main{grid-column:1;grid-row:1/span 2}
+.highlight-small{display:grid;grid-template-columns:44% minmax(0,1fr)}
+.highlight-art{position:relative;min-width:0;background:#f5f7ef;display:flex;flex-direction:column}
+.daily-highlights .highlight-art>a{position:relative;display:block;flex:1;min-height:160px;width:100%;height:auto;aspect-ratio:auto;overflow:hidden}
+.daily-highlights .highlight-main .highlight-art>a{height:auto;aspect-ratio:16/10;min-height:0;max-height:360px;flex:none}
+.daily-highlights .highlight-card .highlight-art img{position:absolute;inset:0;display:block;width:100%;height:100%;min-height:0;max-height:none;aspect-ratio:auto;object-fit:cover;object-position:50% 0%}
+.daily-highlights .highlight-main .highlight-art img{object-position:50% 50%}
+.highlight-art .photo-credit{padding:6px 9px;font-size:9px;line-height:1.4}
+.highlight-copy{padding:14px 17px;min-width:0;display:flex;flex-direction:column;justify-content:center}
+.highlight-main .highlight-copy{flex:1}
+.highlight-label{display:flex;align-items:center;gap:8px;color:#907000;font:700 10px/1.4 system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;margin:0 0 8px}
+.highlight-label span{font-size:18px;line-height:1;color:#c69300}
+.highlight-copy h2{font:400 27px/1.15 Georgia,serif;letter-spacing:-.45px;margin:0 0 8px;overflow-wrap:anywhere}
+.highlight-copy h2 a{color:#153e39;text-decoration:none}.highlight-copy h2 a:hover{text-decoration:underline;text-underline-offset:3px}
+.highlight-teaser{font-size:13px;line-height:1.5;color:#536862;margin:0 0 8px}
+.highlight-read{font-size:12px;font-weight:650;text-decoration:none;margin-top:auto}
+.highlight-small .highlight-copy{padding:12px}.highlight-small h2{font-size:20px;line-height:1.15}
+.highlight-small .highlight-teaser{font-size:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.article-content .article-photo img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;object-position:center}
+
+/* The existing category and sorting toolbar. */
+.daily-highlights+.news-toolbar{margin-top:0}
+#stories{border-top:1px solid #d8e0d6;padding-top:12px}
+.news-toolbar{align-items:center!important}.news-toolbar .filters{flex-wrap:nowrap}
+.news-toolbar .filters a{font-size:12px;padding:8px 7px;white-space:nowrap}
+.news-toolbar .sort-tabs button{font-size:12px;padding:8px 8px}
+.seo-detail .daily-highlights,.seo-detail .hero.daily-welcome.paper-welcome{display:none}
+@media(min-width:951px){.news-toolbar{gap:10px}.news-toolbar .filters{gap:0}}
+@media(min-width:951px) and (max-width:1200px){.news-toolbar{flex-wrap:wrap}.topic-control{flex-basis:100%}}
+@media(max-width:950px){
+ .daily-highlights{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+ .highlight-small{grid-template-columns:42% minmax(0,1fr)}.highlight-small h2{font-size:18px}
+ .highlight-small .highlight-teaser{display:none}.highlight-read{margin-top:8px}
+ .news-toolbar .filters{flex-wrap:wrap}
+}
+@media(max-width:700px){
+ .daily-highlights{grid-template-columns:minmax(0,1fr)}.highlight-main{grid-column:1;grid-row:auto}
+ .daily-highlights .highlight-main .highlight-art>a{height:auto;aspect-ratio:4/3;max-height:300px}
+ .highlight-small{grid-template-columns:40% minmax(0,1fr)}
+ .daily-highlights .highlight-small .highlight-art>a{min-height:170px}
+ .highlight-small h2,.highlight-small .highlight-copy h2{font-size:19px}.highlight-small .highlight-teaser{display:block}
+}
+@media(max-width:600px){.news-toolbar{flex-direction:column!important;align-items:stretch!important;gap:12px}}
+@media(prefers-reduced-motion:reduce){.daily-highlights *{scroll-behavior:auto}}

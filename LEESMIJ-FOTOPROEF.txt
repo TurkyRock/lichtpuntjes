@@ -1,0 +1,102 @@
+JOUW LICHTPUNTJE — PROEF MET 30 FOTOREALISTISCHE AI-BEELDEN
+
+Dit is een update voor het bestaande project met de nieuwe homepage/dagverhaal.
+Er zijn vanuit ChatGPT geen nieuwsberichten op jouw computer of server opgehaald,
+geen echte afbeeldingen via jouw Cloudflare-account gemaakt en geen artikelen
+verwijderd. Onderstaande opdracht doet dit op de installatie waar jij hem uitvoert.
+Lokaal uitvoeren wijzigt alleen de lokale site, niet automatisch de Plesk-site.
+
+WAT DE PROEF DOET
+- Haalt nieuwe kandidaten op via de bestaande NewsData-koppeling.
+- Gemini beoordeelt ze met de bestaande positiviteitsregels en maakt NL/EN-teksten.
+- Selecteert precies 5 geschikte berichten per nieuwscategorie: Media, Sport,
+  Duurzaamheid, Natuur, Wetenschap en Mens & maatschappij. Totaal 30.
+- Cloudflare FLUX.1 Schnell maakt unieke, fotorealistische sfeerbeelden met
+  natuurlijke materialen, warm daglicht en een rustige, positieve uitstraling.
+- De beelden zijn thematische AI-beelden. De prompt vraagt geen exacte reconstructie
+  van een nieuwsgebeurtenis en geen herkenbare nabootsing van genoemde personen.
+- Onder realistische beelden staat 'AI-gegenereerd sfeerbeeld', met verduidelijking
+  dat het geen foto van de beschreven gebeurtenis is. Geen tekst over de afbeelding.
+- Pas als alle 30 teksten en afbeeldingen compleet zijn, gaat de nieuwe collectie
+  openbaar en verdwijnen de oude gepubliceerde nieuwsartikelen uit het overzicht.
+- Oude artikelen, reacties, likes en afbeeldingsbestanden blijven bewaard. Er wordt
+  een extra herstelkopie gemaakt onder storage/app/news-replacement-backups/.
+- Zelfgeschreven gebruikersverhalen en de oude voortgangsfile voor de 100-batch
+  blijven bewaard. Deze proef heeft een eigen voortgangsbestand.
+
+INSTALLEREN
+1. Maak eerst een back-up van het project, de database en public/news-images.
+2. Stop lopende imports. Pauzeer tijdelijk de scheduler en laat de queueworker
+   netjes stoppen voordat je PHP-bestanden vervangt.
+3. Pak deze ZIP uit in de projectmap. Voeg mappen samen en vervang gelijknamige
+   bestanden; overschrijf niet de hele map en verwijder geen opslag of .env.
+4. Controleer dat .env deze bestaande provider kiest:
+
+   NEWS_IMAGE_PROVIDER=cloudflare
+
+   Gebruik je bestaande Cloudflare-account-ID, token, NewsData- en Gemini-sleutels.
+   Er zitten geen sleutels in deze download. De lokale FLUX-koppeling voor Jimmy
+   wordt hiermee niet voltooid of stilzwijgend geactiveerd.
+
+5. Voer uit vanuit de projectmap, bijvoorbeeld in PowerShell:
+
+   php artisan config:clear
+   php artisan view:clear
+   php artisan news:illustrations --check
+   php artisan news:photo-trial
+
+   Op Plesk gebruikt Jimmy hiervoor de PHP-binary en systeemgebruiker van de site.
+   Bij OPcache zonder tijdstempelcontrole laat Jimmy PHP-FPM herladen na de update.
+   Er zijn geen nieuwe migraties of Composer-pakketten nodig voor deze update.
+
+HERVATTEN
+Bij de daglimiet of een tijdelijke fout blijven de oude openbare berichten staan.
+Reeds goedgekeurde verhalen en voltooide foto's blijven bewaard. Hervat later met:
+
+   php artisan news:photo-trial
+
+Als het maximum aantal bronpagina's bereikt is, kunnen er nog minder dan 30
+geschikte verhalen zijn. Ook dan hervatten met dezelfde opdracht. De AI-regels
+worden niet versoepeld om een categorie te vullen. Bij een verlopen broncursor:
+
+   php artisan news:photo-trial --restart-feed
+
+Deze vlag vernieuwt de bronpaginering; hij wist geen goedgekeurde verhalen of foto's.
+Elke run verwerkt standaard maximaal 30 extra bronpagina's. Eventueel begrenzen:
+
+   php artisan news:photo-trial --pages=5
+
+Gebruik voor deze proef news:photo-trial, niet de oude news:replace-opdracht zonder
+opties. Die laatste blijft de afzonderlijke oude vervangingsbatch afhandelen.
+
+BELANGRIJK VOOR DE PROEF
+- De huidige dagbudgetten blijven gelden, inclusief eerdere pogingen van vandaag.
+  Dertig afbeeldingen kunnen dus over meer dan één dag verdeeld worden. Ook een
+  mislukte generatie kan dagruimte gebruiken. Geen betaald plan wordt geactiveerd.
+- Verwijder geen dagtellers, voortgangsbestanden of quota-cache om door te gaan.
+- De proefvoortgang staat in storage/app/news-photo-trial-state.json.
+- Een voltooide proef wordt bij nogmaals uitvoeren niet opnieuw aangemaakt.
+- Bestaande papieren illustraties blijven geldig en worden niet massaal opnieuw
+  gegenereerd. De fotostijl is alleen aangevraagd voor de nieuwe proefbatch.
+- Na deze proef kunnen we beslissen of de fotostijl ook de standaard wordt voor
+  toekomstige automatische nieuwsberichten en gebruikersverhalen.
+- Laat de automatische nieuwscyclus tijdens het bekijken van deze collectie
+  tijdelijk gepauzeerd als je precies deze 30 nieuwsartikelen wilt houden.
+  De normale cyclus zou anders later weer nieuwe berichten toevoegen.
+- In config/news_cycle.php kan Jimmy enabled tijdelijk op false zetten en daarna
+  de configuratiecache vernieuwen. NEWS_SCHEDULE_ENABLED in .env stuurt deze huidige
+  cyclus niet aan. Bewaar de eerdere waarde en zet hem na de proef terug.
+  De queueworker voor gebruikersverhalen mag na installatie weer draaien; tijdelijke
+  overlap met een beeldgeneratie kan vereisen dat je de proef later hervat.
+
+CONTROLE
+162 PHP-tests / 1243 assertions geslaagd met gesimuleerde API-antwoorden.
+Ook frontendcontroles voor reacties, delen, startpagina en Analytics geslaagd.
+Er is getest op vijf artikelen per categorie, volledige vervanging pas na gereed,
+behoud van de oude collectie bij fouten, hervatten zonder dubbele beeldgeneratie,
+behoud van bestaande illustraties en de fotorealistische prompt naar Cloudflare.
+De uiteindelijke beeldkwaliteit van jouw live Cloudflare-account moet je nog
+beoordelen. Het fotovoorbeeld in de chat kwam uit een andere generator.
+
+In dit pakket zitten ook de laatste homepage- en uitklapbare-reactiewijzigingen,
+zodat het installeren ervan die eerdere verbeteringen behoudt.

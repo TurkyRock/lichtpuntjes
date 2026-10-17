@@ -47,6 +47,58 @@ class NewsEngagementTest extends TestCase {
         $this->actingAs($first)->postJson('/news/'.$a->id.'/like',['liked'=>false])->assertJsonPath('likes_count',0);
         $this->postJson('/news/'.$a->id.'/like',['liked'=>false])->assertJsonPath('likes_count',0);
     }
+    public function test_reading_rewards_five_distinct_articles_per_account_per_day(): void {
+        $reader=$this->account();
+        $this->actingAs($reader);
+        $stories=[];
+        for($index=0;$index<6;$index++){
+            $story=$this->story();$stories[]=$story;
+            $this->postJson('/news/'.$story->id.'/read')->assertOk();
+            $this->withCookie('lichtpunt_visitor',(string)Str::uuid());
+            $this->postJson('/news/'.$story->id.'/read')->assertOk();
+        }
+        $rewards=DB::table('lightpoint_events')->where('user_id',$reader->id)->where('kind','read');
+        $this->assertSame(5,$rewards->count());
+        $this->assertSame(5,(int)$rewards->sum('points'));
+        foreach(array_slice($stories,0,5) as $story)$this->assertDatabaseHas('lightpoint_events',['user_id'=>$reader->id,'reference'=>'read:'.now('Europe/Amsterdam')->toDateString().':'.$story->id,'points'=>1]);
+        $this->actingAs($this->account())->postJson('/news/'.$stories[0]->id.'/read')->assertOk();
+        $this->assertDatabaseCount('lightpoint_events',6);
+    }
+    public function test_reading_rewards_reset_at_midnight_in_the_netherlands(): void {
+        $this->travelTo(\Carbon\CarbonImmutable::parse('2026-10-15 23:59:50','Europe/Amsterdam'));
+        $reader=$this->account();$this->actingAs($reader);$stories=[];
+        for($index=0;$index<6;$index++){
+            $story=$this->story();$stories[]=$story;
+            $this->postJson('/news/'.$story->id.'/read')->assertOk();
+        }
+        $this->assertSame(5,DB::table('lightpoint_events')->where('period','2026-10-15')->count());
+        $this->travelTo(\Carbon\CarbonImmutable::parse('2026-10-16 00:00:10','Europe/Amsterdam'));
+        foreach($stories as $story)$this->postJson('/news/'.$story->id.'/read')->assertOk();
+        $this->assertSame(5,DB::table('lightpoint_events')->where('period','2026-10-16')->count());
+        $this->assertSame(10,(int)DB::table('lightpoint_events')->where('user_id',$reader->id)->sum('points'));
+        $this->travelBack();
+    }
+    public function test_reading_points_do_not_require_statistics_consent_but_do_require_an_eligible_account(): void {
+        $story=$this->story();
+        $this->withCookie('lichtpunt_consent','v2|no|'.now()->timestamp);
+        $this->postJson('/news/'.$story->id.'/read')->assertOk()->assertJsonPath('counted',false);
+        foreach([['email_verified_at'=>null],['is_suspended'=>true],['community_accepted_at'=>null]] as $attributes){
+            $reader=$this->account();$reader->forceFill($attributes)->save();
+            $this->actingAs($reader)->postJson('/news/'.$story->id.'/read')->assertOk()->assertJsonPath('counted',false);
+        }
+        $this->assertDatabaseCount('lightpoint_events',0);
+        $reader=$this->account();$this->actingAs($reader);
+        for($index=0;$index<6;$index++)$this->postJson('/news/'.$this->story()->id.'/read')->assertOk()->assertJsonPath('counted',false);
+        $this->assertDatabaseCount('lightpoint_events',5);
+        $this->assertDatabaseCount('article_reads',0);
+    }
+    public function test_a_reading_point_earned_before_the_update_counts_towards_the_new_daily_limit(): void {
+        $reader=$this->account();$this->actingAs($reader);
+        app(\App\Services\Lightpoints::class)->award($reader,'read:'.now('Europe/Amsterdam')->toDateString(),'read',1,'Je dagelijkse dosis goed nieuws',1);
+        for($index=0;$index<6;$index++)$this->postJson('/news/'.$this->story()->id.'/read')->assertOk();
+        $this->assertDatabaseCount('lightpoint_events',5);
+        $this->assertSame(5,(int)DB::table('lightpoint_events')->where('user_id',$reader->id)->sum('points'));
+    }
     public function test_three_rankings_and_filters(): void {
         $newest=$this->story(['published_at'=>'2026-10-10 08:00:00']);
         $read=$this->story(['views_count'=>20,'likes_count'=>1]);

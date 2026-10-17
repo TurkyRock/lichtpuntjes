@@ -1,0 +1,66 @@
+LICHTPUNTJES — SEO-UPDATE
+
+Deze update hoort bij je huidige lichtpunt-schoon-project met de laatste
+homepage (concept 3 met de groene lijn). De vormgeving en pop-ups blijven behouden.
+
+INSTALLEREN IN HERD
+1. Maak een reservekopie van je project voordat je de bestanden vervangt.
+2. Pak de mappen app, public, resources, routes en tests uit in:
+   C:\Users\e_tur\Herd\lichtpunt-schoon
+   Voeg de mappen samen en vervang de bestanden.
+3. Controleer in je bestaande .env (behoud ALLE sleutels en overige instellingen):
+
+   APP_URL=http://lichtpunt-schoon.test
+
+4. Voer in die projectmap uit:
+
+   php artisan config:clear
+   php artisan route:clear
+   php artisan view:clear
+   php artisan seo:prepare
+
+   seo:prepare bewaart de oude statische public/robots.txt in storage/app/seo-backups
+   en maakt daarmee de nieuwe dynamische robots.txt bereikbaar.
+5. Vernieuw met Ctrl+F5.
+
+Geen nieuwe pakketten, migraties of imports nodig. Je database en accounts blijven behouden.
+
+LOKAAL CONTROLEREN
+- / en /en: dezelfde homepage, elke taal heeft een eigen URL.
+- /nl/onderwerp/nature en /en/topics/nature: bestaande indeling met eigen categorieadres.
+- Klik op een kaart: de bekende pop-up opent nog steeds.
+- Ctrl+klik of open de titel in een nieuw tabblad: de volledige artikelpagina opent.
+- Een artikeladres heeft de vorm /nl/lichtpuntjes/ID/titel-van-het-verhaal.
+- /sitemap.xml bevat gepubliceerde artikelen in beide talen en de categorieën.
+- /robots.txt bevat de sitemap met het ingestelde APP_URL-domein.
+- Oude /?story=ID-deellinks worden met een 301-redirect naar het artikel gestuurd.
+- Concepten, afgewezen verhalen en verhalen van geschorste accounts zijn niet openbaar.
+
+WAT IS INGEBOUWD
+Serverweergave van de eerste kaarten en artikelteksten; echte kaart-, categorie-
+en pagineringslinks; aparte NL/EN-adressen; canonical en hreflang; titels en
+beschrijvingen; Open Graph-velden; Article/BlogPosting-JSON-LD met bronverwijzing;
+automatische sitemap en robots.txt; noindex voor privépagina's/API/foutpagina's.
+De pop-up, reacties, likes, bronknop en delen blijven werken.
+De bestaande balans tussen categorieën en de sorteringen blijven behouden.
+De grote heroafbeelding heeft een pixelgelijke lossless WebP-variant, circa 31% kleiner.
+De oorspronkelijke PNG blijft de fallback. Het bestaande cookiebeleid blijft gelden:
+Analytics alleen op het homepage-overzicht en na toestemming, niet op de artikelpagina.
+
+VOOR PUBLICATIE IN PLESK
+- Stel APP_URL in op het gekozen volledige HTTPS-domein, zonder afsluitende slash.
+  Bijvoorbeeld https://jouwlichtpunt.nl (alleen als dit daadwerkelijk jouw domein is).
+- Gebruik public als documentroot, zorg dat HTTPS en Laravel-routes werken.
+- Voer opnieuw config:clear, route:clear, view:clear en seo:prepare uit.
+- Controleer sitemap en taalverwijzingen op het echte domein.
+- Verifieer het domein in Google Search Console en dien /sitemap.xml in.
+- Gebruik URL-inspectie voor een Nederlandse en Engelse artikelpagina.
+- Reguliere import houdt gepubliceerde artikelen bereikbaar. Gebruik news:replace
+  na publicatie niet om oude geïndexeerde verhalen te verwijderen.
+
+CONTROLES
+125 PHP-tests / 1006 assertions geslaagd, waaronder 7 nieuwe SEO-tests.
+Frontendcontroles voor likes, reacties, delen, NL/EN, startpagina en analytics geslaagd.
+De WebP-conversie is gecontroleerd op pixelgelijkheid en transparantie.
+Visuele browsercontrole op jouw lokale Herd-site en controle van Google-indexering
+kunnen pas respectievelijk bij jou lokaal en na openbare publicatie gebeuren.

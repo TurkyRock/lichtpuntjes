@@ -8,7 +8,15 @@ use App\Http\Controllers\CommunityController as Community;
 use App\Http\Controllers\CommunityAdminController as Admin;
 use App\Http\Middleware\CommunityActive;
 Route::middleware([\App\Http\Middleware\CommunityLocale::class,\App\Http\Middleware\CookiePrivacy::class])->group(function(){
-Route::get('/',fn()=>view('lichtpunt'));
+Route::get('/',[\App\Http\Controllers\PublicStoryController::class,'home']);
+Route::get('/en',[\App\Http\Controllers\PublicStoryController::class,'home'])->defaults('locale','en');
+Route::get('/nl',fn()=>redirect('/',301));
+Route::get('/nl/onderwerp/{category}',[\App\Http\Controllers\PublicStoryController::class,'home'])->defaults('locale','nl')->whereIn('category',array_diff(array_keys(\App\Support\StorySeo::CATEGORIES),['all']));
+Route::get('/en/topics/{category}',[\App\Http\Controllers\PublicStoryController::class,'home'])->defaults('locale','en')->whereIn('category',array_diff(array_keys(\App\Support\StorySeo::CATEGORIES),['all']));
+Route::get('/nl/lichtpuntjes/{id}/{slug?}',[\App\Http\Controllers\PublicStoryController::class,'article'])->defaults('locale','nl')->whereNumber('id');
+Route::get('/en/bright-spots/{id}/{slug?}',[\App\Http\Controllers\PublicStoryController::class,'article'])->defaults('locale','en')->whereNumber('id');
+Route::get('/sitemap.xml',[\App\Http\Controllers\PublicStoryController::class,'sitemap']);
+Route::get('/robots.txt',[\App\Http\Controllers\PublicStoryController::class,'robots']);
 Route::post('/cookies/keuze',[\App\Http\Controllers\CookieChoiceController::class,'store'])->middleware('throttle:30,1,cookies:');
 Route::get('/privacy',fn()=>view('community.privacy'));
 Route::middleware('auth')->group(function(){
@@ -43,6 +51,7 @@ Route::middleware('guest')->group(function(){
 });
 Route::post('/uitloggen',[Accounts::class,'logout'])->middleware('auth');
 Route::middleware(['auth',CommunityActive::class])->group(function(){
+ Route::post('/lichtpuntjes/meldingen',[\App\Http\Controllers\LightpointNoticeController::class,'collect'])->middleware(['verified','throttle:12,1,lightpoint-notice:']);
  Route::get('/profiel',[Community::class,'profile']);
  Route::post('/news/{article}/melden',[\App\Http\Controllers\LightspotController::class,'report'])->whereNumber('article')->middleware(['verified','throttle:3,60,lightspot-report:']);
  Route::get('/mijn-lichtpuntjes',[\App\Http\Controllers\LightspotController::class,'index']);
@@ -63,6 +72,10 @@ Route::middleware(['auth',CommunityActive::class])->group(function(){
  Route::post('/news/{article}/like',[News::class,'like'])->whereNumber('article')->middleware('throttle:30,1');
  Route::post('/news/{article}/comments',[Community::class,'store'])->whereNumber('article')->middleware(['verified','throttle:4,1']);
  Route::post('/news/{article}/share',[Community::class,'share'])->whereNumber('article')->middleware(['verified','throttle:10,1,news-share:']);
+ Route::post('/beheer/dagverhaal/anders',[\App\Http\Controllers\ArticleAdminController::class,'daily'])->middleware(['verified','throttle:12,1,daily-admin:']);
+ Route::post('/beheer/dagverhaal/{article}',[\App\Http\Controllers\ArticleAdminController::class,'daily'])->whereNumber('article')->middleware(['verified','throttle:12,1,daily-admin:']);
+ Route::get('/beheer/artikelen',[\App\Http\Controllers\ArticleAdminController::class,'index'])->middleware('verified');
+ Route::post('/beheer/artikelen/{article}/zichtbaarheid',[\App\Http\Controllers\ArticleAdminController::class,'visibility'])->whereNumber('article')->middleware(['verified','throttle:60,1,article-admin:']);
  Route::get('/beheer',[Admin::class,'index'])->middleware('verified');
  Route::post('/beheer/comments/{comment}',[Admin::class,'decide'])->whereNumber('comment')->middleware(['verified','throttle:60,1']);
  Route::post('/beheer/users/{user}',[Admin::class,'suspend'])->whereNumber('user')->middleware(['verified','throttle:20,1']);

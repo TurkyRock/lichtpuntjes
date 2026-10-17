@@ -34,9 +34,20 @@ class CloudflareIllustrationTest extends TestCase {
   try{app(CloudflareIllustrator::class)->generate($this->article());$this->fail('Expected limit error');}catch(NewsServiceException $e){$this->assertStringContainsString('limiet',$e->getMessage());$this->assertStringNotContainsString('secret',$e->getMessage());}
   Http::assertSentCount(1);$this->assertSame(1,json_decode(File::get($this->counter),true)['requests']);
  }
+ public function test_photo_trial_sends_photographic_prompt_and_persists_separate_style():void {
+  $a=$this->article();$a->update(['photo'=>['requested_style'=>\App\Services\LichtpuntIllustrationPrompt::PHOTO_STYLE]]);
+  $bytes=File::get(public_path('images/lichtpunt-zon.png'));$file=public_path('news-images/'.hash('sha256',$bytes).'.png');
+  Http::fake(['api.cloudflare.com/*'=>Http::response(['success'=>true,'result'=>['image'=>base64_encode($bytes)]])]);
+  try{
+   $finder=app(ArticlePhotoFinder::class);$finder->attach($a);$a->refresh();
+   $this->assertSame(\App\Services\LichtpuntIllustrationPrompt::PHOTO_STYLE,$a->photo['style']);$this->assertTrue($finder->current($a));
+   Http::assertSent(fn($r)=>$r->method()==='POST'&&strlen($r['prompt'])<=2048&&str_contains($r['prompt'],'Photorealistic')&&str_contains($r['prompt'],'not evidence')&&!str_contains($r['prompt'],'cut-paper')&&$r['steps']===4);
+   $finder->attach($a);Http::assertSentCount(1);
+  }finally{File::delete($file);}
+ }
  public function test_daily_request_cap_blocks_generation():void {
   File::put($this->counter,json_encode(['day'=>now('UTC')->format('Y-m-d'),'requests'=>100]));
-  try{app(CloudflareIllustrator::class)->generate($this->article());$this->fail('Expected cap');}catch(NewsServiceException $e){$this->assertStringContainsString('100 aanvragen',$e->getMessage());}Http::assertNothingSent();
+  try{app(CloudflareIllustrator::class)->generate($this->article());$this->fail('Expected cap');}catch(NewsServiceException $e){$this->assertStringContainsString('50 aanvragen',$e->getMessage());}Http::assertNothingSent();
  }
  public function test_counter_resets_next_utc_day():void {
   File::put($this->counter,json_encode(['day'=>now('UTC')->subDay()->format('Y-m-d'),'requests'=>100]));Http::fake(['api.cloudflare.com/*'=>Http::response(['success'=>false,'errors'=>[['code'=>3036]]],429)]);
@@ -63,8 +74,8 @@ class CloudflareIllustrationTest extends TestCase {
   Http::assertSentCount(4);$this->assertSame(4,json_decode(File::get($this->counter),true)['requests']);Sleep::assertSequence([Sleep::for(10)->seconds(),Sleep::for(20)->seconds(),Sleep::for(40)->seconds(),Sleep::for(60)->seconds()]);
  }
  public function test_retry_cannot_exceed_daily_request_cap():void {
-  File::put($this->counter,json_encode(['day'=>now('UTC')->format('Y-m-d'),'requests'=>99]));Http::fake(['api.cloudflare.com/*'=>Http::response(['success'=>false],409)]);
-  try{app(CloudflareIllustrator::class)->generate($this->article());$this->fail('Expected cap');}catch(NewsServiceException $e){$this->assertStringContainsString('100 aanvragen',$e->getMessage());}Http::assertSentCount(1);$this->assertSame(100,json_decode(File::get($this->counter),true)['requests']);
+  File::put($this->counter,json_encode(['day'=>now('UTC')->format('Y-m-d'),'requests'=>49]));Http::fake(['api.cloudflare.com/*'=>Http::response(['success'=>false],409)]);
+  try{app(CloudflareIllustrator::class)->generate($this->article());$this->fail('Expected cap');}catch(NewsServiceException $e){$this->assertStringContainsString('50 aanvragen',$e->getMessage());}Http::assertSentCount(1);$this->assertSame(50,json_decode(File::get($this->counter),true)['requests']);
  }
  public function test_long_retry_after_stops_instead_of_retrying_early():void {
   Http::fake(['api.cloudflare.com/*'=>Http::response(['success'=>false],429,['Retry-After'=>'120'])]);
@@ -73,5 +84,10 @@ class CloudflareIllustrationTest extends TestCase {
  public function test_authentication_error_is_not_retried():void {
   Http::fake(['api.cloudflare.com/*'=>Http::response(['success'=>false],403)]);
   try{app(CloudflareIllustrator::class)->generate($this->article());$this->fail('Expected permissions error');}catch(NewsServiceException $e){$this->assertStringContainsString('Read/Edit',$e->getMessage());}Http::assertSentCount(1);Sleep::assertSequence([Sleep::for(10)->seconds()]);
+ }
+ public function test_actual_free_quota_error_is_not_retried_and_marks_waiting():void {
+  Http::fake(['api.cloudflare.com/*'=>Http::response(['success'=>false,'errors'=>[['code'=>'4006','message'=>'you have used up your daily free allocation']]],429)]);
+  try{app(CloudflareIllustrator::class)->generate($this->article());$this->fail('Expected quota');}catch(\App\Services\ImageBudgetException $e){$this->assertStringStartsWith('AI-puntjes:',$e->getMessage());}
+  Http::assertSentCount(1);$this->assertTrue(\Illuminate\Support\Facades\Cache::get('lichtpunt-cloudflare-exhausted'));
  }
 }

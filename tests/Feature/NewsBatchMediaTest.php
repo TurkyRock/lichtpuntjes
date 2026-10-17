@@ -55,6 +55,7 @@ class NewsBatchMediaTest extends TestCase {
         Http::fake(['https://newsdata.io/*'=>$sequence]);
         $this->assertSame(6,app(NewsImporter::class)->fetch(6));
         Http::assertSentCount(6);
-        Http::assertSent(fn($r)=>str_contains($r['category'],'entertainment')&&($r['page']??null)==='cursor-5');
+        Http::assertSent(fn($r)=>$r['category']==='environment'&&isset($r['q']));
+        Http::assertSent(fn($r)=>$r['category']==='lifestyle,education,health');
     }
 }
