@@ -9,14 +9,14 @@ $next = $progress['next'];
 </style>
 <section class="panel ladder-panel" aria-labelledby="ladderTitle">
 <p class="ladder-kicker">{{ $en ? 'Your badge collection' : 'Jouw badgeverzameling' }}</p>
-<div class="ladder-top"><div><h2 id="ladderTitle">{{ $en ? 'The bright points ladder' : 'De Lichtpuntenladder' }}</h2><p>{{ $en ? 'Sixteen steps. No climbing shoes required. Just a little kindness.' : 'Zestien treden. Geen klimuitrusting nodig. Een beetje vriendelijkheid is genoeg.' }}</p></div><div class="ladder-count"><strong>{{ $progress['points'] }}</strong><span>{{ $en ? 'bright points' : 'lichtpunten' }}</span></div></div>
+<div class="ladder-top"><div><h2 id="ladderTitle">{{ $en ? 'The bright points ladder' : 'De Lichtpuntenladder' }}</h2><p>{{ $en ? 'A growing collection. No climbing shoes required. Just a little kindness.' : 'Een verzameling die met je meegroeit. Geen klimuitrusting nodig. Een beetje vriendelijkheid is genoeg.' }}</p></div><div class="ladder-count"><strong>{{ $progress['points'] }}</strong><span>{{ $en ? 'bright points' : 'lichtpunten' }}</span></div></div>
 <div class="ladder-current"><img src="{{ $current['icon'] }}" width="88" height="88" alt=""><div><span class="small">{{ $en ? 'Your current badge' : 'Jouw huidige badge' }}</span><h3>{{ $current['name'] }}</h3><p>{{ $current['description'] }}</p><span class="small">{{ $progress['earned_count'] }} / {{ $progress['total_badges'] }} {{ $en ? 'badges unlocked' : 'badges vrijgespeeld' }}</span></div></div>
 <div class="ladder-meter-label"><span>{{ $next ? ($en ? 'Next up: ' : 'Volgende trede: ').$next['name'] : ($en ? 'Top step reached. You can keep spreading good news.' : 'Bovenste trede bereikt. Goed nieuws doorgeven kan gewoon verder.') }}</span>
 @if($next)
 <strong>{{ $next['points'] - $progress['points'] }} {{ $en ? 'bright points to go' : 'lichtpunten te gaan' }}</strong>
 @endif
 </div><progress value="{{ $progress['progress'] }}" max="100" aria-label="{{ $en ? 'Progress to your next badge' : 'Voortgang naar je volgende badge' }}">{{ $progress['progress'] }}%</progress>
-<details class="ladder-collection"><summary>{{ $en ? 'Show or hide all 16 badges' : 'Bekijk of verberg alle 16 badges' }}</summary>
+<details class="ladder-collection"><summary>{{ $en ? 'Show or hide all '.$progress['total_badges'].' badges' : 'Bekijk of verberg alle '.$progress['total_badges'].' badges' }}</summary>
 <ol class="ladder-steps">
 @foreach($progress['stages'] as $stage)
 @php
@@ -29,5 +29,5 @@ $isNext = $next && $stage['id'] === $next['id'];
 </ol>
 </details>
 <p class="ladder-tip">{{ $en ? 'For fun, not a race. Badges follow your active bright points; moderation can change your total.' : 'Voor de lol, geen wedstrijd. Badges volgen je actieve lichtpunten; door moderatie kan je totaal veranderen.' }}</p>
-<div class="ladder-how"><h3>{{ $en ? 'How to climb a step' : 'Zo kom je een trede hoger' }}</h3><p>{{ $en ? 'Read a story, share a bright spot or post a kind comment. Approved comments earn points; likes do not. Invite a friend for an extra boost.' : 'Lees een verhaal, deel een lichtpuntje of plaats een vriendelijke reactie. Goedgekeurde reacties leveren punten op; likes niet. Nodig een vriend uit voor een extra zetje.' }} <a href="/huisregels?lang={{ $en ? 'en' : 'nl' }}">{{ $en ? 'The points rules' : 'De puntenregels' }}</a></p><a class="button secondary" href="/?lang={{ $en ? 'en' : 'nl' }}">{{ $en ? 'Find my next bright spot' : 'Zoek mijn volgende lichtpuntje' }} →</a></div>
+<div class="ladder-how"><h3>{{ $en ? 'How to climb a step' : 'Zo kom je een trede hoger' }}</h3><p>{{ $en ? 'Read a story, share a bright spot or post a kind comment. An approved moment earns one point per day, private or shared. Your published original story earns five points, once per article. A heart earns one point per item per day. Approved comments earn points. Invite a friend for an extra boost.' : 'Lees een verhaal, deel een lichtpuntje of plaats een vriendelijke reactie. Een goedgekeurd momentje levert één punt per dag op, privé of gedeeld. Een gepubliceerd eigen artikel levert vijf punten op, eenmaal per artikel. Een hartje levert één punt per bericht of momentje per dag op. Goedgekeurde reacties leveren punten op. Nodig een vriend uit voor een extra zetje.' }} <a href="/huisregels?lang={{ $en ? 'en' : 'nl' }}">{{ $en ? 'The points rules' : 'De puntenregels' }}</a></p><a class="button secondary" href="/?lang={{ $en ? 'en' : 'nl' }}">{{ $en ? 'Find my next bright spot' : 'Zoek mijn volgende lichtpuntje' }} →</a></div>
 </section>

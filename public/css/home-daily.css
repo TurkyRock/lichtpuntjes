@@ -1,6 +1,6 @@
-/* Cards fill their image area; the upper subject has priority over the lower crop. */
+/* Stable frames; show the complete image instead of cropping faces or subjects. */
 .grid .card .picture{height:auto;aspect-ratio:4/3;position:relative;overflow:hidden;background:#f5f7ef}
-.grid .card .picture img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:50% 0%}
+.grid .card .picture img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;object-position:center}
 .daily-highlights{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px;margin:0 0 22px}
 .highlight-card{min-width:0;border:1px solid #e0e6dc;border-radius:17px;background:#fff;overflow:hidden;display:flex;flex-direction:column;cursor:pointer}
 .highlight-card:hover,.highlight-card:focus-within{border-color:#99bab1}
@@ -9,8 +9,8 @@
 .highlight-art{position:relative;min-width:0;background:#f5f7ef;display:flex;flex-direction:column}
 .daily-highlights .highlight-art>a{position:relative;display:block;flex:1;min-height:160px;width:100%;height:auto;aspect-ratio:auto;overflow:hidden}
 .daily-highlights .highlight-main .highlight-art>a{height:auto;aspect-ratio:16/10;min-height:0;max-height:360px;flex:none}
-.daily-highlights .highlight-card .highlight-art img{position:absolute;inset:0;display:block;width:100%;height:100%;min-height:0;max-height:none;aspect-ratio:auto;object-fit:cover;object-position:50% 0%}
-.daily-highlights .highlight-main .highlight-art img{object-position:50% 50%}
+.daily-highlights .highlight-card .highlight-art img{position:absolute;inset:0;display:block;width:100%;height:100%;min-height:0;max-height:none;aspect-ratio:auto;object-fit:contain;object-position:center}
+.daily-highlights .highlight-main .highlight-art img{object-position:center}
 .highlight-art .photo-credit{padding:6px 9px;font-size:9px;line-height:1.4}
 .highlight-copy{padding:14px 17px;min-width:0;display:flex;flex-direction:column;justify-content:center}
 .highlight-main .highlight-copy{flex:1}
@@ -48,3 +48,113 @@
 }
 @media(max-width:600px){.news-toolbar{flex-direction:column!important;align-items:stretch!important;gap:12px}}
 @media(prefers-reduced-motion:reduce){.daily-highlights *{scroll-behavior:auto}}
+
+/* Compact desktop overview: highlights, one toolbar, then the ordinary feed. */
+.daily-highlights{gap:12px;margin-bottom:12px}
+.highlight-copy{padding:11px 14px}
+.highlight-copy h2{font-size:23px;margin-bottom:6px}
+.highlight-label{font-size:9px;gap:6px;margin-bottom:5px}
+.highlight-label span{font-size:16px}
+.highlight-teaser{font-size:12px;line-height:1.4;margin-bottom:6px}
+.highlight-read{font-size:11px}
+.highlight-art .photo-credit{font-size:8px;padding:4px 8px}
+.highlight-small .highlight-copy{padding:10px 12px}
+.highlight-small .highlight-copy h2{font-size:18px}
+.highlight-small .highlight-teaser{font-size:11px}
+.highlight-small .meta{font-size:10px;margin:0 0 5px}
+#stories{padding-top:8px}
+#stories .news-toolbar{background:transparent;margin:0 0 12px;padding-bottom:8px;gap:8px;align-items:center}
+#stories .news-toolbar .filters{margin:0;gap:0}
+#stories .news-toolbar .filters a{font-size:11px;padding:7px 6px}
+#stories .news-toolbar .sort-tabs button{font-size:11px;padding:7px 8px}
+#stories .news-toolbar .filters a[aria-current=page],#stories .news-toolbar .sort-tabs button[aria-pressed=true]{background:#e8f0e7;color:#153e39}
+@media(min-width:1001px){
+ .daily-highlights .highlight-main .highlight-art>a{height:185px;min-height:185px;max-height:185px;aspect-ratio:auto}
+ .daily-highlights .highlight-small .highlight-art>a{min-height:115px}
+ .highlight-main .highlight-copy{justify-content:flex-start}
+ .highlight-copy h2,.highlight-teaser{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+ .highlight-main .highlight-read{margin-top:3px}
+ .highlight-small .highlight-copy h2{font-size:18px;line-height:1.15}
+ #stories .news-toolbar{flex-wrap:nowrap;flex-direction:row}
+ #stories .topic-control{flex:1 1 auto;flex-basis:auto;min-width:0}
+ #stories .sort-control{flex:0 0 auto;width:auto}
+ #stories .news-toolbar .filters{flex-wrap:nowrap}
+ .grid .card .picture{aspect-ratio:16/10}
+ .grid .cardbody{padding:14px 16px}
+ .grid .cardbody .meta{font-size:11px;margin-bottom:7px}
+ .grid .card h3{font-size:22px;line-height:1.2;margin-bottom:9px}
+ .grid .card .teaser{font-size:13px;line-height:1.5;margin-bottom:14px}
+}
+@media(min-width:701px) and (max-width:1000px){
+ .daily-highlights .highlight-main .highlight-art>a{height:155px;min-height:155px;max-height:155px;aspect-ratio:auto}
+ .daily-highlights .highlight-small .highlight-art>a{min-height:125px}
+ #stories .news-toolbar{flex-direction:column;align-items:stretch!important;gap:4px}
+ #stories .topic-control,#stories .sort-control{width:100%;flex-basis:auto}
+ #stories .news-toolbar .filters{flex-wrap:wrap}
+ #stories .news-toolbar .sort-tabs{justify-content:flex-start}
+}
+@media(max-width:700px){
+ .daily-highlights .highlight-main .highlight-art>a{height:170px;min-height:170px;max-height:170px;aspect-ratio:auto}
+ .daily-highlights .highlight-small .highlight-art>a{min-height:125px}
+ .highlight-small .highlight-copy h2{font-size:17px}
+ #stories .news-toolbar{gap:5px}
+ #stories .news-toolbar .filters{flex-wrap:wrap}
+}
+
+/* A small, readable disclosure with tap/keyboard support, outside the artwork. */
+.card-metadata{display:flex;align-items:baseline;justify-content:space-between;gap:7px;flex-wrap:wrap;margin-bottom:6px}
+.card-metadata .meta,.card-metadata .highlight-label{margin:0}
+.ai-image-label{font:500 11px/1.4 system-ui,sans-serif;color:#536862;max-width:100%;flex:0 1 auto}
+.ai-image-label summary{list-style:none;cursor:pointer;white-space:nowrap;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;padding:4px 0}
+.ai-image-label summary::-webkit-details-marker{display:none}
+.ai-image-label summary:focus-visible{outline:2px solid #00786e;outline-offset:3px}
+.ai-image-explanation{display:block;max-width:270px;padding:7px 9px;background:#edf3e9;border-radius:6px;white-space:normal;font-weight:400}
+.ai-image-label[open]{flex-basis:100%}
+
+/* Full-bleed cards. Taller frames keep more of the subject in view.
+   The full uncropped original remains visible inside the reader. */
+.grid .card .picture{aspect-ratio:4/3;isolation:isolate;background:#eaf0e5}
+.grid .card .picture img,.daily-highlights .highlight-card .highlight-art img{object-fit:cover;object-position:50% 35%;z-index:1}
+.grid .card .picture .category,.highlight-art .category{z-index:2}
+.grid .card .picture .no-photo,.highlight-art .no-photo{position:absolute;inset:0;z-index:3}
+.grid .card .picture img[hidden],.daily-highlights .highlight-art img[hidden],.article-content .article-photo img[hidden]{display:none!important}
+@media(min-width:701px){
+ .daily-highlights{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:stretch}
+ .daily-highlights .highlight-main{display:grid;grid-template-columns:46% minmax(0,1fr)}
+ .daily-highlights .highlight-main .highlight-art{height:100%;min-height:300px}
+ .daily-highlights .highlight-main .highlight-art>a{height:100%;min-height:300px;max-height:none;aspect-ratio:auto;flex:1}
+ .daily-highlights .highlight-main .highlight-copy{padding:18px 16px;justify-content:center}
+ .daily-highlights .highlight-main .highlight-copy h2{-webkit-line-clamp:5;font-size:24px}
+ .daily-highlights .highlight-main .highlight-teaser{-webkit-line-clamp:3}
+ .daily-highlights .highlight-main .highlight-read{margin-top:12px}
+ .daily-highlights .highlight-main .highlight-art .category{left:10px;top:12px;max-width:calc(100% - 20px);padding:4px 9px;font-size:11px}
+ .daily-highlights .highlight-small .highlight-art img{object-position:50% 30%}
+}
+@media(min-width:701px) and (max-width:1000px){
+ .daily-highlights .highlight-main{grid-template-columns:45% minmax(0,1fr)}
+ .daily-highlights .highlight-main .highlight-copy{padding:12px}
+ .daily-highlights .highlight-main .highlight-copy h2{font-size:21px}
+ .daily-highlights .highlight-main .highlight-art,.daily-highlights .highlight-main .highlight-art>a{min-height:285px}
+}
+@media(max-width:700px){
+ .daily-highlights .highlight-main .highlight-art>a{height:auto;min-height:0;max-height:none;aspect-ratio:4/3}
+ .daily-highlights .highlight-main .highlight-art img{object-position:50% 35%}
+ .daily-highlights .highlight-small .highlight-art>a{min-height:170px}
+}
+/* AI explanation lives in Our story; clicking never resizes a news card. */
+a.ai-image-label{display:inline-flex;gap:3px;align-items:center;font:500 11px/1.4 system-ui,sans-serif;color:#536862;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;white-space:nowrap;min-height:28px}
+a.ai-image-label:focus-visible{outline:2px solid #00786e;outline-offset:3px}
+#about-ai{scroll-margin-top:28px}#about-ai:target{outline:2px solid #b59c50;outline-offset:6px}
+
+/* Quiet AI link and a top-aligned daily story without arbitrary line limits. */
+.daily-highlights .highlight-main .highlight-copy h2{display:block;-webkit-line-clamp:unset;overflow:visible;max-height:none;text-overflow:clip}
+.highlight-body{font-size:13px;line-height:1.65;color:#536862;overflow-wrap:anywhere}
+.highlight-body p{margin:0 0 10px;white-space:pre-line}
+.highlight-body p:last-child{margin-bottom:0}
+.daily-highlights .highlight-main .highlight-copy .highlight-read{margin-top:auto;padding-top:12px;align-self:flex-start}
+a.ai-image-label{text-decoration:none}
+@media(min-width:701px){
+ .daily-highlights .highlight-main .highlight-copy{justify-content:flex-start}
+ .daily-highlights .highlight-main .highlight-copy h2,.daily-highlights .highlight-main .highlight-teaser{display:block;-webkit-line-clamp:unset;-webkit-box-orient:initial;overflow:visible;max-height:none;text-overflow:clip}
+ .daily-highlights .highlight-main .highlight-read{margin-top:12px}
+}

@@ -1,35 +1,34 @@
-JOUW LICHTPUNTJE - UITKLAPBARE ANTWOORDEN
+JOUW LICHTPUNTJE - KALENDER ALLEEN IN OVERZICHT EN NIEUWE MENUVOLGORDE
+17 oktober 2026
 
-Installeren over de bestaande versie met de nieuwe homepage en het dagverhaal.
-Maak eerst een back-up. Kopieer de bestanden met behoud van mapstructuur naar
-de projectmap; vervang alleen gelijknamige bestanden.
+Kleine vervolgupdate op de laatste kalendercorrectie.
+Pak deze ZIP uit over je bestaande projectmap, naast artisan.
+Vervang gelijknamige bestanden met behoud van de mappenstructuur.
+Voer uit:
 
-Voer vanuit de projectmap uit:
 php artisan view:clear
 
-Op Plesk: gebruik dezelfde PHP-binary en gebruiker als de website. Jimmy kan zo
-nodig PHP-FPM/OPcache herladen als gewijzigde PHP-bestanden niet worden opgepakt.
-Geen nieuwe databasekolommen of migratie nodig voor deze update: parent_id
-bestaat al in de versie met antwoorden op reacties.
+Ververs daarna met Ctrl+F5. Geen migratie of workerherstart nodig voor deze update.
+Je database, punten, likes en bezoekregistratie blijven behouden.
 
-GEDRAG
-- Onder het artikel staat Reacties (totaal), inclusief openbare antwoorden.
-- De hoofdlijst bevat de oorspronkelijke reacties, nieuwste eerst.
-- Antwoorden staan onder hun eigen reactie, standaard ingeklapt.
-- De knop toont het aantal directe openbare antwoorden, bijvoorbeeld
-  '2 antwoorden bekijken'. Een antwoord op een antwoord heeft een eigen knop.
-- Antwoorden worden pas opgehaald na uitklappen; oudste eerst per gesprek.
-- Zowel hoofdreacties als antwoorden hebben paginering van maximaal 20 per pagina.
-- Alleen goedgekeurde reacties van niet-geschorste gebruikers tellen mee.
-- Als een ouderreactie is ingetrokken, kan een nog openbaar antwoord als losse
-  reactie zichtbaar blijven. De verborgen tekst van de ouder wordt niet getoond.
-- Bestaande reacties hoeven niet opnieuw te worden ingevoerd of AI-gekeurd.
+De kalender staat uitsluitend bij Overzicht. Mijn momentjes heeft nu de lijst
+met je eigen momentjes en het formulier. Je kunt er nog van maand wisselen;
+een daglink uit de kalender van Overzicht blijft de lijst op die dag filteren.
+Met Toon de hele maand kun je dat filter weer opheffen.
 
-De eerdere homepagewijzigingen (compact groen vlak, Meeste likes, de slogan
-'Een beetje meer licht in je dag.' en de illustratiebijschriften) zijn inbegrepen.
+De eerste accountmenu-items zijn nu:
+1. Overzicht
+2. Deel een lichtpuntje
+3. Mijn momentjes
+4. Mijn verhalen & feedback
+Daarna blijven de overige menu-items in hun eerdere volgorde staan.
+Ook de Engelse versie volgt deze indeling.
 
-CONTROLE
-Bestaande moderatie-/antwoordtests geslaagd. Drie aanvullende backendtests voor
-structuur, tellingen, paginering en verborgen ouders geslaagd. Frontendcontroles
-voor uit-/inklappen, meerdere niveaus, conceptbehoud, aantallen en NL/EN geslaagd.
-Er zijn geen echte API-aanvragen gedaan en geen live serverwijzigingen uitgevoerd.
+De bestaande dagelijkse bezoekregistratie blijft werken bij Mijn momentjes,
+ook zonder kalender op die pagina. Er worden daar geen kalendergegevens meer
+opgehaald. Geen extra API-aanvragen of afbeeldingskosten.
+
+25 gerichte PHP-tests geslaagd voor de kalender, beide talen, momentjeslijsten,
+maand-/dagfilters, privacy en bestaande functies voor schrijven en aanpassen.
+Geen live wijzigingen in jouw Herd-project gedaan. Geen browser beschikbaar
+voor een visuele eindcontrole van jouw eigen site.

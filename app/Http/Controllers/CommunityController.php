@@ -10,10 +10,17 @@ class CommunityController extends Controller {
  private function contributor(Request $r):void {abort_unless($r->user()?->community_accepted_at,403,'Bevestig eerst de huisregels in je profiel.');abort_unless($r->user()->hasVerifiedEmail(),403,'Bevestig eerst je e-mailadres.');}
  public function profile(Request $r,Lightpoints $points){
   $u=$r->user();if(!$u->invite_code)$u->forceFill(['invite_code'=>bin2hex(random_bytes(16))])->save();
-  $events=DB::table('lightpoint_events')->where('user_id',$u->id)->orderByDesc('id')->limit(25)->get();
   $accountSection=$r->query('section','overview');
   if(!in_array($accountSection,['overview','badges','comments','invite','points'],true))$accountSection='overview';
-  return view(\App\Support\CommunityViews::name('profile'),['user'=>$u,'accountSection'=>$accountSection,'progress'=>$points->summary($u),'events'=>$events,'achievementKinds'=>DB::table('lightpoint_events')->where('user_id',$u->id)->where('active',true)->distinct()->pluck('kind'),'comments'=>Comment::where('user_id',$u->id)->with('article')->orderByDesc('id')->paginate(3)->appends(['section'=>'comments','lang'=>app()->getLocale()])]);
+  $calendarInput=$r->validate(['month'=>'nullable|date_format:Y-m','day'=>'nullable|date_format:Y-m-d']);
+  $accountMonth=isset($calendarInput['month'])?\Carbon\CarbonImmutable::createFromFormat('!Y-m',$calendarInput['month'],'Europe/Amsterdam'):\Carbon\CarbonImmutable::now('Europe/Amsterdam')->startOfMonth();
+  $today=now('Europe/Amsterdam')->toDateString();$selectedDay=$calendarInput['day']??($accountMonth->format('Y-m')===substr($today,0,7)?$today:$accountMonth->toDateString());
+  abort_unless(substr($selectedDay,0,7)===$accountMonth->format('Y-m'),422);
+  if($accountSection==='overview')app(\App\Services\ActivityCalendar::class)->visit($u);
+  $activityCalendar=$accountSection==='overview'?app(\App\Services\ActivityCalendar::class)->month($u,$accountMonth,$selectedDay):null;
+  $recentMoments=$accountSection==='overview'?\App\Models\PositiveMoment::where('user_id',$u->id)->where('status','approved')->orderByDesc('moment_date')->orderByDesc('id')->limit(3)->get():collect();
+  $events=DB::table('lightpoint_events')->where('user_id',$u->id)->orderByDesc('id')->limit(25)->get();
+  return view(\App\Support\CommunityViews::name('profile'),['activityCalendar'=>$activityCalendar,'recentMoments'=>$recentMoments,'accountMonth'=>$accountMonth,'user'=>$u,'accountSection'=>$accountSection,'profilePhotoUpload'=>\App\Models\ProfilePhoto::where('user_id',$u->id)->latest('id')->first(),'progress'=>$points->summary($u),'events'=>$events,'achievementKinds'=>DB::table('lightpoint_events')->where('user_id',$u->id)->where('active',true)->distinct()->pluck('kind'),'comments'=>Comment::where('user_id',$u->id)->with('article')->orderByDesc('id')->paginate(3)->appends(['section'=>'comments','lang'=>app()->getLocale()])]);
  }
  public function accept(Request $r){$r->validate(['intentions'=>'accepted']);$r->user()->forceFill(['community_accepted_at'=>now(),'community_version'=>'2026-10-10'])->save();return back()->with('status','Fijn dat je meedoet aan een vriendelijke plek.');}
  public function comments(Request $r,Article $article){
@@ -24,11 +31,11 @@ class CommunityController extends Controller {
   $query=$visible();
   if($parentId)$query->where('parent_id',$parentId);
   else $query->where(fn($q)=>$q->whereNull('parent_id')->orWhereDoesntHave('parent',fn($p)=>$p->visible()->where('article_id',$article->id)));
-  $comments=$query->with(['user','parent.user'])->withCount(['replies'=>fn($q)=>$q->visible()->where('article_id',$article->id)]);
+  $comments=$query->with(['user.profilePhoto','parent.user'])->withCount(['replies'=>fn($q)=>$q->visible()->where('article_id',$article->id)]);
   if($parentId)$comments->oldest('id');else $comments->latest('id');
   $comments=$comments->paginate(20);
   $own=$r->user()?Comment::where('article_id',$article->id)->where('user_id',$r->user()->id)->where('status','!=','approved')->latest()->limit(5)->get(['id','body','status']):[];
-  return response()->json(['comments'=>$comments->getCollection()->map(fn($c)=>['id'=>(string)$c->id,'name'=>$c->user->name,'body'=>$c->body,'date'=>$c->created_at->toIso8601String(),'replies_count'=>$c->replies_count,'parent_id'=>$c->parent_id?(string)$c->parent_id:null,'parent'=>($c->parent&&$c->parent->status==='approved'&&!$c->parent->user->is_suspended)?['name'=>$c->parent->user->name,'body'=>mb_substr($c->parent->body,0,180)]:null]),'own'=>$parentId?[]:$own,'page'=>$comments->currentPage(),'last_page'=>$comments->lastPage(),'items_total'=>$comments->total(),'total'=>$visible()->count(),'can_comment'=>(bool)($r->user()?->hasVerifiedEmail()&&$r->user()?->community_accepted_at&&!$r->user()?->is_suspended)])->header('Cache-Control','private, no-store');
+  return response()->json(['comments'=>$comments->getCollection()->map(fn($c)=>['id'=>(string)$c->id,'name'=>$c->user->name,'avatar'=>$c->user->avatarUrl(),'body'=>$c->body,'date'=>$c->created_at->toIso8601String(),'replies_count'=>$c->replies_count,'parent_id'=>$c->parent_id?(string)$c->parent_id:null,'parent'=>($c->parent&&$c->parent->status==='approved'&&!$c->parent->user->is_suspended)?['name'=>$c->parent->user->name,'body'=>mb_substr($c->parent->body,0,180)]:null]),'own'=>$parentId?[]:$own,'page'=>$comments->currentPage(),'last_page'=>$comments->lastPage(),'items_total'=>$comments->total(),'total'=>$visible()->count(),'can_comment'=>(bool)($r->user()?->hasVerifiedEmail()&&$r->user()?->community_accepted_at&&!$r->user()?->is_suspended)])->header('Cache-Control','private, no-store');
  }
  public function store(Request $r,Article $article,CommentModerator $moderator){
   $this->contributor($r);abort_unless(Article::visible()->whereKey($article->id)->exists(),404);

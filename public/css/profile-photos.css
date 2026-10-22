@@ -1,0 +1,94 @@
+.member-photo{width:44px;height:44px;object-fit:cover;border-radius:50%;border:2px solid #e0e6dc}.member-photo.large{width:80px;height:80px}.review-photo{width:180px;height:180px;object-fit:contain;border-radius:12px;background:#edf3e9}.table-scroll{overflow-x:auto}.member-table{width:100%;border-collapse:collapse;text-align:left}.member-table th,.member-table td{padding:12px 10px;border-bottom:1px solid #e0e6dc;vertical-align:top}.member-table td small{font-size:12px}.member-table a{font-weight:600}.member-table th{font-size:13px}.admin-content details summary{cursor:pointer;font-weight:600}.admin-content .row>label{min-width:170px;flex:1}
+
+.share-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.share-options .panel{display:flex;flex-direction:column;align-items:flex-start}.share-options .button{margin-top:auto}.moment-sun{font-size:27px;color:#c09300}.moment-calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;text-align:center}.moment-calendar>*{padding:10px 4px;min-height:44px}.moment-calendar a{border-radius:9px;background:#fff0b8;color:#153e39;text-decoration:none}.moment-calendar .moment-sun{font-size:17px}.moment-inspiration summary{cursor:pointer;color:#00786e}.moment-home-grid{grid-column:1/-1}.moment-evening{display:flex;align-items:center;gap:16px;background:#edf3e9;border-radius:16px;padding:18px 22px}.moment-evening h2,.moment-home h2{font-size:23px;margin:0}.moment-evening p{margin:4px 0;font-size:13px}.moment-evening .primary{margin:0 0 0 auto;white-space:nowrap}.moment-home{margin-top:14px}.moment-home .row{display:flex;justify-content:space-between;align-items:center;gap:10px}.moment-home a{font-size:13px}.moment-quotes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:10px}.moment-quotes article{background:#fffef9;border:1px solid #e0e6dc;border-radius:12px;padding:16px}.moment-quotes p{font-size:14px;margin:0 0 8px;overflow-wrap:anywhere}.moment-quotes small{font-size:12px;color:#536862}fieldset{border:1px solid #d8e0d6;border-radius:12px;margin:15px 0}fieldset input[type=radio]{width:18px!important;height:18px;padding:0;vertical-align:middle}@media(max-width:700px){.share-options,.moment-quotes{grid-template-columns:1fr}.moment-evening{flex-wrap:wrap}.moment-evening .primary{margin:0}}
+.moment-heart{margin-top:8px}.moment-heart button{min-height:40px;padding:6px 12px;color:#935061}.moment-heart button[aria-pressed=true]{background:#ffeded;color:#a43358}.moment-heart-link{display:inline-block;padding:6px 0;color:#935061}
+
+/* Public community moments: one paper strip after the first three news cards.
+   Only explicitly shared, approved moments reach this server-rendered template. */
+.moment-paper-strip{min-width:0;margin:10px 0 16px;padding:25px 26px 21px;position:relative;isolation:isolate;filter:drop-shadow(0 3px 2px #153e3912)}
+.moment-paper-strip::before{content:"";position:absolute;inset:0;z-index:-1;background:#e4eedc url('/images/button-paper-grain.svg');clip-path:polygon(0 2%,3% 1%,7% 2%,11% 0,17% 1.5%,23% .5%,30% 2%,38% 0,46% 1.5%,54% 0,63% 1.5%,73% .5%,81% 2%,89% 0,95% 1%,100% 0,99.5% 24%,100% 48%,99.5% 74%,100% 98%,96% 99%,90% 98%,83% 100%,76% 98.5%,68% 100%,59% 98%,50% 100%,41% 98.5%,32% 100%,24% 98%,15% 100%,7% 98%,0 100%,.5% 74%,0 51%,.5% 26%)}
+.moment-paper-strip .moment-home{margin:0}
+.moment-strip-heading{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.moment-strip-heading h2{font:400 clamp(23px,2.6vw,30px)/1.2 Georgia,serif;letter-spacing:-.4px;margin:0}
+.moment-strip-heading p{font-size:13px;margin:4px 0 0;color:#536862}
+.moment-paper-sun{position:relative;display:block;flex:0 0 38px;width:38px;height:38px;border-radius:48% 52% 46% 54%;background:#f3cc57;box-shadow:0 2px 0 #9b780025;outline:2px dashed #b89531;outline-offset:5px;margin:6px}
+.moment-paper-strip .moment-more{margin-left:auto;flex-shrink:0;font-size:13px;text-underline-offset:4px}
+.moment-paper-strip .moment-quotes{margin:0;align-items:stretch;gap:18px}
+.moment-paper-strip .moment-paper-note{position:relative;min-width:0;display:flex;flex-direction:column;border:0;border-radius:2px;padding:23px 18px 13px;background:#fffdf5 url('/images/button-paper-grain.svg');box-shadow:1px 3px 0 #153e3910;clip-path:polygon(0 1%,8% 0,18% 1%,28% 0,40% 1%,53% 0,65% 1%,78% 0,90% 1%,100% 0,99.5% 30%,100% 63%,99.5% 100%,88% 99%,78% 100%,66% 99%,55% 100%,44% 99%,33% 100%,22% 99%,11% 100%,0 99%,.5% 65%,0 32%)}
+.moment-paper-note:nth-child(2){background-color:#fff3c7}.moment-paper-note:nth-child(3){background-color:#f6f7ed}
+.moment-note-tape{position:absolute;top:0;left:calc(50% - 25px);width:50px;height:12px;background:#d1b87866;transform:rotate(-3deg)}
+.moment-paper-note:nth-child(2) .moment-note-tape{background:#a4b69f77;transform:rotate(3deg)}
+.moment-paper-strip .moment-quote{font:400 17px/1.55 Georgia,serif;color:#153e39;white-space:pre-line;margin:0 0 16px;overflow-wrap:anywhere}
+.moment-note-footer{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-top:auto}
+.moment-author{display:flex;align-items:center;gap:8px;min-width:0}.moment-author strong{font-size:12px;font-weight:650;overflow-wrap:anywhere}.moment-author small{display:block;font-size:10px;color:#536862}
+.moment-author .member-photo{width:32px;height:32px}
+.moment-note-footer .moment-heart{margin:0;flex-shrink:0}.moment-note-footer .moment-heart button{border:0;background:transparent;font-size:16px;min-width:44px;min-height:44px;border-radius:12px}.moment-note-footer .moment-heart button[aria-pressed=true]{background:#fae5dd}
+.moment-paper-strip .moment-heart-link{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+.moment-strip-bottom{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:19px}.moment-strip-bottom p{font-size:12px;color:#536862;margin:0}
+.moment-paper-strip .moment-paper-action{display:inline-flex;align-items:center;justify-content:center;text-align:center;flex-shrink:0;min-height:44px;padding:10px 19px;background:#f3d56e;color:#153e39;font-size:13px;font-weight:650;text-decoration:none;clip-path:polygon(2% 0,22% 3%,48% 0,73% 3%,98% 0,100% 25%,99% 50%,100% 75%,98% 100%,74% 97%,48% 100%,24% 97%,2% 100%,0 75%,1% 50%,0 25%)}
+.moment-paper-action:focus-visible{clip-path:none;outline:3px solid #00786e;outline-offset:3px}
+.moment-strip-empty{font:400 18px/1.6 Georgia,serif;color:#153e39;max-width:680px;padding:8px 0}
+.moment-paper-strip .moment-evening{margin-top:20px;padding:15px 0 0;border-top:1px solid #b8c8af;border-radius:0;background:transparent}.moment-paper-strip .moment-evening h2{font-size:20px}
+@media(max-width:850px){.moment-paper-strip .moment-quotes{grid-template-columns:1fr;gap:14px}.moment-paper-strip .moment-quote{font-size:17px}.moment-paper-strip{padding:24px 20px}.moment-strip-heading{flex-wrap:wrap}.moment-paper-strip .moment-more{margin-left:0;flex-basis:100%}.moment-strip-bottom{align-items:flex-start;flex-direction:column}}
+
+/* A real paper washing line; decorations never cover interactive text. */
+.moment-washing-line{padding:27px 36px 24px;filter:none;isolation:isolate}
+.moment-washing-line::before{background:none;clip-path:none;border:22px solid transparent;border-image-source:url('/images/scrap-paper-sage.webp');border-image-slice:80 fill;border-image-width:25px;border-image-outset:3px;border-image-repeat:stretch;filter:drop-shadow(0 3px 2px #243c291b)}
+.moment-washing-line .moment-strip-heading{position:relative;padding-right:38px;margin-bottom:15px}
+.moment-washing-line .moment-paper-sun{background:url('/images/account-paper-sun.svg') center/contain no-repeat;box-shadow:none;outline:0;border-radius:0;flex-basis:57px;width:57px;height:57px;margin:0;transform:rotate(-8deg)}
+.moment-washing-line .moment-botanical{position:absolute;width:67px;height:124px;right:-35px;top:-10px;background:url('/images/scrap-daisy.webp') center/contain no-repeat;pointer-events:none;transform:rotate(8deg);z-index:1}
+.moment-line-content{position:relative;padding-top:23px}
+.moment-line-content::before{content:"";position:absolute;left:-13px;right:-13px;height:26px;top:0;background:url('/images/moment-rope.svg') center/100% 100% no-repeat;pointer-events:none}
+.moment-washing-line .moment-quotes{gap:24px;align-items:stretch}
+.moment-washing-line .moment-paper-note{position:relative;isolation:isolate;min-height:236px;clip-path:none;background:none;border:0;box-shadow:none;padding:32px 20px 15px;overflow:visible;filter:drop-shadow(0 3px 2px #293e2318)}
+.moment-washing-line .moment-paper-note::before,.moment-empty-hanging::before{content:"";position:absolute;inset:0;z-index:-1;background:none;pointer-events:none;border:22px solid transparent;border-image-source:var(--note-paper,url('/images/scrap-paper-ivory.webp'));border-image-slice:80 fill;border-image-width:21px;border-image-outset:2px;border-image-repeat:stretch}
+.moment-washing-line .moment-paper-note:nth-child(2){--note-paper:url('/images/scrap-paper-yellow.webp')}
+.moment-washing-line .moment-paper-note:nth-child(3){--note-paper:url('/images/scrap-paper-ivory.webp')}
+.moment-clothespin{position:absolute;top:-18px;left:26px;width:15px;height:43px;display:block;background:url('/images/moment-clothespin.svg') center/contain no-repeat;transform:rotate(-7deg);z-index:2;pointer-events:none;filter:drop-shadow(1px 2px 1px #3f39262b)}
+.moment-clothespin.second{left:auto;right:26px;transform:rotate(6deg)}
+.moment-washing-line .moment-quote{font:400 18px/1.5 Georgia,serif;margin:0 0 10px;white-space:normal;overflow-wrap:anywhere}
+.moment-washing-line .moment-note-footer{padding-top:8px;min-height:50px}
+.moment-note-more{margin:0 0 12px}.moment-note-more>summary{font:650 12px/1.4 system-ui,sans-serif;cursor:pointer;color:#346b5b;min-height:36px;padding:8px 0;text-decoration:underline;text-underline-offset:3px;list-style:none}.moment-note-more>summary::-webkit-details-marker{display:none}
+.moment-note-more>summary:focus-visible{outline:2px solid #00786e;outline-offset:3px}
+.moment-note-more .moment-full-content{padding:12px 0;border-top:1px dashed #c8d0ba}
+.moment-detail-text{white-space:pre-wrap;overflow-wrap:anywhere;font:400 21px/1.65 Georgia,serif;color:#213f36}
+.moment-detail-author{font:500 13px/1.5 system-ui,sans-serif;color:#536862}
+.moment-empty-hanging{position:relative;isolation:isolate;max-width:720px;width:76%;margin:0 auto;padding:26px 35px 23px;filter:drop-shadow(0 3px 2px #293e2315)}
+.moment-washing-line .moment-strip-empty{font:400 19px/1.6 Georgia,serif;margin:0;padding:6px 0;max-width:none}
+.moment-washing-line .moment-strip-bottom{margin-top:24px}
+.moment-washing-line .moment-paper-action{background:#f2d46e url('/images/button-paper-grain.svg');box-shadow:0 2px 1px #3e492217;font-size:14px}
+.moment-detail-dialog{position:fixed;isolation:isolate;overflow-y:auto;overflow-x:hidden;width:min(630px,calc(100% - 36px));max-height:84dvh;padding:27px 30px;border:0;border-radius:4px;background:#fffdf3 url('/images/button-paper-grain.svg');color:#153e39;box-shadow:0 18px 80px #143d3940}
+.moment-detail-dialog::before{content:"";display:block;height:9px;position:absolute;top:0;left:0;right:0;background:#e2ebd8;clip-path:polygon(0 0,100% 0,100% 50%,94% 100%,88% 50%,81% 90%,74% 50%,67% 100%,60% 50%,53% 90%,46% 50%,39% 100%,32% 50%,25% 90%,18% 50%,11% 100%,4% 50%,0 90%)}
+.moment-detail-dialog::backdrop{background:#173f3870;backdrop-filter:blur(3px)}
+.moment-detail-heading{display:flex;align-items:center;gap:15px;justify-content:space-between;border-bottom:1px dashed #c8d0ba;padding-bottom:13px}
+.moment-detail-heading h2{font:400 25px/1.25 Georgia,serif;margin:0;letter-spacing:-.4px}
+.moment-detail-heading .close{flex-shrink:0;width:42px;height:42px;min-height:42px;background:#e4ebd7;border:0;border-radius:3px;font-size:26px;line-height:1;color:#153e39}
+.moment-detail-dialog .moment-heart button{border:0;border-radius:4px;min-width:48px;min-height:44px;color:#935061;background:#f9ede3;font:600 16px/1 system-ui,sans-serif}
+.moment-detail-dialog .moment-full-content{padding-bottom:6px}
+@media(max-width:850px){.moment-washing-line{padding:24px 26px}.moment-line-content::before{display:none}.moment-washing-line .moment-quotes{gap:40px}.moment-washing-line .moment-paper-note{min-height:195px;padding-top:30px}.moment-washing-line .moment-paper-note::after,.moment-empty-hanging::after{content:"";position:absolute;top:-18px;left:-10px;right:-10px;height:25px;background:url('/images/moment-rope.svg') center/100% 100% no-repeat;pointer-events:none;z-index:-1}.moment-washing-line .moment-paper-note .moment-clothespin{top:-20px}.moment-empty-hanging{width:100%;padding:25px 26px}.moment-washing-line .moment-strip-heading{padding-right:20px}.moment-washing-line .moment-botanical{width:48px;height:90px;right:-25px;top:-10px}.moment-washing-line .moment-paper-sun{flex-basis:45px;width:45px;height:45px}.moment-washing-line .moment-strip-heading .moment-more{flex-basis:auto;margin-left:59px}.moment-detail-dialog{padding:23px}.moment-detail-text{font-size:20px}}
+@media(max-width:480px){.moment-washing-line{padding:23px 20px}.moment-washing-line .moment-strip-heading h2{font-size:24px}.moment-washing-line .moment-botanical{right:-21px}.moment-washing-line .moment-paper-note{padding-left:19px;padding-right:19px}.moment-washing-line .moment-strip-heading .moment-more{margin-left:0}.moment-detail-heading h2{font-size:23px}}
+@media(forced-colors:active){.moment-washing-line,.moment-washing-line .moment-paper-note,.moment-empty-hanging{border:1px solid CanvasText;background:Canvas}.moment-washing-line::before,.moment-washing-line .moment-paper-note::before,.moment-empty-hanging::before{display:none}}
+/* Four example or real shared moments fit on the same line. */
+@media(min-width:1051px){.moment-washing-line .moment-quotes{grid-template-columns:repeat(4,minmax(0,1fr));gap:17px}.moment-washing-line .moment-paper-note{padding-left:16px;padding-right:16px}.moment-washing-line .moment-quote{font-size:17px}.moment-washing-line .moment-note-footer{gap:5px}.moment-washing-line .moment-author{gap:5px}.moment-washing-line .moment-author strong{font-size:11px}.moment-washing-line .member-photo{width:28px;height:28px}.moment-washing-line .moment-heart button{padding:5px 8px}}
+@media(min-width:701px) and (max-width:1050px){.moment-washing-line .moment-quotes{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:40px}.moment-line-content::before{display:none}.moment-washing-line .moment-paper-note::after{content:"";position:absolute;top:-18px;left:-10px;right:-10px;height:25px;background:url('/images/moment-rope.svg') center/100% 100% no-repeat;pointer-events:none;z-index:-1}}
+
+.moment-heart button[aria-pressed="true"]{color:#ad4054}.moment-heart[aria-busy="true"] button{opacity:.65}.moment-heart-status{display:block;font-size:12px;line-height:1.4;color:#8b3543}.moment-heart-status:empty{display:none}
+
+/* Two aligned cutout actions beneath the washing line. */
+.moment-washing-line .moment-strip-footer{display:grid;grid-template-columns:minmax(0,1fr) 240px;align-items:center;gap:20px;margin-top:24px;min-width:0}
+.moment-washing-line .moment-footer-copy{min-width:0}
+.moment-washing-line .moment-footer-copy .moment-evening{margin:0;padding:0;border:0;background:transparent;gap:12px;align-items:center}
+.moment-washing-line .moment-footer-actions{display:grid;grid-auto-rows:1fr;gap:12px;min-width:0}
+.moment-washing-line .moment-footer-actions .moment-paper-action{position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:100%;min-width:0;min-height:52px;margin:0;padding:13px 18px;border:0;border-radius:0;background:transparent;color:#153e39;clip-path:none;box-shadow:none;filter:drop-shadow(0 2px 2px #26453a26);text-decoration:none;text-align:center;white-space:normal;font:650 14px/1.4 system-ui,sans-serif;--moment-action-paper:#ffdc68}
+.moment-washing-line .moment-footer-actions .moment-paper-action::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-color:var(--moment-action-paper);background-image:url('/images/button-paper-cutout-v2.png');background-blend-mode:multiply;background-position:center;background-size:100% 130%;background-repeat:no-repeat;-webkit-mask:url('/images/button-paper-cutout-v2.png') center/100% 130% no-repeat;mask:url('/images/button-paper-cutout-v2.png') center/100% 130% no-repeat}
+.moment-washing-line .moment-footer-actions .moment-paper-action-green{--moment-action-paper:#00786e;color:white}
+.moment-washing-line .moment-footer-actions .moment-paper-action-green::before{transform:scaleX(-1)}
+.moment-washing-line .moment-footer-actions .moment-paper-action:focus-visible{outline:3px solid #00786e;outline-offset:4px}
+@media(max-width:650px){.moment-washing-line .moment-strip-footer{grid-template-columns:1fr;gap:16px;margin-top:20px}.moment-washing-line .moment-footer-actions{width:100%;max-width:320px;justify-self:center}}
+
+/* Compact washing-line footer: two equal paper buttons side by side. */
+.moment-washing-line .moment-strip-footer{grid-template-columns:minmax(0,1fr) 440px;gap:16px;margin-top:12px}
+.moment-washing-line .moment-footer-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:none}
+.moment-washing-line{padding-bottom:20px}
+@media(max-width:850px){.moment-washing-line .moment-strip-footer{grid-template-columns:1fr}}
+@media(max-width:480px){.moment-washing-line .moment-footer-actions{grid-template-columns:1fr}}

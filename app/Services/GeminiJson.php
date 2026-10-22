@@ -3,11 +3,13 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 class GeminiJson {
- public function ask(string $system,array $data,array $schema):array {
+ public function ask(string $system,array $data,array $schema,?array $image=null):array {
   $key=config('news.gemini_key');$model=config('news.gemini_model');
   if(!$key||!preg_match('~^[a-zA-Z0-9._-]+$~',(string)$model))throw new NewsServiceException('AI-configuratie ontbreekt: controleer GEMINI_API_KEY en GEMINI_MODEL.');
+  $parts=[['text'=>json_encode($data,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR)]];
+  if($image!==null)$parts[]=['inlineData'=>['mimeType'=>$image['mime'],'data'=>base64_encode($image['bytes'])]];
   try{$r=Http::withOptions(['allow_redirects'=>false])->withHeaders(['x-goog-api-key'=>$key])->connectTimeout(8)->timeout(30)->post('https://generativelanguage.googleapis.com/v1beta/models/'.$model.':generateContent',[
-   'systemInstruction'=>['parts'=>[['text'=>$system]]],'contents'=>[['role'=>'user','parts'=>[['text'=>json_encode($data,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR)]]]],
+   'systemInstruction'=>['parts'=>[['text'=>$system]]],'contents'=>[['role'=>'user','parts'=>$parts]],
    'generationConfig'=>['temperature'=>0.1,'responseMimeType'=>'application/json','responseSchema'=>$schema],
   ]);}catch(\Illuminate\Http\Client\ConnectionException $e){throw new NewsServiceException('Gemini-verbinding mislukt of time-out; controleer internet en HTTPS.',0,$e);}
   if(!$r->successful()){

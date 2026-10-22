@@ -3,6 +3,7 @@ namespace App\Services;
 use App\Models\Article;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use RuntimeException;
 class NewsImporter {
@@ -40,13 +41,18 @@ class NewsImporter {
             $date=null;try{if(!empty($item['pubDate']))$date=Carbon::parse($item['pubDate'],'UTC');}catch(\Throwable $e){}
             $values=['source_title'=>mb_substr($title,0,1000),'source_description'=>mb_substr(trim(strip_tags($item['description']??'')),0,12000),'source_name'=>mb_substr(strip_tags($item['source_name']??$item['source_id']??'Bron'),0,200),'source_url'=>$url,'published_at'=>$date];
             if($category!==null)$values['category']=$category;
-            $a=Article::firstOrCreate(['fingerprint'=>hash('sha256',$url)],$values);
-            if($a->wasRecentlyCreated)$created[]=$a->id;
+            $a=Cache::lock('lichtpunt-news-title-import',30)->block(10,function()use($url,$values){
+                if(app(NewsDuplicates::class)->find(new Article($values)))return null;
+                return Article::firstOrCreate(['fingerprint'=>hash('sha256',$url)],$values);
+            });
+            if($a?->wasRecentlyCreated)$created[]=$a->id;
         }
         return ['created'=>$created,'next'=>is_string($data['nextPage']??null)&&$data['nextPage']!==''?$data['nextPage']:null];
     }
     public function assess(Article $a,bool $stage=false,string $stagedStatus='replacement'): void {
         if(!in_array($stagedStatus,['replacement','news_ready'],true))throw new RuntimeException('Ongeldige verwerkingsstatus.');
+        if($a->hidden_at)return;
+        if(app(NewsDuplicates::class)->hideIfDuplicate($a)){$a->save();return;}
         // Te weinig tekst is nooit een uitnodiging voor AI om informatie te verzinnen.
         if (mb_strlen($a->source_description??'')<120) {
             $a->update(['status'=>'insufficient','reason'=>'Onvoldoende brontekst voor een betrouwbare samenvatting.']);
@@ -116,5 +122,7 @@ PROMPT;
             'nl'=>$result['decision']==='suitable'?$result['nl']:null,
             'en'=>$result['decision']==='suitable'?$result['en']:null,
         ]);
+        // AI-generated Dutch/English titles can reveal a duplicate from another language.
+        if($result['decision']==='suitable'&&app(NewsDuplicates::class)->hideIfDuplicate($a))$a->save();
     }
 }

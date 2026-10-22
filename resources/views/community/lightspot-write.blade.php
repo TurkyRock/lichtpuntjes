@@ -4,7 +4,7 @@
 @php($en=app()->getLocale()==='en')
 <h1>{{ $submission?($en?'Revise your bright spot':'Pas je lichtpuntje aan'):($en?'Share your bright spot':'Deel jouw lichtpuntje') }}</h1>
 <p class="account-intro">{{ $en?'A story that makes the day a little brighter. In your own words.':'Een verhaal dat de dag een beetje lichter maakt. In jouw eigen woorden.' }}</p>
-<section class="panel">@include('community.lightspot-guidelines')</section>
+<section class="panel"><details><summary>{{ $en?'A lovely story starts here: tips and our agreement':'Een mooi verhaal begint hier: tips en onze afspraken' }}</summary>@include('community.lightspot-guidelines')</details></section>
 @if(!auth()->user()->hasVerifiedEmail()||!auth()->user()->community_accepted_at)
 <section class="panel"><p>{{ $en?'Confirm your email address and accept the community rules in your account before submitting.':'Bevestig je e-mailadres en accepteer de huisregels in je account voordat je een verhaal instuurt.' }}</p><a class="button" href="/profiel?lang={{ $en?'en':'nl' }}">{{ $en?'Go to my account':'Naar mijn account' }}</a></section>
 @else

@@ -8,6 +8,7 @@ class Lightpoints {
   if(!$user->hasVerifiedEmail()||$user->is_suspended)return false;
   return DB::transaction(function()use($user,$reference,$kind,$points,$label,$dailyCap){
    $current=User::whereKey($user->id)->lockForUpdate()->firstOrFail();if(!$current->hasVerifiedEmail()||$current->is_suspended)return false;
+   app(ActivityCalendar::class)->record($current,$kind,$reference);
    if(DB::table('lightpoint_events')->where('user_id',$user->id)->where('reference',$reference)->exists())return false;
    $period=now('Europe/Amsterdam')->toDateString();
    if($dailyCap&&DB::table('lightpoint_events')->where('user_id',$user->id)->where('kind',$kind)->where('period',$period)->count()>=$dailyCap)return false;

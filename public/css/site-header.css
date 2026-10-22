@@ -10,3 +10,18 @@
 .site-header .site-menu-toggle:focus-visible{outline:3px solid #bc8500;outline-offset:3px}
 @media(max-width:1100px){.site-header .site-nav{justify-content:space-between}.site-header .nav-enhanced .site-menu-toggle:not([hidden]){display:inline-flex}.site-header .nav-enhanced:not(.is-open) .site-links{display:none}.site-header .site-links{flex-basis:100%;padding-top:12px;border-top:1px solid #dde5dc}.site-header .site-links>*{border-left:0;padding-left:0;padding-right:18px}.site-header .site-links>.site-language{border-left:0}}
 @media(max-width:600px){.site-header .site-brand{font-size:clamp(20px,5.4vw,29px);letter-spacing:-.8px;gap:7px}.site-header .site-sun{width:32px;height:32px;font-size:23px}.site-header .site-nav{gap:10px;padding:12px 16px}.site-header .site-links{align-items:stretch;flex-direction:column;gap:4px}.site-header .site-links>*{padding:0}.site-header .site-text{justify-content:flex-start;font-size:14px;white-space:normal}.site-header .site-links>.site-language{align-self:flex-start;margin-top:8px}.site-header .site-menu-toggle{gap:5px;padding:8px}}
+
+/* A slimmer shared header; the existing menu and mobile toggle stay in place. */
+@media(min-width:1101px){.site-header .site-nav{min-height:68px}.site-header .site-brand{font-size:27px}.site-header .site-sun{width:33px;height:33px;font-size:23px}.site-header .site-links>*{padding-left:15px;padding-right:15px}.site-header .site-text{font-size:13px}}
+@media(min-width:601px) and (max-width:1100px){.site-header .site-nav{min-height:60px;padding-top:8px;padding-bottom:8px}.site-header .site-brand{font-size:27px}}
+@media(max-width:600px){.site-header .site-nav{min-height:60px;padding-top:8px;padding-bottom:8px}}
+
+.site-header .site-support{background:#ffdc68;color:#153e39;padding:10px 15px;clip-path:polygon(2% 0,98% 3%,100% 96%,72% 100%,30% 97%,0 100%)}
+@media(min-width:1101px) and (max-width:1350px){.site-header .site-nav{flex-wrap:wrap;padding-block:12px}.site-header .site-links{flex-wrap:wrap;justify-content:flex-end;gap:5px}.site-header .site-links>*{padding-inline:10px}}
+
+/* The support action uses the homepage cutout, including its textured edge. */
+.site-header .site-links>.site-support{position:relative;isolation:isolate;border:0;border-radius:0;background:transparent;clip-path:none;padding:12px 18px;margin-inline:4px;filter:drop-shadow(0 2px 2px #26453a26);color:#153e39}
+.site-header .site-support::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:#ffdc68 url('/images/button-paper-cutout-v2.png') center/100% 130% no-repeat;background-blend-mode:multiply;-webkit-mask:url('/images/button-paper-cutout-v2.png') center/100% 130% no-repeat;mask:url('/images/button-paper-cutout-v2.png') center/100% 130% no-repeat}
+.site-header .site-support:hover::before{background-color:#ffe58b}.site-header .site-support:focus-visible{outline:3px solid #00786e;outline-offset:4px}
+.site-header .site-menu-toggle{border-radius:0}.site-header .site-language a,.site-header .site-language button{border-radius:0}
+@media(max-width:600px){.site-header .site-links>.site-support{align-self:flex-start;padding:12px 18px;margin:3px 0}}

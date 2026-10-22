@@ -1,0 +1,24 @@
+LICHTPUNTJES — COMPACTE STEUNPAGINA — 19 OKTOBER 2026
+
+Vervolg op de geïnstalleerde donatie-update met foto's.
+Pak dit pakket over je project uit en voer uit:
+
+php artisan view:clear
+
+Vernieuw daarna met Ctrl+F5. Geen migratie of andere Mollie-instellingen nodig.
+
+De kop is compacter. Het briefje begint direct eronder, links. De bijdragekeuze
+staat rechts, op dezelfde bovenlijn, met de foto van vrienden eronder.
+Op mobiel staat de bijdragekeuze vooraan. Afbeeldingen blijven helemaal zichtbaar.
+De panelen hebben afgeronde hoeken zoals op de homepage. Knipselknoppen en
+papieren accenten blijven. Koppen, lopende tekst en alinea-afstanden zijn gelijk
+getrokken; ook bij Goed om te weten is de tekst nu even groot en gelijkmatig.
+
+De tekst 'Van €1 tot €500' is verwijderd. Ook de controle achter het formulier
+is verruimd: €10.000 wordt geaccepteerd. De minimuminvoer blijft €1; bedragen
+moeten normale cijfers met maximaal twee decimalen zijn. De technische invoer
+past binnen de bestaande databasevelden. Betaalmethoden en banken kunnen eigen
+limieten hanteren. De bedragen €2, €5 en €10 blijven suggesties; je kiest zelf.
+
+31 gerichte tests slagen, waaronder een gesimuleerde betaalopdracht van €10.000.
+Er is geen echte betaling uitgevoerd. Bekijk de uiteindelijke vormgeving in Herd.

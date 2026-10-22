@@ -6,13 +6,15 @@ class SecurityHeaders {
  public function handle(Request $request,Closure $next){
   $nonce=base64_encode(random_bytes(24));$request->attributes->set('csp_nonce',$nonce);
   $response=$next($request);
-  if(!$request->isMethod('GET')||$request->is('news/*','beheer','beheer/*','profiel','mijn-lichtpuntjes','mijn-lichtpuntjes/*','auth/*','inloggen','aanmelden','aanmelden/*','lichtpuntje/*','email/*','reset-password/*','wachtwoord-vergeten','privacy/verzoeken')||$response->getStatusCode()>=400)$response->headers->set('X-Robots-Tag','noindex');
+  if(!$request->isMethod('GET')||$request->is('mijn-bijdragen','steun/bedankt/*','news/*','beheer','beheer/*','profiel','mijn-momentjes','profiel/*','profielfotos/*','mijn-lichtpuntjes','mijn-lichtpuntjes/*','auth/*','inloggen','aanmelden','aanmelden/*','lichtpuntje/*','email/*','reset-password/*','wachtwoord-vergeten','privacy/verzoeken')||$response->getStatusCode()>=400)$response->headers->set('X-Robots-Tag','noindex');
   $response->headers->set('X-Content-Type-Options','nosniff');
   $response->headers->set('X-Frame-Options','DENY');
   $response->headers->set('Referrer-Policy','strict-origin-when-cross-origin');
   $response->headers->set('Permissions-Policy','camera=(), microphone=(), geolocation=()');
   $analytics=\App\Support\Analytics::eligible($request)?' https://www.googletagmanager.com https://*.google-analytics.com https://www.google.com':'';
-  $response->headers->set('Content-Security-Policy',"default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; script-src 'self' 'nonce-{$nonce}'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self'{$analytics}; form-action 'self'");
+  $supportForm=$request->is('steun','steun/*')?' https://www.mollie.com https://mollie.com https://checkout.mollie.com':'';
+  if($request->is('steun/bedankt/*'))$response->headers->set('Referrer-Policy','no-referrer');
+  $response->headers->set('Content-Security-Policy',"default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; script-src 'self' 'nonce-{$nonce}'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self'{$analytics}; form-action 'self'{$supportForm}");
   if(app()->environment('production')&&$request->isSecure())$response->headers->set('Strict-Transport-Security','max-age=31536000');
   if(str_contains((string)$response->headers->get('Content-Type'),'text/html')||$request->user())$response->headers->set('Cache-Control','private, no-store');
   return $response;

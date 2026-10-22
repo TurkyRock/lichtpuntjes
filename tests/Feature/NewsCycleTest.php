@@ -19,7 +19,8 @@ class NewsCycleTest extends TestCase
     }
     protected function tearDown(): void {File::delete([$this->path,$this->path.'.tmp']);$this->travelBack();parent::tearDown();}
     private function article(array $extra=[]): Article {
-        return Article::create($extra+['fingerprint'=>hash('sha256',random_bytes(16)),'source_title'=>'Good news','source_description'=>str_repeat('Happy news. ',20),'source_name'=>'Source','source_url'=>'https://example.com','origin'=>'news','status'=>'pending','category'=>'sport','published_at'=>now(),'nl'=>['title'=>'Mooi'],'en'=>['title'=>'Lovely']]);
+        $tag=bin2hex(random_bytes(8));
+        return Article::create($extra+['fingerprint'=>hash('sha256',random_bytes(16)),'source_title'=>'Good news '.$tag,'source_description'=>str_repeat('Happy news. ',20),'source_name'=>'Source','source_url'=>'https://example.com','origin'=>'news','status'=>'pending','category'=>'sport','published_at'=>now(),'nl'=>['title'=>'Mooi '.$tag],'en'=>['title'=>'Lovely '.$tag]]);
     }
     public function test_separate_budgets_reserve_space_for_user_stories_and_reset(): void {
         config(['news_cycle.news_images'=>1,'news_cycle.community_images'=>1]);$budget=app(DailyIllustrationBudget::class);

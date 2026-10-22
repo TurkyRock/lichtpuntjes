@@ -5,8 +5,8 @@ class LichtpuntIllustrationPrompt {
  public const STYLE='lichtpunt-paper-v1';
  public const PHOTO_STYLE='lichtpunt-photo-v1';
  public function style(Article $a):string {
-  $style=$a->photo['requested_style']??$a->photo['style']??self::STYLE;
-  return $style===self::PHOTO_STYLE?self::PHOTO_STYLE:self::STYLE;
+  $style=$a->photo['requested_style']??$a->photo['style']??self::PHOTO_STYLE;
+  return $style===self::STYLE?self::STYLE:self::PHOTO_STYLE;
  }
  public function positive(Article $a,int $subjectLimit=1600):string {
   $text=$a->en?:$a->nl?:[];
@@ -29,5 +29,5 @@ class LichtpuntIllustrationPrompt {
    .'Full bleed wide 16:9 image, no lettering. Each article has its own subject and composition. '
    .'No real person likeness, logos, text, watermark, photograph, shiny 3D, emoji, stars, floating hearts or sun faces.';
  }
- public function negative(?Article $a=null):string {if($a&&$this->style($a)===self::PHOTO_STYLE)return 'illustration, drawing, painting, collage, cartoon, CGI, plastic skin, overly smooth faces, glossy stock photography, exaggerated grin, text, logo, watermark, extra fingers, extra limbs, deformed hands, celebrity, staged documentary reenactment';return 'photo, photorealistic, glossy, plastic 3d, gradients, clipart, emoji, lettering, text, numbers, logo, watermark, giant cartoon heads, manic smile, sparkles, floating hearts, extra fingers, extra arms, deformed hands, generic stock illustration';}
+ public function negative(?Article $a=null):string {if(!$a||$this->style($a)===self::PHOTO_STYLE)return 'illustration, drawing, painting, collage, cartoon, CGI, plastic skin, overly smooth faces, glossy stock photography, exaggerated grin, text, logo, watermark, extra fingers, extra limbs, deformed hands, celebrity, staged documentary reenactment';return 'photo, photorealistic, glossy, plastic 3d, gradients, clipart, emoji, lettering, text, numbers, logo, watermark, giant cartoon heads, manic smile, sparkles, floating hearts, extra fingers, extra arms, deformed hands, generic stock illustration';}
 }

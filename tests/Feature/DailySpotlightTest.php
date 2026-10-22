@@ -89,11 +89,28 @@ class DailySpotlightTest extends TestCase {
 
  public function test_drawn_illustrations_have_no_repeated_caption_but_other_generated_images_keep_theirs():void {
   $a=$this->story(['photo'=>['url'=>'/news-images/'.str_repeat('a',64).'.png','generated'=>true,'style'=>'lichtpunt-paper-v1']]);
-  $html=$this->get('/')->assertOk()->getContent();$body=explode('<script',substr($html,strpos($html,'<body')),2)[0];
-  $this->assertStringNotContainsString('AI-gegenereerde illustratie',$body);$this->assertStringContainsString('Onze beelden zijn met AI gemaakt',$body);
-  $html=$this->get(\App\Support\StorySeo::path($a))->assertOk()->getContent();$body=explode('<script',substr($html,strpos($html,'<body')),2)[0];$this->assertStringNotContainsString('AI-gegenereerde illustratie',$body);$this->assertStringContainsString('Met AI gemaakte samenvatting',$body);
+  $html=$this->get('/')->assertOk()->getContent();$body=preg_replace('/<script\b[^>]*>.*?<\/script>/is','',substr($html,strpos($html,'<body')));
+  $this->assertStringNotContainsString('AI-gegenereerde illustratie',$body);$this->assertStringContainsString('Onze afbeeldingen worden gemaakt met AI',$body);
+  $html=$this->get(\App\Support\StorySeo::path($a))->assertOk()->getContent();$body=preg_replace('/<script\b[^>]*>.*?<\/script>/is','',substr($html,strpos($html,'<body')));$this->assertStringNotContainsString('AI-gegenereerde illustratie',$body);$this->assertStringContainsString('Met AI gemaakte samenvatting',$body);
   $a->update(['photo'=>['url'=>'/news-images/'.str_repeat('a',64).'.png','generated'=>true,'style'=>'older-realistic-style']]);
-  $html=$this->get(\App\Support\StorySeo::path($a))->assertOk()->getContent();$body=explode('<script',substr($html,strpos($html,'<body')),2)[0];$this->assertStringContainsString('AI-gegenereerde illustratie',$body);
+  $html=$this->get(\App\Support\StorySeo::path($a))->assertOk()->getContent();$body=preg_replace('/<script\b[^>]*>.*?<\/script>/is','',substr($html,strpos($html,'<body')));$this->assertStringContainsString('AI-gegenereerde illustratie',$body);
  }
 
+ public function test_paper_moment_strip_follows_first_three_articles_and_contains_only_shared_approved_moments():void {
+  for($i=0;$i<5;$i++)$this->story();
+  $u=$this->user(false);
+  foreach([
+   ['body'=>'PUBLIC_PAPER_MOMENT','visibility'=>'public','status'=>'approved'],
+   ['body'=>'PRIVATE_MUST_STAY_PRIVATE','visibility'=>'private','status'=>'approved'],
+   ['body'=>'PENDING_MUST_STAY_PRIVATE','visibility'=>'public','status'=>'pending']
+  ] as $v)\App\Models\PositiveMoment::create($v+['user_id'=>$u->id,'moment_date'=>now()->toDateString(),'ai_accepted_at'=>now()]);
+  $response=$this->get('/')->assertOk()->assertSee('PUBLIC_PAPER_MOMENT')->assertDontSee('PRIVATE_MUST_STAY_PRIVATE')->assertDontSee('PENDING_MUST_STAY_PRIVATE')->assertSee('moment-paper-strip')->assertSee('data-article-photo')->assertSee('href="#about-ai"',false)->assertDontSee('<details class="ai-image-label"',false);
+  $html=explode('<template id="momentHomeTemplate">',$response->getContent())[0];
+  $cards=$response->viewData('feed')['articles'];
+  $bar=strpos($html,'moment-home-grid moment-paper-strip');
+  $this->assertNotFalse($bar);
+  $this->assertGreaterThan(strpos($html,'class="card" data-read="'.$cards[2]['id'].'"'),$bar);
+  $this->assertLessThan(strpos($html,'class="card" data-read="'.$cards[3]['id'].'"'),$bar);
+  $this->get('/en')->assertOk()->assertSee('Small joys, shared with you.');
+ }
 }

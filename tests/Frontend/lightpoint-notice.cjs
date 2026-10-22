@@ -1,0 +1,7 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+async function run(badge){let timer,delay;const state=new Set(),handlers={};const badgeNode={hidden:true,replaceChildren(){},append(){}};const nodes={'[data-point-title]':{},'[data-point-label]':{},'[data-point-badge]':badgeNode,button:{addEventListener(t,f){handlers.close=f}}};const box={dataset:{language:'nl',token:'test'},querySelector:s=>nodes[s],classList:{add:c=>state.add(c),remove:c=>state.delete(c)},showPopover(){this.open=true},hidePopover(){this.open=false},addEventListener(t,f){handlers[t]=f}};
+ const doc={hidden:false,getElementById:()=>box,addEventListener(){},createElement:()=>({}),createTextNode:s=>s};
+ vm.runInNewContext(fs.readFileSync('public/js/lightpoint-notice.js','utf8'),{document:doc,window:{},Number,encodeURIComponent,setInterval:()=>1,clearInterval(){},clearTimeout(){timer=null},setTimeout(f,ms){timer=f;delay=ms;return 1},fetch:async()=>({ok:true,status:200,json:async()=>({notice:{points:1,label:'Goed zo',badge}})})});
+ await new Promise(r=>setImmediate(r));assert(state.has('is-visible'));assert.equal(delay,5000);assert(!handlers.mouseenter&&!handlers.focusin);timer();assert(!state.has('is-visible'));assert.equal(box.open,false);
+}
+(async()=>{await run(null);await run({name:'Lichtknopje',icon:'/images/badges/switch.svg'});console.log('Puntenmelding en badge verdwijnen automatisch na 5 seconden, ook bij hover/focus.');})().catch(e=>{console.error(e);process.exitCode=1});

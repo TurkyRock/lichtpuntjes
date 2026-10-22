@@ -1,0 +1,37 @@
+LICHTPUNTJES — DUBBELE TITELS EN VOLLEDIG DAGVERHAAL — 21 OKTOBER 2026
+
+Maak een back-up en pak dit pakket uit over je bestaande project.
+Voer daarna uit in de projectmap:
+
+php artisan optimize:clear
+php artisan news:duplicates
+
+De tweede opdracht toont welke bestaande nieuwsberichten dubbel zijn.
+Verberg ze met:
+
+php artisan news:duplicates --apply
+php artisan queue:restart
+
+Start je bestaande achtergrondworker opnieuw en vernieuw de browser met Ctrl+F5.
+Deze update heeft geen nieuwe database-migratie nodig.
+
+De import vergelijkt titels over verschillende bronnen. Hoofdletters,
+leestekens, accenten en extra spaties tellen niet mee. Getallen blijven bewaard.
+Ook de Nederlandse en Engelse leestitels worden vergeleken na de AI-beoordeling
+en vóór gewone publicatie. Overgeslagen importregels krijgen geen AI-aanvraag
+of nieuwe afbeelding. Deze controle herkent dezelfde genormaliseerde titel;
+een anders geformuleerde titel over hetzelfde onderwerp kan nog voorkomen.
+
+Bij bestaande dubbelen blijft een gepubliceerd bericht staan, en anders het
+oudste bericht. Bij meerdere gepubliceerde versies blijft het oudste staan.
+De overige exemplaren worden verborgen via het bestaande hidden_at-veld.
+Artikelen, reacties, likes en punten worden niet verwijderd of samengevoegd.
+Interacties van verborgen exemplaren blijven bij hun eigen artikel bewaard.
+Zelfgeschreven verhalen vallen buiten de controle op dubbele nieuwstitels.
+Reeds verborgen of afgewezen nieuws blokkeert geen nieuwe import.
+
+Het Lichtpuntje van de dag toont nu alle beschikbare alinea's in de gekozen
+taal, met de bestaande vormgeving. De volledige tekst vervangt het korte
+voorproefje op de hoofdkaart. De twee kleinere uitgelichte kaarten blijven compact.
+
+Bewaar je .env en APP_KEY. Dit pakket bevat geen sleutels, database of beelden.

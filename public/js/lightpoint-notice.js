@@ -11,7 +11,7 @@ function show(n){
   const img=document.createElement('img');img.src=n.badge.icon;img.alt='';badge.append(img,document.createTextNode((en?'New badge: ':'Nieuwe badge: ')+n.badge.name));badge.hidden=false;box.classList.add('has-badge');
  }
  box.classList.add('is-visible');if(typeof box.showPopover==='function')box.showPopover();
- clearTimeout(closeTimer);closeTimer=setTimeout(hide,n.badge?14000:8500);
+ clearTimeout(closeTimer);closeTimer=setTimeout(hide,5000);
 }
 async function check(){
  if(document.hidden||stopped)return;if(busy){queued=true;return;}busy=true;
@@ -21,8 +21,6 @@ async function check(){
  }catch(e){}finally{busy=false;if(queued){queued=false;check();}}
 }
 box.querySelector('button').addEventListener('click',hide);
-box.addEventListener('mouseenter',()=>clearTimeout(closeTimer));box.addEventListener('focusin',()=>clearTimeout(closeTimer));
-box.addEventListener('mouseleave',()=>{closeTimer=setTimeout(hide,5000);});box.addEventListener('focusout',()=>{closeTimer=setTimeout(hide,5000);});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)check();});
 document.addEventListener('lichtpunt:points-check',check);
 window.LichtpuntNotice={check};pollTimer=setInterval(check,20000);check();

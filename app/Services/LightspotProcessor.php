@@ -40,6 +40,7 @@ POLICY.'\n'.DailyStoryScore::POLICY,['name'=>$s->user->name,'title'=>$s->title,'
      if($row->status!=='image_wait'||$user->is_suspended||!$user->hasVerifiedEmail()||!$user->community_accepted_at)return;
      $a->refresh();if(!$this->photos->current($a))throw new NewsServiceException('Illustratie ontbreekt.');
      $a->update(['status'=>'published','published_at'=>$a->published_at??now()]);$row->update(['status'=>'published','ai_error'=>false,'processing_error'=>null]);
+     app(Lightpoints::class)->award($user,'story:'.$a->id,'story',5,'Een eigen verhaal gepubliceerd');
     });
    }catch(\Throwable $e){$s->refresh();if($s->status==='image_wait')$s->update(['ai_error'=>true,'processing_error'=>$e instanceof NewsServiceException?mb_substr($e->getMessage(),0,1500):'Vertaling, illustratie of opslag tijdelijk mislukt. Controleer verbinding en schrijfrechten.']);}
   }finally{$lock->release();}

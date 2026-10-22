@@ -10,7 +10,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->web(append: [\App\Http\Middleware\SecurityHeaders::class]);
+        $middleware->web(append: [\App\Http\Middleware\SecurityHeaders::class,\App\Http\Middleware\RecordAccountVisit::class]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->dontFlash(['password','password_confirmation','current_password','existing_password','token']);

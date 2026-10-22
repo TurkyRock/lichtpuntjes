@@ -17,7 +17,10 @@ class PublicStoryController extends Controller {
   if((int)$request->query('page',1)>$page)return redirect(StorySeo::home($locale,$category,$page),301);
   $seo=StorySeo::meta($locale,$category,$page);
   $highlights=[];if($category==='all'&&$page===1)foreach(app(\App\Services\DailySpotlight::class)->highlights() as $item){$story=app(NewsEngagementController::class)->story($request,$item['article'])->getData(true);$highlights[]=['kind'=>$item['kind'],'story'=>$story];}
-  return view('lichtpunt',compact('seo','feed','category','locale','highlights'));
+  $momentHighlights=\App\Models\PositiveMoment::publicVisible()->with('user.profilePhoto')->withCount(['hearts'=>fn($q)=>$q->where('is_suspended',false)])->latest('id')->limit(30)->get()->unique('user_id')->take(4)->values();
+  $likedMomentIds=$request->user()?\Illuminate\Support\Facades\DB::table('moment_hearts')->where('user_id',$request->user()->id)->whereIn('moment_id',$momentHighlights->pluck('id'))->pluck('moment_id')->all():[];
+  $showMomentPrompt=now('Europe/Amsterdam')->hour>=19&&(!$request->user()||!\App\Models\PositiveMoment::where('user_id',$request->user()->id)->whereDate('moment_date',now('Europe/Amsterdam')->toDateString())->exists());
+  return view('lichtpunt',compact('seo','feed','category','locale','highlights','momentHighlights','showMomentPrompt','likedMomentIds'));
  }
  public function article(Request $request){
   $locale=(string)$request->route('locale','nl');$id=(int)$request->route('id');

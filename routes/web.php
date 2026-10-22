@@ -8,6 +8,8 @@ use App\Http\Controllers\CommunityController as Community;
 use App\Http\Controllers\CommunityAdminController as Admin;
 use App\Http\Middleware\CommunityActive;
 Route::middleware([\App\Http\Middleware\CommunityLocale::class,\App\Http\Middleware\CookiePrivacy::class])->group(function(){
+Route::get('/momentjes',[\App\Http\Controllers\MomentController::class,'feed']);
+Route::get('/profielfotos/{photo}',[\App\Http\Controllers\ProfilePhotoController::class,'show'])->whereNumber('photo')->middleware('throttle:120,1');
 Route::get('/',[\App\Http\Controllers\PublicStoryController::class,'home']);
 Route::get('/en',[\App\Http\Controllers\PublicStoryController::class,'home'])->defaults('locale','en');
 Route::get('/nl',fn()=>redirect('/',301));
@@ -53,6 +55,20 @@ Route::post('/uitloggen',[Accounts::class,'logout'])->middleware('auth');
 Route::middleware(['auth',CommunityActive::class])->group(function(){
  Route::post('/lichtpuntjes/meldingen',[\App\Http\Controllers\LightpointNoticeController::class,'collect'])->middleware(['verified','throttle:12,1,lightpoint-notice:']);
  Route::get('/profiel',[Community::class,'profile']);
+ Route::get('/lichtpuntje/delen',[\App\Http\Controllers\MomentController::class,'choose']);
+ Route::get('/mijn-momentjes',[\App\Http\Controllers\MomentController::class,'index']);
+ Route::post('/momentjes/{moment}/hart',[\App\Http\Controllers\MomentController::class,'heart'])->whereNumber('moment')->middleware(['verified','throttle:30,1']);
+ Route::post('/momentjes',[\App\Http\Controllers\MomentController::class,'store'])->middleware(['verified','throttle:5,60,moment-create:']);
+ Route::put('/momentjes/{moment}',[\App\Http\Controllers\MomentController::class,'update'])->whereNumber('moment')->middleware(['verified','throttle:8,60,moment-edit:']);
+ Route::delete('/momentjes/{moment}',[\App\Http\Controllers\MomentController::class,'destroy'])->whereNumber('moment');
+ Route::post('/beheer/momentjes/{moment}',[\App\Http\Controllers\MomentController::class,'moderate'])->whereNumber('moment')->middleware(['verified','throttle:30,1']);
+ Route::post('/profiel/foto',[\App\Http\Controllers\ProfilePhotoController::class,'store'])->middleware(['verified','throttle:3,60,profile-photo:']);
+ Route::delete('/profiel/foto',[\App\Http\Controllers\ProfilePhotoController::class,'destroy'])->middleware('throttle:10,1');
+ Route::get('/profiel/foto/{photo}',[\App\Http\Controllers\ProfilePhotoController::class,'preview'])->whereNumber('photo');
+ Route::get('/beheer/gebruikers',[\App\Http\Controllers\UserAdminController::class,'index'])->middleware('verified');
+ Route::get('/beheer/gebruikers/{user}',[\App\Http\Controllers\UserAdminController::class,'show'])->whereNumber('user')->middleware('verified');
+ Route::post('/beheer/profielfotos/{photo}',[\App\Http\Controllers\ProfilePhotoController::class,'moderate'])->whereNumber('photo')->middleware(['verified','throttle:30,1']);
+
  Route::post('/news/{article}/melden',[\App\Http\Controllers\LightspotController::class,'report'])->whereNumber('article')->middleware(['verified','throttle:3,60,lightspot-report:']);
  Route::get('/mijn-lichtpuntjes',[\App\Http\Controllers\LightspotController::class,'index']);
  Route::get('/lichtpuntje/schrijven',[\App\Http\Controllers\LightspotController::class,'create']);
@@ -82,3 +98,5 @@ Route::middleware(['auth',CommunityActive::class])->group(function(){
 });
 
 });
+
+require __DIR__.'/support.php';

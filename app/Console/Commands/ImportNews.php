@@ -46,7 +46,7 @@ class ImportNews extends Command {
                     $processed++;
                     if (isset($totals[$fresh->status])) $totals[$fresh->status]++;
                     $this->line('#'.$a->id.' '.$fresh->status);
-                    if (!$this->option('skip-photos') && $fresh->status==='published' && empty($fresh->photo)) {
+                    if (!$this->option('skip-photos') && !$fresh->hidden_at && $fresh->status==='published' && empty($fresh->photo)) {
                         try {
                             if (!app(\App\Services\ArticlePhotoFinder::class)->attach($fresh)) $this->warn('#'.$a->id.' geen passende foto gevonden.');
                         } catch (\Throwable $photoError) {

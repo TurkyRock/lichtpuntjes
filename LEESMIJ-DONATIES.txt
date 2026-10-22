@@ -1,0 +1,90 @@
+LICHTPUNTJES — STEUN LICHTPUNTJES — 19 OKTOBER 2026
+
+Installatie
+1. Maak een back-up van je project en database.
+2. Pak dit pakket uit over je bestaande project. Er staan geen .env, database,
+   vendor, nieuwsafbeeldingen of API-sleutels in dit pakket.
+3. Voer uit:
+   php artisan migrate
+   php artisan optimize:clear
+4. Vernieuw je browser met Ctrl+F5. De bijdragepagina staat op /steun.
+   De header, homepage, footer en het account verwijzen naar deze pagina.
+
+Zonder configuratie
+De pagina en het briefje van Erik zijn zichtbaar. De betaalknop is uitgeschakeld
+met de boodschap 'Bijdragen kan binnenkort'. Niemand kan dan betalen.
+
+Mollie instellen
+Gebruik je zakelijke Mollie-account en de geverifieerde bijbehorende bankrekening.
+Activeer iDEAL en voor maandelijks steunen ook SEPA-incasso. Vul in je bestaande
+.env de volgende waarden in (zet je API-sleutel niet in chat of in Git):
+
+SUPPORT_ENABLED=false
+MOLLIE_API_KEY=test_JOUW_TESTSLEUTEL
+SUPPORT_RECIPIENT="JOUW OFFICIELE BEDRIJFSNAAM"
+SUPPORT_CONTACT_EMAIL="jouw-contactadres@jouw-domein.nl"
+
+SUPPORT_RECIPIENT moet de ontvanger in Mollie herkenbaar maken, ook ten opzichte
+van de bedrijfsnaam op een bankafschrift. Vul geen verzonnen gegevens in.
+APP_URL moet het echte publiek bereikbare HTTPS-adres van de site zijn.
+Een lokaal Herd .test-adres is voor Mollie niet bereikbaar. Gebruik voor een
+volledige betaaltest een afgeschermd publiek HTTPS-testadres of een tunnel met
+APP_URL op dat adres. Geef dat profiel ook correct op bij Mollie.
+
+Zet SUPPORT_ENABLED=true op je testomgeving en voer uit:
+   php artisan config:clear
+   php artisan support:check
+
+Dit controlecommando maakt geen API-aanvragen of betalingen. 'Configuratie
+ aanwezig' betekent niet dat je Mollie-account al is goedgekeurd.
+
+Test eerst met de Mollie-testsleutel
+- Eenmalig: €2 / €5 / €10 of een eigen bedrag tussen €1 en €500.
+- Geslaagde, geannuleerde en mislukte betaalpogingen.
+- De webhook /steun/mollie/webhook moet van buiten bereikbaar zijn, zonder
+  login, basic-auth of onderhoudsscherm. De app vertrouwt de ingestuurde status
+  nooit: hij haalt de betaling opnieuw op bij Mollie.
+- De bedankpagina bevestigt ontvangst alleen na controle bij Mollie.
+- Maandelijks: ingelogd, bevestigd account, expliciete toestemming aanvinken.
+  De eerste betaling is via iDEAL; het abonnement start een maand later.
+- Herhaald klikken en een herhaalde webhook mogen geen dubbele bijdrage starten.
+- Account > Mijn bijdragen: stoppen controleren in de site EN in Mollie.
+- Beheer > Bijdragen: alleen als beheerder toegankelijk.
+
+Live activeren
+Vervang de testsleutel door je Mollie-livesleutel, behoud je bestaande APP_KEY en
+zet SUPPORT_ENABLED=true. Voer php artisan config:clear uit. Bestaande testrecords
+blijven herkenbaar als test. Het beheertotaal volgt de sleutelmodus (test/live).
+Test daarna bewust één kleine echte betaling en de terugkoppeling van Mollie.
+Er zijn geen echte betalingen uitgevoerd tijdens het bouwen van dit pakket.
+
+Werking en beheer
+Eenmalig bijdragen kan zonder account. Maandelijks vraagt een account zodat
+gebruikers zelf kunnen stoppen via /mijn-bijdragen. Voor maandelijkse bijdragen
+worden accountnaam en e-mailadres aan Mollie doorgegeven; de site bewaart geen
+IBAN of kaartgegevens. Bedrag, toestemming, frequentie en betaalstatus worden
+wel vastgelegd. Vermeld dit ook in je privacybeleid.
+Er worden geen punten, badges of privileges gegeven voor bijdragen.
+Het persoonlijke briefje vermeldt je dankbaarheid en je inzet voor leuke functies.
+Een al ingezette incasso kan na het stoppen nog verwerkt worden. Terugbetalingen
+regel je in Mollie. De bestaande machtiging wordt niet hergebruikt na stoppen.
+
+Bij een gemiste webhook of onderbroken bevestiging kun je hervatten met:
+   php artisan support:sync --limit=25
+Dit controleert opgeslagen betalingen opnieuw en maakt een nog ontbrekend
+maandelijks abonnement alleen aan na een bevestigde eerste betaling en de
+opgeslagen keuze van de gebruiker. Mollie zelf voert volgende maandbetalingen
+uit; daarvoor hoeft geen Laravel-queueworker te draaien.
+
+Houd het Mollie-dashboard aan als financiële bron. Het siteoverzicht toont
+ontvangen bruto bedragen, terugbetalingen en terugboekingen, vóór betaal- en
+andere kosten. Een statuswijziging van een abonnement die je handmatig in Mollie
+doet, kan in de site later zichtbaar worden; er is geen aparte abonnementswebhook.
+Gebruikers kunnen altijd contact opnemen via het ingestelde contactadres.
+Voordat je een gebruikersaccount verwijdert dat maandelijks steunt, stop je de
+bijdrage eerst, of help de gebruiker via Mollie bij het stoppen ervan.
+
+Validatie
+De PHP-tests gebruiken nagebootste Mollie-antwoorden, zonder echte afschrijvingen.
+De integratie gebruikt de Mollie Payments, Customers, Mandates en Subscriptions
+API. Geen extra Composer-pakket nodig.

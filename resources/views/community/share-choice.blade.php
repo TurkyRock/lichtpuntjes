@@ -1,0 +1,7 @@
+@extends('community.layout')
+@section('content')
+@php($en=app()->getLocale()==='en')
+<h1>{{ $en?'Share a bright spot':'Deel een lichtpuntje' }}</h1><p class="intro">{{ $en?'A small moment or a bigger story: choose what suits you.':'Een klein moment of een groter verhaal: kies wat bij je past.' }}</p>
+<div class="share-options"><section class="panel sunny"><span class="moment-sun" aria-hidden="true">☀</span><h2>{{ $en?'A little moment':'Een momentje' }}</h2><p>{{ $en?'A smile, a kind gesture or a moment of peace. A few words are enough. Keep it private or share with others.':'Een glimlach, een lief gebaar of even rust. Een paar zinnen zijn genoeg. Bewaar het privé of deel het met anderen.' }}</p><a class="button" href="/mijn-momentjes?lang={{ app()->getLocale() }}#new-moment">{{ $en?'Write a moment':'Schrijf een momentje' }}</a></section><section class="panel"><h2>{{ $en?'A story':'Een verhaal' }}</h2><p>{{ $en?'Something beautiful that deserves more space. Write a full story with a title; we add a matching image after review.':'Iets moois dat wat meer ruimte verdient. Schrijf een artikel met een titel; na controle maken we er een passende afbeelding bij.' }}</p><a class="button quiet" href="/lichtpuntje/schrijven?lang={{ app()->getLocale() }}">{{ $en?'Write a story':'Schrijf een verhaal' }}</a></section></div>
+<p class="small">{{ $en?'No pressure. Every bright spot counts.':'Geen druk. Ieder lichtpuntje telt.' }}</p>
+@endsection

@@ -14,13 +14,13 @@ class LichtpuntIllustrationTest extends TestCase {
  }
  public function test_graph_contains_article_specific_scene_brand_style_and_only_local_nodes():void {
   $a=$this->article();$bytes=File::get(public_path('images/lichtpunt-zon.png'));$this->fakeServer($bytes);$this->files[]=public_path('news-images/'.hash('sha256',$bytes).'.png');
-  $generator=app(ArticleImageGenerator::class);$generator->check();$p=$generator->generate($a);$this->assertTrue($p['generated']);$this->assertSame(LichtpuntIllustrationPrompt::STYLE,$p['style']);$this->assertSame(hash('sha256',$bytes),$p['sha256']);$this->assertFileExists(public_path(ltrim($p['url'],'/')));
-  Http::assertSent(function($r)use($a){if(!str_ends_with($r->url(),'/prompt'))return false;$g=$r['prompt'];$this->assertStringContainsString('Ajax',$g['6']['inputs']['text']);$this->assertStringContainsString('#ffdc68',$g['6']['inputs']['text']);$this->assertStringContainsString('linocut',$g['6']['inputs']['text']);$this->assertSame(1024,$g['5']['inputs']['width']);$this->assertSame(576,$g['5']['inputs']['height']);$this->assertSame('lichtpunt-'.$a->id.'-'.$g['3']['inputs']['seed'],$g['9']['inputs']['filename_prefix']);$this->assertArrayNotHasKey('extra_data',$r->data());return true;});
+  $generator=app(ArticleImageGenerator::class);$generator->check();$p=$generator->generate($a);$this->assertTrue($p['generated']);$this->assertSame(LichtpuntIllustrationPrompt::PHOTO_STYLE,$p['style']);$this->assertSame(hash('sha256',$bytes),$p['sha256']);$this->assertFileExists(public_path(ltrim($p['url'],'/')));
+  Http::assertSent(function($r)use($a){if(!str_ends_with($r->url(),'/prompt'))return false;$g=$r['prompt'];$this->assertStringContainsString('Ajax',$g['6']['inputs']['text']);$this->assertStringContainsString('Photorealistic',$g['6']['inputs']['text']);$this->assertStringNotContainsString('linocut',$g['6']['inputs']['text']);$this->assertSame(1024,$g['5']['inputs']['width']);$this->assertSame(576,$g['5']['inputs']['height']);$this->assertSame('lichtpunt-'.$a->id.'-'.$g['3']['inputs']['seed'],$g['9']['inputs']['filename_prefix']);$this->assertArrayNotHasKey('extra_data',$r->data());return true;});
   Http::assertSentCount(4);
  }
  public function test_resume_skips_current_images_and_changed_story_requires_new_one():void {
   $a=$this->article();$bytes=File::get(public_path('images/lichtpunt-zon.png'));$hash=hash('sha256',$bytes);File::ensureDirectoryExists(public_path('news-images'));$path=public_path('news-images/'.$hash.'.png');File::put($path,$bytes);$this->files[]=$path;
-  $a->update(['photo'=>['url'=>'/news-images/'.$hash.'.png','sha256'=>$hash,'generated'=>true,'style'=>LichtpuntIllustrationPrompt::STYLE,'model'=>config('news_images.checkpoint'),'subject_hash'=>hash('sha256',app(LichtpuntIllustrationPrompt::class)->positive($a))]]);
+  $a->photo=['style'=>LichtpuntIllustrationPrompt::STYLE];$a->update(['photo'=>['url'=>'/news-images/'.$hash.'.png','sha256'=>$hash,'generated'=>true,'style'=>LichtpuntIllustrationPrompt::STYLE,'model'=>config('news_images.checkpoint'),'subject_hash'=>hash('sha256',app(LichtpuntIllustrationPrompt::class)->positive($a))]]);
   $finder=app(ArticlePhotoFinder::class);$this->assertTrue($finder->current($a));$this->assertTrue($finder->attach($a));Http::assertNothingSent();$a->update(['en'=>['title'=>'Ajax helps children','teaser'=>'Community','body'=>['A new project.']]]);$this->assertFalse($finder->current($a));
  }
  public function test_render_failure_keeps_previous_photo_and_published_status():void {
@@ -44,4 +44,17 @@ class LichtpuntIllustrationTest extends TestCase {
   try{$this->artisan('news:illustrations',['--all'=>true])->expectsOutputToContain('1 gemaakt')->assertExitCode(0);$this->assertSame('published',$a->fresh()->status);$this->assertTrue($a->fresh()->photo['generated']);$this->artisan('news:illustrations',['--all'=>true])->expectsOutputToContain('0 gemaakt, 1 al klaar')->assertExitCode(0);Http::assertSentCount(5);$this->assertNotEmpty(array_diff(File::glob(storage_path('app/illustration-backups/*.json')),$before));}
   finally{foreach(array_diff(File::glob(storage_path('app/illustration-backups/*.json')),$before) as $f)$this->files[]=$f;foreach(array_diff(File::glob(storage_path('app/illustrations-*.csv')),$reports) as $f)$this->files[]=$f;}
  }
+ public function test_photorealistic_flag_converts_paper_once_and_resumes_without_replacing_articles():void {
+  $a=$this->article();$a->photo=['style'=>LichtpuntIllustrationPrompt::STYLE];
+  $old=File::get(public_path('images/lichtpunt-zon.png')).'old-paper';$oldHash=hash('sha256',$old);$oldFile=public_path('news-images/'.$oldHash.'.png');File::ensureDirectoryExists(dirname($oldFile));File::put($oldFile,$old);$this->files[]=$oldFile;
+  $a->update(['photo'=>['url'=>'/news-images/'.$oldHash.'.png','sha256'=>$oldHash,'generated'=>true,'style'=>LichtpuntIllustrationPrompt::STYLE,'model'=>config('news_images.checkpoint'),'subject_hash'=>hash('sha256',app(LichtpuntIllustrationPrompt::class)->positive($a))]]);
+  $bytes=File::get(public_path('images/lichtpunt-zon.png')).'new-photo';$this->fakeServer($bytes);$this->files[]=public_path('news-images/'.hash('sha256',$bytes).'.png');
+  $before=File::glob(storage_path('app/illustration-backups/*.json'));$reports=File::glob(storage_path('app/illustrations-*.csv'));
+  try {
+   $this->artisan('news:illustrations',['--photorealistic'=>true,'--limit'=>1])->expectsOutputToContain('1 gemaakt')->assertExitCode(0);
+   $this->assertSame(LichtpuntIllustrationPrompt::PHOTO_STYLE,$a->fresh()->photo['style']);$this->assertSame('published',$a->fresh()->status);$this->assertDatabaseCount('articles',1);$this->assertFileExists($oldFile);
+   $this->artisan('news:illustrations',['--photorealistic'=>true,'--limit'=>1])->expectsOutputToContain('0 gemaakt, 1 al klaar')->assertExitCode(0);Http::assertSentCount(5);
+  }finally{foreach(array_diff(File::glob(storage_path('app/illustration-backups/*.json')),$before) as $f)$this->files[]=$f;foreach(array_diff(File::glob(storage_path('app/illustrations-*.csv')),$reports) as $f)$this->files[]=$f;}
+ }
+
 }

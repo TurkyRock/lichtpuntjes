@@ -91,17 +91,19 @@ class NewsEngagementController extends Controller {
         $stats=DB::transaction(function()use($article,$userId,$desired){
             $user=\App\Models\User::whereKey($userId)->lockForUpdate()->firstOrFail();abort_if($user->is_suspended,403);
             $a=Article::whereKey($article->id)->visible()->lockForUpdate()->firstOrFail();
+            $awarded=false;
             $likes=DB::table('user_article_likes')->where('article_id',$a->id)->where('user_id',$userId);
             if ($desired) {
                 $added=DB::table('user_article_likes')->insertOrIgnore([
                     'article_id'=>$a->id,'user_id'=>$userId,'created_at'=>now(),
                 ]);
                 if ($added) $a->increment('likes_count');
+                if((int)$a->author_id!==$userId)$awarded=app(\App\Services\Lightpoints::class)->award($user,'heart:article:'.now('Europe/Amsterdam')->toDateString().':'.$a->id,'heart',1,'Je gaf wat liefde met een hartje');
             } else {
                 $deleted=$likes->delete();
                 if ($deleted&&$a->likes_count>0) $a->decrement('likes_count');
             }
-            return ['likes_count'=>(int)$a->likes_count,'liked'=>$desired];
+            return ['likes_count'=>(int)$a->likes_count,'liked'=>$desired,'awarded'=>$awarded,'points_awarded'=>$awarded?1:0];
         });
         return response()->json($stats)->header('Cache-Control','private, no-store');
     }

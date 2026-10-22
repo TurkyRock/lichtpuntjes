@@ -25,7 +25,7 @@ class CloudflareIllustrationTest extends TestCase {
   try{
    $f=app(ArticlePhotoFinder::class);$f->attach($a);$f->attach($a);Http::assertSentCount(1);
    $this->assertSame('replacement',$a->fresh()->status);$this->assertSame(CloudflareIllustrator::MODEL,$a->fresh()->photo['model']);$this->assertTrue($f->current($a->fresh()));
-   Http::assertSent(fn($r)=>$r->method()==='POST'&&strlen($r['prompt'])<=2048&&str_contains($r['prompt'],'cut-paper')&&str_contains($r['prompt'],'Team celebrates')&&$r['steps']===4&&array_keys($r->data())===['prompt','steps']&&$r->hasHeader('Content-Type','application/json')&&$r->hasHeader('Authorization','Bearer test-cloudflare-secret')&&!str_contains($r->url(),'test-cloudflare-secret'));
+   Http::assertSent(fn($r)=>$r->method()==='POST'&&strlen($r['prompt'])<=2048&&str_contains($r['prompt'],'Photorealistic')&&str_contains($r['prompt'],'Team celebrates')&&$r['steps']===4&&array_keys($r->data())===['prompt','steps']&&$r->hasHeader('Content-Type','application/json')&&$r->hasHeader('Authorization','Bearer test-cloudflare-secret')&&!str_contains($r->url(),'test-cloudflare-secret'));
    $this->assertSame(1,json_decode(File::get($this->counter),true)['requests']);
   }finally{File::delete($file);}
  }

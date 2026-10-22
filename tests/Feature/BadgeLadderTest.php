@@ -16,10 +16,10 @@ class BadgeLadderTest extends TestCase {
  private function user():User {$u=User::create(['name'=>'Zonnetje','email'=>Str::uuid().'@example.com','password'=>'SunnyPassword123']);$u->forceFill(['email_verified_at'=>now(),'community_accepted_at'=>now(),'community_version'=>'2026-10-10','invite_code'=>bin2hex(random_bytes(16))])->save();return $u;}
  private function article():Article {return Article::create(['fingerprint'=>hash('sha256',(string)Str::uuid()),'source_title'=>'Goed nieuws','source_name'=>'Bron','source_url'=>'https://example.com/news','status'=>'published','category'=>'people','published_at'=>now(),'nl'=>['title'=>'Goed nieuws','teaser'=>'Mooi','body'=>['Mooi nieuws']],'en'=>['title'=>'Good news','teaser'=>'Nice','body'=>['Good news']]]);}
  private function ai(string $decision):void {$this->mock(GeminiJson::class,fn($m)=>$m->shouldReceive('ask')->andReturn(['decision'=>$decision,'confidence'=>.99,'reason'=>'Vriendelijke reactie.']));}
- public function test_sixteen_assets_and_homepage_share_the_catalog():void {
-  $stages=BadgeCatalog::stages('nl');$this->assertCount(16,$stages);$this->assertCount(16,array_unique(array_column($stages,'id')));
+ public function test_twenty_four_assets_and_homepage_share_the_catalog():void {
+  $stages=BadgeCatalog::stages('nl');$this->assertCount(24,$stages);$this->assertCount(24,array_unique(array_column($stages,'id')));
   foreach($stages as $b)$this->assertFileExists(public_path(ltrim($b['icon'],'/')));
-  $this->assertSame([5,15,150],array_column(BadgeCatalog::homePreview(),'points'));
+  $this->assertSame([5,50,850],array_column(BadgeCatalog::homePreview(),'points'));
   $this->get('/')->assertOk()->assertDontSee('id="earnTitle"',false);
   $response=$this->actingAs($this->user())->get('/profiel?section=badges')->assertOk();foreach(BadgeCatalog::homePreview() as $b)$response->assertSee($b['icon'])->assertSee($b['name']);
  }
@@ -27,7 +27,7 @@ class BadgeLadderTest extends TestCase {
   $u=$this->user();$p=app(Lightpoints::class);$last=0;
   foreach(BadgeCatalog::stages() as $i=>$b){
    if($b['points']>$last)$p->award($u,'boundary:'.$i,'test',$b['points']-$last,'Test');
-   $s=$p->summary($u);$this->assertSame($b['id'],$s['current']['id']);$this->assertSame($i+1,$s['earned_count']);$this->assertSame(16,$s['total_badges']);$last=$b['points'];
+   $s=$p->summary($u);$this->assertSame($b['id'],$s['current']['id']);$this->assertSame($i+1,$s['earned_count']);$this->assertSame(24,$s['total_badges']);$last=$b['points'];
   }
   $this->assertNull($s['next']);$this->assertSame(100,$s['progress']);
  }

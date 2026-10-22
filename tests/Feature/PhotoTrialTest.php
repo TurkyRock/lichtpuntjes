@@ -63,8 +63,8 @@ class PhotoTrialTest extends TestCase
   $this->artisan('news:photo-trial')->expectsOutputToContain('Herstelkopie opslaan mislukt')->assertExitCode(1);$this->assertNull($old->fresh()->hidden_at);$this->assertSame(1,Article::visible()->count());
  }
 
- public function test_existing_paper_images_remain_current_and_photo_prompt_is_opt_in():void {
-  $a=$this->story();$a->update(['photo'=>$this->photo($a,LichtpuntIllustrationPrompt::STYLE)]);$f=app(ArticlePhotoFinder::class);$prompt=app(LichtpuntIllustrationPrompt::class);
+ public function test_existing_paper_images_remain_current_but_new_images_default_to_photo():void {
+  $a=$this->story();$this->assertSame(LichtpuntIllustrationPrompt::PHOTO_STYLE,app(LichtpuntIllustrationPrompt::class)->style($a));$a->update(['photo'=>$this->photo($a,LichtpuntIllustrationPrompt::STYLE)]);$f=app(ArticlePhotoFinder::class);$prompt=app(LichtpuntIllustrationPrompt::class);
   $this->assertTrue($f->current($a));$this->assertStringContainsString('cut-paper',$prompt->positive($a));
   $a->update(['photo'=>array_merge($a->photo,['requested_style'=>LichtpuntIllustrationPrompt::PHOTO_STYLE])]);$this->assertFalse($f->current($a));
   $this->assertStringContainsString('Photorealistic',$prompt->positive($a));$this->assertStringNotContainsString('cut-paper',$prompt->positive($a));$this->assertStringNotContainsString('photorealistic',$prompt->negative($a));Http::assertNothingSent();
