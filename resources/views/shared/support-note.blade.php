@@ -1,2 +1,7 @@
-@php($supportEn=app()->getLocale()==='en')
-<aside class="support-home-note"><img class="support-note-sun" src="/images/support-paper-sun.svg" width="76" height="76" alt="" aria-hidden="true"><div class="support-note-copy"><h2 data-nav-nl="Help Lichtpuntjes stralen" data-nav-en="Help Lichtpuntjes shine">{{ $supportEn?'Help Lichtpuntjes shine':'Help Lichtpuntjes stralen' }}</h2><p data-nav-nl="Fijn dat je er bent. Wil je helpen deze plek steeds een beetje mooier te maken?" data-nav-en="Thank you for being here. Would you like to help make this place even brighter?">{{ $supportEn?'Thank you for being here. Would you like to help make this place even brighter?':'Fijn dat je er bent. Wil je helpen deze plek steeds een beetje mooier te maken?' }}</p></div><a class="support-button" data-account-link href="/steun?lang={{ app()->getLocale() }}" data-nav-nl="Ik help mee" data-nav-en="I would like to help">{{ $supportEn?'I would like to help':'Ik help mee' }} →</a></aside>
+@php($supportInvitation=request()->attributes->get('support_invitation'))
+@if($supportInvitation)
+<link rel="stylesheet" href="/css/support-invitations.css?v={{ filemtime(public_path('css/support-invitations.css')) }}">
+<div class="support-invitation-slot" data-support-invitation data-kind="{{ $supportInvitation['kind'] }}" data-placement="{{ $supportInvitation['placement'] }}" data-token="{{ csrf_token() }}" data-scope="{{ auth()->check()?'member-'.auth()->id():'guest' }}">
+@if($supportInvitation['kind']==='popup')<dialog class="support-invitation-dialog" aria-labelledby="supportInvitationTitle">@include('shared.support-invitation-card',['supportPopup'=>true])</dialog>@else @include('shared.support-invitation-card',['supportPopup'=>false]) @endif
+</div><script src="/js/support-invitations.js?v={{ filemtime(public_path('js/support-invitations.js')) }}" defer nonce="{{ request()->attributes->get('csp_nonce') }}"></script>
+@endif

@@ -1,0 +1,43 @@
+/* Category clothesline: colours decorate; aria-current and the explicit marker identify selection. */
+#stories{border:0;padding-top:0}
+#stories .news-toolbar.category-clothesline{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,1fr) 150px;align-items:start!important;flex-direction:initial!important;gap:18px;margin:0 0 22px;padding:28px 16px 14px;border:0;background:none;border-radius:0;overflow:visible}
+#stories .category-clothesline::before{content:"";position:absolute;inset:0;z-index:-2;background:url('/images/scrap-paper-ivory.webp') center/110% auto no-repeat;mask:url('/images/filter-card-shape.svg') center/100% 100% no-repeat;-webkit-mask:url('/images/filter-card-shape.svg') center/100% 100% no-repeat;filter:drop-shadow(0 3px 2px #684c2c20)}
+#stories .category-clothesline::after{content:"";position:absolute;top:5px;left:0;right:0;height:30px;pointer-events:none;background:url('/images/category-rope.svg') center/100% 100% no-repeat;z-index:2}
+#stories .category-clothesline .topic-control{display:block;min-width:0;width:100%;flex:none;grid-column:auto}
+#stories .category-clothesline .filters{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));align-items:stretch;gap:7px;margin:0;padding:0 2px 5px;width:100%;overflow:visible}
+#stories .category-clothesline .filters a{--tag-bg:url('/images/scrap-paper-ivory.webp');--tag-tone:transparent;position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-width:0;min-height:116px;margin:0;padding:15px 5px 9px;border:0;border-radius:0;background:none;color:#284d3c;text-decoration:none;font:650 13px/1.25 system-ui,-apple-system,Segoe UI,sans-serif;text-align:center;white-space:normal;filter:drop-shadow(0 3px 2px #584a3028)}
+#stories .category-clothesline .filters a::before{content:"";position:absolute;inset:0;z-index:-1;background-color:var(--tag-tone);background-image:var(--tag-bg);background-size:125% auto;background-position:center;background-repeat:no-repeat;mask:url('/images/category-tag-shape.svg') center/100% 100% no-repeat;-webkit-mask:url('/images/category-tag-shape.svg') center/100% 100% no-repeat;transform:rotate(var(--tag-angle,-.8deg))}
+#stories .category-clothesline .filters a:nth-child(even){--tag-angle:.9deg}
+#stories .category-clothesline .filters a[data-cat=media]{--tag-bg:url('/images/scrap-paper-yellow.webp')}
+#stories .category-clothesline .filters a:is([data-cat=sport],[data-cat=energy]){--tag-bg:url('/images/scrap-paper-sage.webp')}
+#stories .category-clothesline .filters a[data-cat=science]{--tag-bg:url('/images/button-paper-grain.svg');--tag-tone:#dfa37f}
+#stories .category-clothesline .filters a[data-cat=people]{--tag-bg:url('/images/button-paper-grain.svg');--tag-tone:#ebc6af}
+#stories .category-clothesline .filters a[aria-current=page]{--tag-tone:#245442;--tag-bg:url('/images/button-paper-grain.svg');color:#fffbed;background:none}
+#stories .category-clothesline .filter-icon{width:29px;height:29px;display:block;flex:none;filter:drop-shadow(0 1px 1px #153e3920)}
+.category-label{min-width:0;max-width:100%;overflow-wrap:normal;text-wrap:balance}
+#stories .category-clothesline .category-peg{position:absolute;top:-23px;left:calc(50% - 6px);width:13px;height:36px;display:block;z-index:3;pointer-events:none;background:url('/images/category-clothespin.svg') center/contain no-repeat;transform:rotate(5deg);filter:drop-shadow(1px 2px 1px #584a3033)}
+#stories .category-clothesline .filters a:nth-child(even) .category-peg{transform:rotate(-4deg)}
+#stories .category-clothesline .category-chosen{display:none;font:750 11px/1.2 system-ui,sans-serif;padding:3px 5px;color:#234d3b;background:#f6d77e;border-radius:3px;white-space:nowrap}
+#stories .category-clothesline .filters a[aria-current=page] .category-chosen{display:block}
+#stories .category-clothesline .filters a:hover{background:none;color:#153e39;filter:drop-shadow(0 4px 3px #584a3044)}
+#stories .category-clothesline .filters a[aria-current=page]:hover{color:#fffbed}
+#stories .category-clothesline .filters a:focus-visible{outline:3px solid #a56e23;outline-offset:4px}
+#stories .category-clothesline .sort-control{position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:12px;grid-column:auto;flex:none;min-height:116px;min-width:0;width:100%;margin:0;padding:16px 10px 12px;border:0;background:none}
+#stories .category-clothesline .sort-control::before{content:"";position:absolute;inset:0;z-index:-1;background:url('/images/scrap-paper-yellow.webp') center/125% auto no-repeat;mask:url('/images/category-tag-shape.svg') center/100% 100% no-repeat;-webkit-mask:url('/images/category-tag-shape.svg') center/100% 100% no-repeat;transform:rotate(-1deg);filter:drop-shadow(0 3px 2px #584a3028)}
+#stories .category-clothesline .sort-control label{font:700 14px/1.3 system-ui,sans-serif;text-align:center;color:#284d3c}
+#stories .category-clothesline #sortTabs{position:relative;isolation:isolate;display:block;width:100%;margin:0;padding:0;border:0;min-width:0}
+#stories .category-clothesline #sortTabs::before{content:"";position:absolute;inset:0;z-index:-1;background:#285947 url('/images/button-paper-grain.svg');mask:url('/images/filter-button-shape.svg') center/100% 100% no-repeat;-webkit-mask:url('/images/filter-button-shape.svg') center/100% 100% no-repeat}
+#stories .category-clothesline #newsSort{display:block;appearance:none;-webkit-appearance:none;width:100%;min-height:44px;border:0;border-radius:0;background:transparent;color:#fffbed;padding:10px 27px 10px 10px;font:650 13px/1.3 system-ui,sans-serif;cursor:pointer;box-sizing:border-box}
+#stories .category-clothesline #newsSort option{background:#fffbed;color:#244d3d}
+#stories .category-clothesline #sortTabs>svg{position:absolute;right:10px;top:18px;width:12px;height:8px;color:#fffbed;pointer-events:none}
+#stories .category-clothesline #newsSort:focus-visible{outline:3px solid #a56e23;outline-offset:3px}
+@media(max-width:1050px){#stories .news-toolbar.category-clothesline{grid-template-columns:minmax(0,1fr) 145px;gap:12px}#stories .category-clothesline .filters{grid-template-columns:repeat(8,104px);overflow-x:auto;scrollbar-width:thin;scrollbar-color:#b39a71 #efe5ce;overscroll-behavior-inline:contain;padding:24px 4px 8px;margin-top:-24px;scroll-padding-inline:6px}}
+@media(max-width:650px){#stories .news-toolbar.category-clothesline{grid-template-columns:minmax(0,1fr);padding:27px 12px 14px;gap:10px}#stories .category-clothesline .sort-control{flex-direction:row;align-items:center;justify-content:flex-end;min-height:60px;gap:15px;padding:10px 12px}#stories .category-clothesline .sort-control::before{background-size:120% auto;mask-image:url('/images/filter-button-shape.svg');-webkit-mask-image:url('/images/filter-button-shape.svg')}#stories .category-clothesline .sort-control>.category-peg{display:none}#stories .category-clothesline #sortTabs{width:170px;max-width:60%}#stories .category-clothesline .sort-control label{font-size:13px}}
+@media(prefers-reduced-motion:no-preference){#stories .category-clothesline .filters a{transition:filter .15s ease}}
+@media(forced-colors:active){#stories .category-clothesline::before,#stories .category-clothesline :is(.filters a,.sort-control,#sortTabs)::before{display:none}#stories .category-clothesline :is(.filters a,#newsSort){border:1px solid ButtonText;color:LinkText;background:Canvas;filter:none}#stories .category-clothesline .filters a[aria-current=page]{background:Highlight;color:HighlightText}}
+#stories .category-clothesline .filters a{--tag-tone:#f7f0dd}
+#stories .category-clothesline .filters a[data-cat=science]{--tag-tone:#dfa37f}
+#stories .category-clothesline .filters a[data-cat=people]{--tag-tone:#ebc6af}
+#stories .category-clothesline .filters a[aria-current=page]{--tag-tone:#245442}
+#stories .category-clothesline .filters a::before{background-size:cover}
+#stories .category-clothesline .sort-control::before{background-color:#f2d272;background-size:cover}

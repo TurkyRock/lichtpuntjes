@@ -1,0 +1,2 @@
+/* Shared materials and geometry for the public scrapbook and administration. */
+:root{--lp-ink:#244a3b;--lp-muted:#566c5c;--lp-board:#dce6d1;--lp-cream:#fff9e9;--lp-yellow:#f2d16d;--lp-green:#2e624b;--lp-clay:#d89a78;--lp-grain:url('/images/button-paper-grain.svg');--lp-paper-mask:url('/images/filter-card-shape.svg');--lp-button-mask:url('/images/filter-button-shape.svg');--lp-shadow:0 3px 5px #43593621}

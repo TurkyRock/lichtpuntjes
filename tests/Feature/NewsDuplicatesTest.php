@@ -102,20 +102,20 @@ class NewsDuplicatesTest extends TestCase
         $this->assertSame(1,Article::visible()->count()); Http::assertSentCount(1);
     }
 
-    public function test_daily_card_shows_every_paragraph_in_the_selected_language_and_escapes_html(): void
+    public function test_daily_card_shows_half_the_words_in_the_selected_language_and_escapes_html(): void
     {
         $story=['id'=>1,'cat'=>'nature','story_urls'=>['nl'=>'/nl/story','en'=>'/en/story'],
             'photo'=>['url'=>'/test.png','generated'=>false],
-            'nl'=>['title'=>'NL titel','teaser'=>'TEASER NIET NODIG','body'=>['NL eerste','NL laatste <script>alert(1)</script>']],
-            'en'=>['title'=>'EN title','teaser'=>'SHORT ONLY','body'=>['EN first','EN final']]];
+            'nl'=>['title'=>'NL titel','teaser'=>'TEASER NIET NODIG','body'=>['<script>eerste</script> tweede derde vierde vijfde zesde','zevende achtste negende tiende elfde twaalfde']],
+            'en'=>['title'=>'EN title','teaser'=>'SHORT ONLY','body'=>['EN one two three four five','EN six seven eight nine ten']]];
         $render=fn($locale)=>view('homepage.highlights',['highlights'=>[['kind'=>'daily','story'=>$story]],
             'locale'=>$locale,'category'=>'all','feed'=>['pagination'=>['current_page'=>1]]])->render();
         $nl=$render('nl'); $en=$render('en');
-        $this->assertStringContainsString('<p>NL eerste</p>',$nl);
-        $this->assertStringContainsString('NL laatste &lt;script&gt;',$nl);
+        $this->assertStringContainsString('&lt;script&gt;eerste&lt;/script&gt; tweede derde vierde vijfde zesde…',$nl);
+        $this->assertStringNotContainsString('zevende',$nl);
         $this->assertStringNotContainsString('<script>',$nl);
         $this->assertStringNotContainsString('TEASER NIET NODIG',$nl);
-        $this->assertStringContainsString('<p>EN final</p>',$en);
-        $this->assertStringNotContainsString('NL eerste',$en);
+        $this->assertStringContainsString('<p>EN one two three four five…</p>',$en);
+        $this->assertStringNotContainsString('EN six',$en);
     }
 }

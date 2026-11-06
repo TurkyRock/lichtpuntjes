@@ -90,6 +90,19 @@ class CloudflareIllustrator {
   if(app()->runningInConsole()&&!app()->runningUnitTests())fwrite(STDOUT,$message.PHP_EOL);
   Sleep::for($seconds)->seconds();
  }
+ /** One small-moment request; share the existing account-wide request cap. */
+ public function generateSmallMoment(string $prompt):string {
+  if(strlen($prompt)>2048)throw new NewsServiceException('Momentjesprompt is te lang.');
+  $url=$this->url('run/'.self::MODEL);$client=$this->client()->asJson();
+  $this->pause(10,'Cloudflare: korte pauze voor een momentjesafbeelding.');
+  $this->reserve();
+  try{$r=$client->timeout(90)->post($url,['prompt'=>$prompt,'steps'=>4]);}
+  catch(\Throwable $e){throw new NewsServiceException('Momentjesafbeelding tijdelijk niet bereikbaar.');}
+  $this->successful($r);$encoded=$r->json('result.image');
+  $bytes=is_string($encoded)&&strlen($encoded)<=16*1024*1024?base64_decode($encoded,true):false;
+  if(!is_string($bytes)||strlen($bytes)>12*1024*1024)throw new NewsServiceException('Geen bruikbare momentjesafbeelding ontvangen.');
+  return $bytes;
+ }
  public function generate(Article $a):array {
   $url=$this->url('run/'.self::MODEL);$client=$this->client()->asJson();$prompt=app(LichtpuntIllustrationPrompt::class);
   $context=$prompt->positive($a,450);

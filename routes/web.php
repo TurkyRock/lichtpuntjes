@@ -1,4 +1,5 @@
 <?php
+require __DIR__.'/beta.php';
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -86,13 +87,17 @@ Route::middleware(['auth',CommunityActive::class])->group(function(){
  Route::get('/email/verify/{id}/{hash}',function(EmailVerificationRequest $r){$r->fulfill();return redirect('/profiel')->with('status','E-mail bevestigd. Laat het zonnetje maar schijnen!');})->middleware(['signed','throttle:6,1'])->name('verification.verify');
  Route::post('/email/verification-notification',[Accounts::class,'resend'])->middleware('throttle:3,1')->name('verification.send');
  Route::post('/news/{article}/like',[News::class,'like'])->whereNumber('article')->middleware('throttle:30,1');
- Route::post('/news/{article}/comments',[Community::class,'store'])->whereNumber('article')->middleware(['verified','throttle:4,1']);
+ Route::post('/news/{article}/comments',[Community::class,'store'])->whereNumber('article')->middleware(['verified','throttle:4,1,comment-create:']);
  Route::post('/news/{article}/share',[Community::class,'share'])->whereNumber('article')->middleware(['verified','throttle:10,1,news-share:']);
  Route::post('/beheer/dagverhaal/anders',[\App\Http\Controllers\ArticleAdminController::class,'daily'])->middleware(['verified','throttle:12,1,daily-admin:']);
  Route::post('/beheer/dagverhaal/{article}',[\App\Http\Controllers\ArticleAdminController::class,'daily'])->whereNumber('article')->middleware(['verified','throttle:12,1,daily-admin:']);
  Route::get('/beheer/artikelen',[\App\Http\Controllers\ArticleAdminController::class,'index'])->middleware('verified');
  Route::post('/beheer/artikelen/{article}/zichtbaarheid',[\App\Http\Controllers\ArticleAdminController::class,'visibility'])->whereNumber('article')->middleware(['verified','throttle:60,1,article-admin:']);
- Route::get('/beheer',[Admin::class,'index'])->middleware('verified');
+ Route::get('/beheer',[\App\Http\Controllers\AdminWorkspaceController::class,'home'])->middleware('verified');
+ Route::get('/beheer/reacties',[Admin::class,'index'])->middleware('verified');
+ Route::get('/beheer/momentjes',[\App\Http\Controllers\AdminWorkspaceController::class,'moments'])->middleware('verified');
+ Route::get('/beheer/profielfotos',[\App\Http\Controllers\AdminWorkspaceController::class,'photos'])->middleware('verified');
+ Route::get('/beheer/donaties',[\App\Http\Controllers\AdminDonationsController::class,'index'])->middleware('verified');
  Route::post('/beheer/comments/{comment}',[Admin::class,'decide'])->whereNumber('comment')->middleware(['verified','throttle:60,1']);
  Route::post('/beheer/users/{user}',[Admin::class,'suspend'])->whereNumber('user')->middleware(['verified','throttle:20,1']);
 });
@@ -100,3 +105,8 @@ Route::middleware(['auth',CommunityActive::class])->group(function(){
 });
 
 require __DIR__.'/support.php';
+
+require __DIR__.'/account-security.php';
+require __DIR__.'/moment-images.php';
+require __DIR__.'/article-collage.php';
+require __DIR__.'/comment-conversations.php';

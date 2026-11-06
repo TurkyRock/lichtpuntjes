@@ -93,7 +93,14 @@ PROMPT;
                     ],JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR)]]]],
                     'generationConfig'=>['temperature'=>0.2,'responseMimeType'=>'application/json','responseSchema'=>$schema],
                 ]);
-        } catch (\Throwable $e) { throw new RuntimeException('Gemini verbinding mislukt.'); }
+        } catch (\Illuminate\Http\Client\ConnectionException $e) {
+            $a->decrement('attempts');
+            throw new GeminiTemporaryException('Gemini verbinding mislukt of time-out.',0,$e);
+        }
+        if(in_array($response->status(),[408,500,502,503,504],true)){
+            $a->decrement('attempts');
+            throw new GeminiTemporaryException('Gemini HTTP '.$response->status().'.');
+        }
         if ($response->status()===429) $a->decrement('attempts'); // Quota is geen inhoudelijke mislukking.
         if (!$response->successful()) throw new RuntimeException('Gemini HTTP '.$response->status().'.');
         if ($response->json('candidates.0.finishReason')!=='STOP') throw new RuntimeException('Gemini gaf geen complete samenvatting.');

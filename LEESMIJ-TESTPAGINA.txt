@@ -1,0 +1,32 @@
+JOUW LICHTPUNTJE - TESTPAGINA MET TERUGBLIK
+
+INSTALLATIE
+Pak dit pakket uit over je bestaande project lichtpunt-schoon en vervang de gelijknamige bestanden. Maak vooraf een reservekopie van project en database.
+Voer in je projectmap uit:
+php artisan migrate
+php artisan optimize:clear
+
+WAT IS NIEUW?
+Als negende en laatste onderdeel staat nu Jouw terugblik in de test:
+- Wat vond je goed aan Jouw Lichtpuntje?
+- Wat vond je minder goed of onduidelijk?
+- Zou je terugkomen? Ja, misschien of nee.
+- Waarom zou je wel, misschien of niet terugkomen?
+- Als je een ding mocht verbeteren, wat zou dat zijn? (optioneel)
+
+De antwoorden worden automatisch als concept bewaard. Kies bij Ben je klaar met je terugblik voor Mijn terugblik is ingevuld als je klaar bent. De eerste vier vragen moeten dan ingevuld zijn. Niets aan te merken? Dat mag de tester gewoon opschrijven. Bewust overslaan kan ook.
+Daarna kan de tester de gehele test afronden.
+
+Bestaande antwoorden en testlinks blijven behouden. Reeds afgeronde testrondes worden heropend zodat testers de terugblik kunnen toevoegen; ze moeten daarna opnieuw afronden.
+Vernieuw na de installatie een eventueel nog openstaande testpagina.
+
+BEKIJKEN EN ANALYSEREN
+Ga als beheerder naar /beheer/testgroep. De terugblik staat bij de antwoorden van iedere tester. In de CSV-download staan de vijf vragen in afzonderlijke kolommen.
+Antwoorden staan in de database van deze website; de terugblik staat bij beta_answers in het veld summary. Feedback wordt niet naar AI gestuurd.
+
+TESTERS
+Een persoonlijke testlink maak je via /beheer/testgroep. Er zijn maximaal drie testpersonen. Een link geldt 14 dagen en kan in beheer vervangen of ingetrokken worden.
+Een tester gebruikt /testgroep en kan met Open de website een tweede venster openen. De gewone website blijft toegankelijk zoals voorheen.
+Dit pakket bevat de volledige testpagina, inclusief de eerdere versie. Het zet de website niet online en bevat geen gebruikersdatabase of .env-bestand.
+
+Gecontroleerd met automatische tests en op zes schermbreedtes, inclusief mobiel. Opslag van concepten, terugkeerredenen, het behouden van oude antwoorden, afscherming en CSV-export getest.

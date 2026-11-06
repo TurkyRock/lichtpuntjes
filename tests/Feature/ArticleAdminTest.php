@@ -27,8 +27,8 @@ class ArticleAdminTest extends TestCase {
   $a=$this->article(['status'=>'rejected']);$this->actingAs($this->user())->post('/beheer/artikelen/'.$a->id.'/zichtbaarheid',['hidden'=>false])->assertUnprocessable();$this->assertSame('rejected',$a->fresh()->status);
   $u=$this->user(false);$u->forceFill(['is_suspended'=>true])->save();$a=$this->article(['origin'=>'community','author_id'=>$u->id,'hidden_at'=>now()]);$this->post('/beheer/artikelen/'.$a->id.'/zichtbaarheid',['hidden'=>false])->assertUnprocessable();$this->assertNotNull($a->fresh()->hidden_at);
  }
- public function test_admin_entry_is_in_profile_not_main_menu_and_titles_are_escaped():void {
-  $this->actingAs($this->user());$r=$this->get('/')->assertOk();$header=explode('</header>',$r->getContent())[0];$this->assertStringNotContainsString('href="/beheer?',$header);$this->get('/profiel')->assertSee('href="/beheer/artikelen?lang=nl"',false);
+ public function test_admin_entry_is_hidden_from_all_account_menus_and_titles_are_escaped():void {
+  $this->actingAs($this->user());$r=$this->get('/')->assertOk();$header=explode('</header>',$r->getContent())[0];$this->assertStringNotContainsString('href="/beheer?',$header);$this->get('/profiel')->assertDontSee('href="/beheer',false);
   $this->article(['nl'=>['title'=>'<script>alert(1)</script>']]);$r=$this->get('/beheer/artikelen')->assertSee('&lt;script&gt;alert(1)&lt;/script&gt;',false);$this->assertStringNotContainsString('<script>alert(1)</script>',$r->getContent());
  }
 }

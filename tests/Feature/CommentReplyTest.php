@@ -48,6 +48,6 @@ class CommentReplyTest extends TestCase {
   for($i=1;$i<=5;$i++)Comment::create(['user_id'=>$u->id,'article_id'=>$a->id,'body'=>'Mijn unieke reactie nummer '.$i,'status'=>'rejected']);
   $this->actingAs($u)->get('/profiel?lang=en&section=comments')->assertOk()->assertSee('Mijn unieke reactie nummer 5')->assertSee('Mijn unieke reactie nummer 3')->assertDontSee('Mijn unieke reactie nummer 2')->assertDontSee('<details class="ladder-collection">',false)->assertSee('page=2',false)->assertSee('section=comments',false)->assertSee('lang=en',false);
   $this->get('/profiel?lang=en&section=comments&page=2')->assertOk()->assertSee('Mijn unieke reactie nummer 1')->assertSee('data-account-section="comments"',false);
-  $this->get('/profiel?section=badges')->assertOk()->assertSee('<details class="ladder-collection">',false)->assertDontSee('Mijn unieke reactie nummer 5');
+  $this->get('/profiel?section=badges')->assertOk()->assertSee('badge-path-grid',false)->assertDontSee('Mijn unieke reactie nummer 5');
  }
 }

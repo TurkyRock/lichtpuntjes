@@ -1,0 +1,101 @@
+JOUW LICHTPUNTJE — DE ZONNESCHIJNCENTRALE — 23 oktober 2026
+
+INSTALLATIE
+Maak een reservekopie van je bestanden en database. Pak deze zip uit over:
+C:\Users\e_tur\Herd\lichtpunt-schoon
+Overschrijf de meegeleverde bestanden en voer in die map uit:
+
+php artisan migrate --force
+php artisan optimize:clear
+
+Vernieuw de browser met Ctrl+F5. Log in met je bestaande beheeraccount en
+ga zelf naar http://lichtpunt-schoon.test/beheer.
+Op je online site gebruik je natuurlijk je eigen domein met /beheer.
+Er staat nergens meer een beheermenu bij Mijn account of in de hoofdheader.
+Er wordt geen nieuw beheeraccount aangemaakt en er worden geen rollen gewijzigd.
+
+Dit pakket bevat ook de eerdere wijzigingen voor Mijn gegevens, veilig wijzigen
+van het e-mailadres en de Lichtpuntjespost-bijdragenpagina. De migratie hierboven
+is nodig als je de vorige e-mailupdate nog niet hebt geïnstalleerd.
+Dit is een aanvulling op de bestaande website, geen volledige installatie.
+Je .env, database, uploads en vendor worden niet overschreven.
+
+BEHEER
+/beheer: eigen startoverzicht met aantallen, werkbakken en technische signalen.
+/beheer/reacties: reacties, menselijke herbeoordelingen, gesprekcontext, likes
+en antwoorden. Geen actieve artikelknop voor een inmiddels verborgen artikel.
+/beheer/artikelen: nieuws en eigen artikelen, zoeken, status/categoriegegevens,
+geplaatste en verborgen artikelen, importfouten en andere verwerkingsstatussen,
+verbergen/terugplaatsen en het lichtpuntje van de dag kiezen.
+/beheer/lichtpuntjes: alle te beoordelen verhalen, meldingen, afzonderlijke
+statusbakken, AI-oordeel/storingen, feedback en beoordelingsgeschiedenis.
+/beheer/momentjes: openbare momentjes beoordelen, geplaatst en afgewezen bekijken.
+/beheer/profielfotos: centrale fotobak, portretcontrole en beoordelen.
+/beheer/gebruikers: zoeken en filteren, gebruikersdetails per tabblad,
+schorsen/herstellen met verplichte reden en een moderatielog.
+/beheer/donaties: bruto/netto ontvangen, deze maand, aantal betalingen, actieve
+maandelijkse steun, terugbetalingen/terugboekingen en laatste betalingen.
+
+GEBRUIKERSDETAILS
+Je ziet eerst het overzicht met naam, e-mail, accountstatus en bijdragentellers.
+Foto's, openbare momentjes, reacties, verhalen, activiteit, moderatielog,
+gegevensverzoeken en donaties staan op aparte tabbladen.
+Privémomentjes verschijnen nergens in beheer, ook niet met een bekende ID.
+Na schorsen of herstellen worden bestaande sessies ingetrokken. Beheeraccounts
+kun je niet schorsen met deze bediening. Een schorsing zegt geen donaties op.
+Gebruikers passen hun eigen gegevens nog steeds zelf aan bij Mijn gegevens.
+
+OPGERUIMD
+De tijdelijke Beeldproef-route is verwijderd. De bestaande artikelbeelden en
+het genereren van de knipselbeelden blijven gewoon werken.
+Privacyverzoeken heeft geen eigen menuoptie meer. Bestaande aanvragen voor
+inzage, correctie of verwijderen zijn onder Gebruikers > Gegevensverzoeken
+gebundeld. Zo blijft de bestaande aanvraagfunctie van Mijn gegevens bruikbaar.
+Afhandelen markeert een verzoek; het verwijdert nooit automatisch een account.
+De oude adressen /beheer/privacy en /beheer/bijdragen verwijzen door.
+Oude bladwijzers naar /beheer?status=... blijven werken als reactiefilter.
+
+DONATIES
+Elke individuele incasso is een betaling in de geschiedenis, ook als een
+maandelijkse steunafspraak al langer bestaat. Alleen status paid MET betaaldatum
+telt mee. Bruto min terugbetaald/teruggeboekt geeft netto; nooit lager dan nul
+per betaling. Alle bedragen zijn vóór betaalverwerkingskosten.
+Live- en testbetalingen zijn strikt gescheiden, met een zichtbare testmelding.
+Periode en naamfilter gelden voor totalen en betalingsgeschiedenis. Het
+statusfilter geldt alleen voor de lijst. Datums gebruiken Nederlandse dagen.
+De maandteller is de doorsnede van deze kalendermaand met de gekozen periode.
+Steunafspraken tonen de huidige stand; actieve afspraken zijn geen gegarandeerde
+inkomsten. Zonder account wordt een gever niet als een benoemde persoon geteld.
+Bij één geselecteerde gebruiker blijven de historie en steunafspraken bij die
+gebruiker. Zonder zo'n selectie zijn afspraken en nog niet betaalde verzoeken
+van de hele gekozen omgeving te zien, los van zoeknaam/periode.
+Er worden bij het openen geen Mollie-aanvragen gedaan en geen betalingen gestart.
+De bestaande webhook en synchronisatie blijven verantwoordelijk voor bevestiging.
+Mollie blijft leidend voor de financiële administratie.
+
+TOEGANG EN VORM
+Alleen ingelogde, actieve beheeraccounts met bevestigd e-mailadres hebben toegang.
+Een gewoon account krijgt geen toegang door de link te kennen. De bestaande
+wachtwoordbevestiging voor beheer blijft gelden; er is geen 2FA toegevoegd.
+Het verbergen van de menulink is alleen een keuze voor de navigatie.
+Alle acties blijven POST met CSRF, autorisatie, validatie en bestaande limieten.
+Beheer heeft dezelfde inhoudsbreedte als de website, papierkaarten, echte
+knipselknoppen en gewone teksten op 15 px. Tabellen schuiven op kleine schermen
+binnen hun eigen vak; de pagina zelf blijft op de normale breedte.
+
+TECHNISCHE SIGNALEN
+Het startoverzicht toont wachtrijtaken, mislukte taken, importfouten en verhalen
+die op afbeeldingen wachten, plus mailconfiguratie en betaalomgeving.
+De wachtrijteller kan niet bewijzen dat de worker draait. Er worden geen ruwe
+foutmeldingen, taakinhoud of geheime configuratiewaarden getoond. Controleer bij
+storingen het serverlog en de bestaande worker/scheduler. De pagina start
+geen import, AI-generatie, betalingen of herhalingen van fouttaken.
+
+VALIDATIE
+147 gerichte featuretests geslaagd in drie groepen (100 + 19 + 28), 1213 assertions.
+Dit omvat beheer, rollen, moderatie, schorsing, account/e-mailbeveiliging,
+privacyverzoeken, donaties, maandelijkse incasso's, steunuitnodigingen en reacties.
+95 browsercontroles: 19 beheerschermen op 320, 390, 768, 1024 en 1366 px.
+Geen echte e-mails, betalingen of AI-aanvragen tijdens de controles.
+De eerdere niet-reproduceerbare 500-melding van de eigen installatie is hiermee
+niet afzonderlijk als opgelost aangemerkt; daarvoor blijft de concrete fout nodig.

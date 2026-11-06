@@ -21,7 +21,7 @@ class BadgeLadderTest extends TestCase {
   foreach($stages as $b)$this->assertFileExists(public_path(ltrim($b['icon'],'/')));
   $this->assertSame([5,50,850],array_column(BadgeCatalog::homePreview(),'points'));
   $this->get('/')->assertOk()->assertDontSee('id="earnTitle"',false);
-  $response=$this->actingAs($this->user())->get('/profiel?section=badges')->assertOk();foreach(BadgeCatalog::homePreview() as $b)$response->assertSee($b['icon'])->assertSee($b['name']);
+  $response=$this->actingAs($this->user())->get('/profiel?section=badges')->assertOk();foreach(BadgeCatalog::homePreview() as $b)$response->assertSee('paper-badge--'.$b['id'],false)->assertSee($b['name']);
  }
  public function test_all_thresholds_and_final_progress():void {
   $u=$this->user();$p=app(Lightpoints::class);$last=0;
@@ -33,7 +33,7 @@ class BadgeLadderTest extends TestCase {
  }
  public function test_profile_displays_ladder_and_private_rejection_reason():void {
   $u=$this->user();$c=Comment::create(['user_id'=>$u->id,'article_id'=>$this->article()->id,'body'=>'Oude reactie','status'=>'rejected','ai_reason'=>'Een persoonlijke aanval hoort hier niet.']);
-  $this->actingAs($u)->get('/profiel?section=badges')->assertOk()->assertSee('Lichtpuntenladder')->assertDontSee('Een persoonlijke aanval hoort hier niet.');
+  $this->actingAs($u)->get('/profiel?section=badges')->assertOk()->assertSee('badge-path-grid',false)->assertDontSee('Een persoonlijke aanval hoort hier niet.');
   $this->get('/profiel?section=comments')->assertOk()->assertSee('Een persoonlijke aanval hoort hier niet.')->assertSee('/comments/'.$c->id.'/revise');
   $this->actingAs($this->user())->get('/profiel?section=comments')->assertOk()->assertDontSee('Een persoonlijke aanval hoort hier niet.');
   $this->getJson('/news/'.$c->article_id.'/comments')->assertOk()->assertDontSee('Een persoonlijke aanval hoort hier niet.');
@@ -59,7 +59,7 @@ class BadgeLadderTest extends TestCase {
   $this->assertSame('rejected',$c->fresh()->status);$this->assertSame(0,app(Lightpoints::class)->summary($u)['points']);
  }
  public function test_english_profile_uses_the_same_assets_and_localised_titles():void {
-  $this->actingAs($this->user())->get('/profiel?lang=en&section=badges')->assertOk()->assertSee('The bright points ladder')->assertSee('/images/badges/smile.svg')->assertSee('Smile starter');
+  $this->actingAs($this->user())->get('/profiel?lang=en&section=badges')->assertOk()->assertSee('Your badge collection')->assertSee('paper-badge--smile',false)->assertSee('Smile starter');
  }
  public function test_demo_account_is_local_only_idempotent_and_not_admin():void {
   $this->article();$this->app->instance('env','production');$this->artisan('lichtpunt:demo-account')->assertExitCode(1);$this->assertDatabaseCount('users',0);

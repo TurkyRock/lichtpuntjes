@@ -1,0 +1,9 @@
+/* Individual icons are displayed from a lossless, transparent paper-art atlas. */
+.paper-badge{display:inline-block;width:80px;height:80px;flex:none;background-image:url('/images/badges/paper-atlas-v1.png');background-size:400% 600%;background-repeat:no-repeat;vertical-align:middle}
+.paper-badge--sprout{background-position:0 0}.paper-badge--switch{background-position:33.333333% 0}.paper-badge--smile{background-position:66.666667% 0}.paper-badge--frog{background-position:100% 0}
+.paper-badge--beacon{background-position:0 20%}.paper-badge--post{background-position:33.333333% 20%}.paper-badge--record{background-position:66.666667% 20%}.paper-badge--cannon{background-position:100% 20%}
+.paper-badge--shoe{background-position:0 40%}.paper-badge--watering{background-position:33.333333% 40%}.paper-badge--lamp{background-position:66.666667% 40%}.paper-badge--kettle{background-position:100% 40%}
+.paper-badge--deckchair{background-position:0 60%}.paper-badge--tin{background-position:33.333333% 60%}.paper-badge--spotlight{background-position:66.666667% 60%}.paper-badge--trophy{background-position:100% 60%}
+.paper-badge--balloon{background-position:0 80%}.paper-badge--toast{background-position:33.333333% 80%}.paper-badge--umbrella{background-position:66.666667% 80%}.paper-badge--train{background-position:100% 80%}
+.paper-badge--windmill{background-position:0 100%}.paper-badge--rocket{background-position:33.333333% 100%}.paper-badge--lighthouse{background-position:66.666667% 100%}.paper-badge--orbit{background-position:100% 100%}
+.account-scrapbook .paper-stat-badge>.paper-badge{float:right;width:65px;height:65px;margin:0 0 6px 8px}

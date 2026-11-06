@@ -18,7 +18,7 @@ class PrivacyTest extends TestCase {
   $this->get('/beheer/privacy')->assertForbidden();
   $this->post('/beheer/privacy/1',['handled'=>1])->assertForbidden();
   $a->forceFill(['is_admin'=>true])->save();
-  $this->actingAs($a)->get('/beheer/privacy')->assertOk()->assertSee('Please remove my account.');
+  $this->actingAs($a)->get('/beheer/privacy?lang=nl')->assertRedirect('/beheer/gebruikers?filter=privacy&lang=nl');$this->get('/beheer/gebruikers?filter=privacy')->assertOk()->assertSee('Please remove my account.');
   $this->post('/beheer/privacy/1',['handled'=>1])->assertRedirect();
   $this->assertNotNull(DB::table('privacy_requests')->value('resolved_at'));
  }

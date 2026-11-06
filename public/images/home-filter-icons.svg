@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="all" viewBox="0 0 32 32"><path d="m2 15 13-12 14 12-3 3-2-2v14h-8V20h-5v10H5V16z" fill="currentColor"/><path d="m25 1 2 1-2 5-2-1zM28 10l4-1v2l-4 1z" fill="#efc650"/></symbol>
+<symbol id="community" viewBox="0 0 32 32"><path d="m5 20 16-18 7 6-17 18-8 3z" fill="#bd7956"/><path d="m5 20 6 6-8 3z" fill="#ecd6ad"/><path d="m3 25 3 3-3 1z" fill="#344b39"/><path d="m20 3 2-2 7 6-2 2z" fill="#dfac86"/><path d="m8 20 14-15" stroke="#f9e7ca" stroke-width="1.2"/></symbol>
+<symbol id="media" viewBox="0 0 32 32"><path d="m3 4 25-1 2 3-1 23-26-1z" fill="currentColor"/><path d="m13 9 11 7-11 7z" fill="#eee8c5"/><path d="m5 6 2-1v20H5z" fill="#fffdf4" opacity=".15"/></symbol>
+<symbol id="sport" viewBox="0 0 32 32"><path d="m19 1 4 1 1 4-3 3-4-1-1-4zM13 10l7-1 5 7 6 1-1 4-8-2-4-5-3 8 7 4 1 6h-4l-1-4-8-5-1-5-3 4H1v-4h3l5-7zM9 23l4 3-7 6H1z" fill="currentColor"/></symbol>
+<symbol id="energy" viewBox="0 0 32 32"><path d="M28 2 26 18 20 25 10 27 4 21 3 14 10 7Z" fill="currentColor"/><path d="M3 30 24 8" fill="none" stroke="#9db18c" stroke-width="1.3"/><path d="m9 21 9-1m-3-5 1-6" fill="none" stroke="#9db18c" stroke-width=".8"/></symbol>
+<symbol id="nature" viewBox="0 0 32 32"><path d="M11 13 7 11 7 6 12 2 18 1 23 5 24 10 21 13 27 15 29 21 26 27 19 28v4h-5v-5H7l-5-5 1-6 5-3z" fill="currentColor"/><path d="m16 12 1 18m-1-8 6-4" fill="none" stroke="#9aab8d" stroke-width="1" opacity=".5"/></symbol>
+<symbol id="science" viewBox="0 0 32 32"><path d="M10 1h12v4h-2v8l10 16-2 3H3l-2-3 11-16V5h-2zm6 4v10L8 27h16l-8-12V5z" fill="currentColor"/><path d="m10 22 12-1 4 8H6z" fill="currentColor"/><path d="m13 23 2-1 1 2-2 1zM19 26h2v2h-2z" fill="#dfdcb5"/></symbol>
+<symbol id="people" viewBox="0 0 32 32"><path d="m13 1 6 1 2 4-2 5-5 1-4-3V4zM11 14l7-1 5 4v14H9V18zM3 7l4-1 3 4-1 4-4 1-3-4zM0 19l5-3 3 2-2 5v8H0zM25 6l5 1 2 4-3 4-4-1-2-4zM25 17l6 2 1 12h-7V22l-2-3z" fill="currentColor"/></symbol>
+<symbol id="newest" viewBox="0 0 32 32"><path d="M16 2 24 4 30 11 30 21 24 28 15 31 6 27 1 19 2 10 8 4Zm0 3-7 2-5 6 1 8 6 6 8 1 7-6 1-9-5-6z" fill="currentColor"/><path d="m15 7 3 1v9h6v3H14z" fill="currentColor"/></symbol>
+<symbol id="reads" viewBox="0 0 32 32"><path d="m2 23 6-1v9H2zM11 16l6-1v16h-6zM21 5l7-1v27h-7z" fill="currentColor"/></symbol>
+<symbol id="heart" viewBox="0 0 32 32"><path d="m16 8 4-5 6-1 5 5v7l-5 8-10 10L5 22 0 14l1-7 5-5 6 1z" fill="currentColor"/></symbol>
+<symbol id="likes" viewBox="0 0 32 32"><path d="m16 8 4-5 6-1 5 5v7l-5 8-10 10L5 22 0 14l1-7 5-5 6 1z" fill="currentColor"/></symbol>
+</defs></svg>

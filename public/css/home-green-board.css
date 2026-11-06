@@ -1,0 +1,92 @@
+/* One sage paper board connects the welcome, news, clothesline, moments and maker's story. */
+.home-unified{background:#faf9f3;color:var(--lp-ink)}
+.home-unified .home-paper-board{position:relative;isolation:isolate;margin:14px 0 22px;padding:15px 18px 20px;min-width:0;background:var(--lp-board) var(--lp-grain);border-radius:24px;box-shadow:var(--lp-shadow)}
+.home-unified .home-paper-board>.paper-welcome{margin:0 0 9px;background:none;padding:0;border-radius:0}
+.home-unified .paper-welcome .welcome-paper{padding:26px 11% 30px}
+/* Approved proposal 2: wide day photo above the caption; two compact cards alongside. */
+.home-unified .daily-highlights{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);grid-template-rows:repeat(2,minmax(0,1fr));align-items:stretch;gap:18px;margin:0 0 24px;padding-top:8px}
+.home-unified .daily-highlights .highlight-card{display:grid;grid-template-columns:37% minmax(0,1fr);grid-template-rows:auto;position:relative;min-width:0;min-height:0;padding:11px;align-self:stretch;overflow:visible}
+.home-unified .daily-highlights .highlight-card::before,.home-unified .daily-highlights .highlight-card::after{mask:url('/images/highlight-sheet-edge.svg') center/100% 100% no-repeat;-webkit-mask:url('/images/highlight-sheet-edge.svg') center/100% 100% no-repeat}
+.home-unified .daily-highlights .highlight-card::before{inset:0;transform:none;background-color:#d89a78}
+.home-unified .daily-highlights .highlight-card::after{inset:5px;transform:none;background-color:var(--lp-cream)}
+.home-unified .daily-highlights :is(.highlight-kind-likes,.highlight-kind-likes_total)::before{background-color:var(--lp-board)}
+.home-unified .daily-highlights .highlight-main::before{background-color:var(--lp-yellow)}
+.home-unified .daily-highlights .highlight-main{grid-column:1;grid-row:1/span 2;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;min-height:0;padding:11px}
+.home-unified .daily-highlights .highlight-card .highlight-art{position:relative;isolation:isolate;display:block;align-self:stretch;padding:0;height:auto;min-height:0;max-height:none;aspect-ratio:auto;background:none;overflow:visible;mask:none;-webkit-mask:none;filter:drop-shadow(0 2px 2px #5e53352c)}
+.home-unified .daily-highlights .highlight-main .highlight-art{aspect-ratio:auto;height:auto;min-height:0}
+.home-unified .daily-highlights .highlight-art::before{content:"";position:absolute;inset:0;pointer-events:none;background:var(--lp-cream) var(--lp-grain);mask:var(--lp-paper-mask) center/100% 100% no-repeat;-webkit-mask:var(--lp-paper-mask) center/100% 100% no-repeat}
+.home-unified .daily-highlights .highlight-card .highlight-art>a{position:absolute;display:block;inset:7px;width:auto;height:auto;min-height:0;max-height:none;aspect-ratio:auto;overflow:hidden;background:#ecebdc;mask:var(--lp-paper-mask) center/100% 100% no-repeat;-webkit-mask:var(--lp-paper-mask) center/100% 100% no-repeat}
+.home-unified .daily-highlights .highlight-card .highlight-art img{position:absolute;inset:0;display:block;width:100%;height:100%;min-height:0;max-height:none;aspect-ratio:auto;object-fit:cover;object-position:50% 40%}
+.home-unified .daily-highlights .highlight-card .highlight-copy{display:flex;flex-direction:column;justify-content:flex-start;min-width:0;max-width:100%;padding:6px 18px 6px 12px;overflow-wrap:anywhere}
+.home-unified .daily-highlights .highlight-main .highlight-copy{padding:9px 18px 12px}
+.home-unified .daily-highlights .highlight-copy :is(h2,.highlight-teaser,.card-metadata){min-width:0;max-width:100%}
+.home-unified .daily-highlights .highlight-card .highlight-copy h2{display:block;font:700 18px/1.18 Georgia,serif;letter-spacing:-.3px;margin:0 0 10px;overflow:visible;-webkit-line-clamp:unset;overflow-wrap:anywhere}
+.home-unified .daily-highlights .highlight-main .highlight-copy h2{font-size:25px;line-height:1.16}
+.home-unified .daily-highlights .highlight-copy h2 a{overflow-wrap:anywhere}
+.home-unified .daily-highlights .highlight-teaser{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;font:400 14px/1.5 system-ui,sans-serif;color:#53645a;margin:0 0 12px}
+.home-unified .daily-highlights .highlight-small .highlight-teaser{-webkit-line-clamp:2}
+.home-unified .daily-highlights .card-metadata{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px 10px;margin:0 0 9px}
+.home-unified .daily-highlights .highlight-label{max-width:100%;font-size:9px;letter-spacing:.1px;padding:5px 7px;min-height:25px;overflow-wrap:anywhere}
+.home-unified .daily-highlights .highlight-main .highlight-label{font-size:10px}
+.home-unified .daily-highlights .highlight-main .highlight-label>span{display:none}
+.home-unified .daily-highlights .card-metadata .ai-image-label{flex:0 0 auto;max-width:100%;white-space:nowrap;font-size:10px}
+.home-unified .daily-highlights .highlight-card .highlight-copy .highlight-read{display:inline-flex;align-items:center;justify-content:center;align-self:flex-start;min-height:36px;max-width:100%;margin-top:auto;padding:8px 12px;font:650 13px/1.3 system-ui,sans-serif;text-align:center}
+.home-unified .daily-highlights .highlight-sticker{top:-8px;left:5px;right:auto;width:46px;height:46px;transform:none}
+.home-unified .daily-highlights .highlight-main .highlight-sticker{top:-12px;left:0;right:auto;width:60px;height:60px;transform:none}
+.home-unified .daily-highlights .highlight-sticker svg{width:32px;height:32px;padding:5px}
+.home-unified .daily-highlights .highlight-leaves{display:block;right:7px;bottom:10px;width:26px;height:43px}
+@media(min-width:701px) and (max-width:1000px){
+ .home-unified .daily-highlights{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:15px}
+ .home-unified .daily-highlights .highlight-main .highlight-art{aspect-ratio:auto}
+ .home-unified .daily-highlights .highlight-small{grid-template-columns:35% minmax(0,1fr)}
+ .home-unified .daily-highlights .highlight-card .highlight-copy{padding:8px 14px 10px 10px}
+ .home-unified .daily-highlights .highlight-main .highlight-copy{padding:10px 16px 12px}
+ .home-unified .daily-highlights .highlight-main .highlight-copy h2{font-size:24px}
+ .home-unified .daily-highlights .highlight-small .highlight-copy h2{font-size:18px}
+ .home-unified .daily-highlights .highlight-small .highlight-art{align-self:start;aspect-ratio:4/5}
+}
+@media(max-width:700px){
+ .home-unified .daily-highlights{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-auto-rows:auto;gap:20px}
+ .home-unified .daily-highlights .highlight-main{grid-column:auto;grid-row:auto;grid-template-rows:auto auto}
+ .home-unified .daily-highlights .highlight-main .highlight-art{aspect-ratio:16/9}
+ .home-unified .daily-highlights .highlight-main .highlight-copy{padding:12px 16px}
+ .home-unified .daily-highlights .highlight-main .highlight-copy h2{font-size:24px}
+ .home-unified .daily-highlights .highlight-card .highlight-copy{padding-right:16px}
+ .home-unified .daily-highlights .highlight-small{grid-template-columns:36% minmax(0,1fr)}
+ .home-unified .daily-highlights .highlight-small .highlight-copy h2{font-size:18px}
+ .home-unified .daily-highlights .highlight-small .highlight-art{align-self:start;aspect-ratio:4/5}
+ .home-unified .daily-highlights .highlight-main .highlight-sticker{width:48px;height:48px;top:-8px;left:0}
+ .home-unified .daily-highlights .highlight-card .highlight-copy .highlight-read{font-size:12px;padding-inline:10px}
+}
+@media(max-width:360px){.home-unified .daily-highlights .highlight-small{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto}.home-unified .daily-highlights .highlight-small .highlight-art{aspect-ratio:16/9}.home-unified .daily-highlights .highlight-small .highlight-copy{padding:10px 16px 12px}}
+
+.home-unified #stories .category-clothesline{margin:0 0 21px}
+.home-unified #stories .category-clothesline::before{background:#e3e9d8 var(--lp-grain);border-radius:12px;mask:none;-webkit-mask:none;filter:none}
+.home-unified .grid{gap:19px}
+.home-unified .grid>.card{position:relative;isolation:isolate;min-width:0;display:flex;flex-direction:column;padding:9px 9px 5px;border:0;border-radius:0;background:none;box-shadow:none;overflow:visible;filter:drop-shadow(0 3px 2px #45533626)}
+.home-unified .grid>.card::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:var(--lp-cream) url('/images/scrap-paper-ivory.webp') center/cover no-repeat;mask:var(--lp-paper-mask) center/100% 100% no-repeat;-webkit-mask:var(--lp-paper-mask) center/100% 100% no-repeat}
+.home-unified .grid .card .picture{position:relative;isolation:isolate;min-height:0;aspect-ratio:16/10;height:auto;padding:5px;background:var(--lp-cream) var(--lp-grain);overflow:hidden;border-radius:0;mask:var(--lp-paper-mask) center/100% 100% no-repeat;-webkit-mask:var(--lp-paper-mask) center/100% 100% no-repeat}
+.home-unified .grid .card .picture img{inset:5px;width:calc(100% - 10px);height:calc(100% - 10px);object-fit:contain;object-position:center;background:#ecebdc}
+.home-unified .grid .card .category{left:12px;top:12px;border-radius:2px;padding:4px 9px;font-size:12px;background:#e3e9d5;transform:rotate(-2deg)}
+.home-unified .grid .card .cardbody{padding:13px 11px 15px}
+.home-unified .grid .card h3{font:700 22px/1.18 Georgia,serif;margin-bottom:10px}
+.home-unified .grid .card .teaser{font-size:14px;line-height:1.5;margin-bottom:16px}
+.home-unified .grid .card .meta{font-size:11px}.home-unified .grid .card .engagement{margin-top:auto;font-size:12px;gap:12px}
+.home-unified .grid .card .like-button{position:relative;isolation:isolate;border:0;border-radius:0;background:none;min-height:36px;padding:7px 10px;font-size:13px;color:var(--lp-green)}
+.home-unified .grid .card .like-button::before{content:"";position:absolute;inset:0;z-index:-1;background:#e9eddc var(--lp-grain);mask:var(--lp-button-mask) center/100% 100% no-repeat;-webkit-mask:var(--lp-button-mask) center/100% 100% no-repeat}
+.home-unified .grid .card .like-button[aria-pressed=true]{color:#963f4c}.home-unified .grid .card .like-button[aria-pressed=true]::before{background:#f4dfcc var(--lp-grain)}
+.home-unified .moment-washing-line{background:#f5e6a8 var(--lp-grain);border-radius:15px;padding:20px;box-shadow:none;border:0}
+.home-unified .moment-washing-line::before{background:none}.home-unified .moment-washing-line .moment-home{background:none}
+.home-unified .moment-strip-heading h2{font-size:29px;font-weight:700}.home-unified .moment-strip-heading p{font-size:14px}
+.home-unified .home-paper-board #about{display:block;position:relative;isolation:isolate;grid-template-columns:none;background:none;border:0;border-radius:0;padding:24px 0 0;margin:24px 0 0;box-shadow:none;border-top:1px solid #aebfa299}
+.home-unified #about .story-book-title{margin-bottom:20px}.home-unified #about .story-book-grid{gap:20px}
+.home-unified #about .story-paper{box-shadow:var(--lp-shadow)}
+.home-unified #about .story-paper::before{background:var(--lp-cream) var(--lp-grain)}
+.home-unified #about :is(.story-source,.story-quote)::before{background:#e9eddd var(--lp-grain)}
+.home-unified #about .story-paper p{font-size:14px;line-height:1.6}.home-unified #about .story-paper h3{font-size:25px;font-weight:700}
+.home-unified #about .story-handwritten{font-size:26px}
+.home-unified footer{border-top:0}
+@media(max-width:700px){.home-unified .home-paper-board{padding:10px 12px 16px;border-radius:18px}.home-unified .grid{gap:18px}.home-unified .moment-washing-line{padding:15px 12px}.home-unified .moment-strip-heading h2{font-size:25px}.home-unified #about .story-book-grid{gap:18px}.home-unified #about .story-paper h3{font-size:23px}.home-unified #about .story-handwritten{font-size:24px}}
+@media(prefers-reduced-motion:reduce){.home-unified .grid>.card{transition:none}}
+.home-unified .moment-washing-line::before{border:0;border-image:none;background:none;filter:none}
+.home-unified #about .story-paper{box-shadow:none;filter:drop-shadow(0 3px 3px #43593622)}

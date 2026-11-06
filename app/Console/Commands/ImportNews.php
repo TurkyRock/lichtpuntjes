@@ -5,7 +5,7 @@ use App\Services\NewsImporter;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 class ImportNews extends Command {
-    protected $signature='news:import {--process-only : Verwerk opgeslagen berichten} {--pages=1 : Aantal nieuwspagina\'s, 1 tot 50} {--limit= : Maximum te beoordelen berichten, 1 tot 500} {--skip-photos : Laat afbeeldingen door news:photos aanvullen}';
+    protected $signature='news:import {--process-only : Verwerk opgeslagen berichten} {--pages=1 : Aantal nieuwspagina\'s, 1 tot 50} {--limit= : Maximum te beoordelen berichten, 1 tot 500} {--skip-photos : Laat afbeeldingen door news:photos aanvullen} {--reset-lock : Geef alleen bij een gestopte import de achtergebleven importvergrendeling vrij}';
     protected $description='Importeer wereldwijd nieuws en publiceer geschikte NL/EN-berichten';
     private function safeMessage(\Throwable $e): string {
         $message=$e->getMessage();
@@ -26,7 +26,29 @@ class ImportNews extends Command {
         // Langere batches houden hun lock tot ruim na hun maximale verwerkingstijd.
         $secondsPerArticle=$this->option('skip-photos')?100:500;
         $lock=Cache::lock('lichtpunt-import',max(7500,$limit*$secondsPerArticle+(int)$rawPages*50+600));
-        if (!$lock->get()) { $this->warn('Er loopt al een import.'); return self::SUCCESS; }
+        $reset=(bool)$this->option('reset-lock');
+        try {
+            if($reset){
+                $this->line('Importvergrendeling herstellen via cacheopslag: '.config('cache.default').'.');
+                $lock->forceRelease();
+            }
+            $acquired=$lock->get();
+        }catch(\Throwable $e){
+            \Illuminate\Support\Facades\Log::warning('News import lock unavailable',['store'=>config('cache.default'),'exception'=>get_class($e)]);
+            $this->error('Importvergrendeling niet beschikbaar. Controleer de cacheconfiguratie en schrijfrechten; er zijn geen artikelen verwerkt.');
+            return self::FAILURE;
+        }
+        if(!$acquired){
+            if($reset){
+                $this->error('Ook na herstel kan de importvergrendeling niet worden verkregen. De cacheopslag is niet beschikbaar of een andere taak heeft de vergrendeling opnieuw verkregen.');
+                $this->line('Cacheopslag: '.config('cache.default').'. Controleer configuratie en schrijfrechten.');
+                return self::FAILURE;
+            }
+            $this->warn('Er loopt al een import.');
+            $this->line('Is de vorige import gestopt en draait er geen nieuwsopdracht meer? Gebruik dan dezelfde opdracht met --reset-lock.');
+            return self::SUCCESS;
+        }
+        if($reset)$this->info('Importvergrendeling hersteld; de import start.');
         try {
             if (!$this->option('process-only')) $this->info($importer->fetch((int)$rawPages).' nieuwe berichten opgeslagen.');
             $articles=app(\App\Services\NewsCategoryBalance::class)->prioritise(Article::whereNull('hidden_at')->where('origin','news')->whereIn('status',['pending','error'])->where('attempts','<',3))->orderBy('id')->limit($limit)->get();
@@ -41,7 +63,7 @@ class ImportNews extends Command {
             foreach ($articles as $i=>$a) {
                 if ($i>0) usleep(8000000); // Beperkt bursts; projectquota blijven bepalend.
                 try {
-                    $importer->assess($a);
+                    app(\App\Services\NewsAssessmentRetry::class)->assess($importer,$a,false,fn($message)=>$this->warn($message));
                     $fresh=$a->fresh();
                     $processed++;
                     if (isset($totals[$fresh->status])) $totals[$fresh->status]++;

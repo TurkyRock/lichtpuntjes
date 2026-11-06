@@ -30,5 +30,7 @@ PROMPT,['visibility'=>$moment->visibility,'moment'=>$moment->body],['type'=>'OBJ
   DB::transaction(function()use($moment,$revision,$status,$reason){$m=PositiveMoment::whereKey($moment->id)->lockForUpdate()->firstOrFail();if($m->revision!==$revision||$m->status!=='pending')return;$m->update(['status'=>$status,'reason'=>$reason,'ai_model'=>config('news.gemini_model')]);
    $this->syncPoints($m);
   },3);
+  ContributionTranslator::queue('moment',$moment->id);
+  if($current=PositiveMoment::find($moment->id))MomentIllustrator::queue($current);
  }
 }

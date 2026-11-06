@@ -21,8 +21,8 @@ class UserLightspotTest extends TestCase {
  public function test_ai_approval_preserves_original_and_publishes_after_image():void {
   $s=$this->submission();$this->ai($this->aiResponse());$this->mock(ArticlePhotoFinder::class,function($m){$m->shouldReceive('attach')->twice()->withArgs(function($a){$this->assertContains($a->status,['community_pending','published']);return true;})->andReturn(true);$m->shouldReceive('current')->andReturn(true);});
   app(LightspotProcessor::class)->process($s);$s->refresh();$this->assertSame('published',$s->status);$this->assertSame($s->title,$s->article->nl['title']);$this->assertSame(trim($s->body),implode("\n\n",$s->article->nl['body']));$this->assertSame('community',$s->article->origin);$this->getJson('/news/feed')->assertJsonPath('pagination.total',1)->assertJsonPath('articles.0.origin','community');
-  app(LightspotProcessor::class)->process($s);$this->assertDatabaseCount('articles',1);$this->assertSame(5,app(\App\Services\Lightpoints::class)->summary($s->user)['points']);
-  $s->update(['status'=>'image_wait']);app(LightspotProcessor::class)->process($s);$this->assertSame(5,app(\App\Services\Lightpoints::class)->summary($s->user)['points']);
+  app(LightspotProcessor::class)->process($s);$this->assertDatabaseCount('articles',1);$this->assertSame(0,app(\App\Services\Lightpoints::class)->summary($s->user)['points']);
+  $s->update(['status'=>'image_wait']);app(LightspotProcessor::class)->process($s);$this->assertSame(0,app(\App\Services\Lightpoints::class)->summary($s->user)['points']);
  }
  public function test_rejection_or_uncertainty_never_requests_image():void {
   foreach([['reject',.98,'rejected'],['approve',.60,'doubt']] as [$d,$c,$expected]){
@@ -55,7 +55,7 @@ class UserLightspotTest extends TestCase {
   $u=$this->user();$this->actingAs($u)->postJson('/lichtpuntje/schrijven',array_replace($this->fields(),['body'=>$this->fields()['body'].' Mail me via x@example.com']))->assertUnprocessable();for($i=0;$i<3;$i++)$this->submission(['user_id'=>$u->id]);$this->post('/lichtpuntje/schrijven',$this->fields())->assertStatus(429);
  }
  public function test_form_and_empty_list_render_in_both_languages():void {
-  $this->actingAs($this->user());foreach(['nl','en'] as $lang){$this->get('/lichtpuntje/schrijven?lang='.$lang)->assertOk();$this->get('/mijn-lichtpuntjes?lang='.$lang)->assertOk();}$this->get('/')->assertOk()->assertSee('Deel een lichtpuntje');
+  $this->actingAs($this->user());foreach(['nl','en'] as $lang){$this->get('/lichtpuntje/schrijven?lang='.$lang)->assertRedirect('/mijn-lichtpuntjes?lang='.$lang.'#new-story');$this->get('/mijn-lichtpuntjes?lang='.$lang)->assertOk();}$this->get('/')->assertOk()->assertSee('Deel een lichtpuntje');
  }
  public function test_reports_are_private_unique_and_visible_only_to_admin():void {
   $s=$this->submission(['status'=>'published']);$a=Article::create(['fingerprint'=>hash('sha256','reported'),'origin'=>'community','author_id'=>$s->user_id,'source_title'=>$s->title,'source_name'=>'Author','source_url'=>'https://example.com','status'=>'published']);$s->update(['article_id'=>$a->id]);
@@ -71,7 +71,7 @@ class UserLightspotTest extends TestCase {
   $this->ai($this->aiResponse());$this->mock(ArticlePhotoFinder::class,function($m){$m->shouldReceive('attach')->once()->andReturn(true);$m->shouldReceive('current')->andReturn(true);});app(LightspotProcessor::class)->process($s);$this->assertSame('published',$s->fresh()->status);$this->assertSame($admin->id,$s->fresh()->moderated_by);
  }
  public function test_topic_is_removed_and_category_is_set_by_server():void {
-  $this->actingAs($this->user())->get('/lichtpuntje/schrijven')->assertOk()->assertDontSee('name="category"',false);
+  $this->actingAs($this->user())->get('/mijn-lichtpuntjes')->assertOk()->assertDontSee('name="category"',false);
   $fields=$this->fields();unset($fields['category']);
   $this->post('/lichtpuntje/schrijven',$fields)->assertRedirect('/mijn-lichtpuntjes');
   $this->assertSame('community',LightspotSubmission::first()->category);

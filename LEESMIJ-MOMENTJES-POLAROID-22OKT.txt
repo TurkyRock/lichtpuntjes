@@ -1,0 +1,104 @@
+JOUW LICHTPUNTJE — MOMENTJES ALS POLAROIDJES
+22 oktober 2026
+
+INSTALLEREN
+1. Maak een back-up van je bestanden en database.
+2. Pak dit pakket uit in de hoofdmap van je bestaande Laravel-site.
+   Overschrijven is de bedoeling. Je .env, APP_KEY, database en bestaande
+   uploads zitten niet in dit pakket en mogen niet worden vervangen.
+3. Voer uit in PowerShell vanuit C:\Users\e_tur\Herd\lichtpunt-schoon:
+
+   php artisan migrate --force
+   php artisan optimize:clear
+   php artisan queue:restart
+
+4. Start je bestaande queueworker opnieuw zoals je gewend bent.
+   Start daarnaast in een apart PowerShell-venster deze beeldworker:
+
+   php artisan queue:work database --queue=moment-images --timeout=180 --sleep=3
+
+   Laat dit venster draaien. Op hosting moet een procesbeheerder deze worker
+   blijven draaien. De bestaande worker voor lichtpuntjes/default blijft nodig
+   voor controle en vertaling. Zo houden beelden de tekstcontrole niet op.
+5. Vernieuw de browser met Ctrl+F5.
+
+WAT IS NIEUW?
+- Mijn momentjes volgt voorstel 3: schrijven eerst, bewaarde momentjes ernaast
+  op desktop. Op kleine schermen komt het schrijfblok bovenaan.
+- Compact schrijfblok, karakterteller, privacykeuze en toestemming zichtbaar.
+- Bewaarde momentjes als opgeprikte briefjes, met maandselectie en beheer.
+- /momentjes toont 15 openbare, goedgekeurde momentjes per pagina, als
+  polaroidprikbord. Klik op een kaartje voor de volledige tekst en afbeelding.
+  De popup werkt ook met toetsenbord en Escape; zonder JavaScript kan de
+  volledige tekst onder het kaartje worden geopend.
+- De waslijn op de homepage toont dezelfde kleine beelden (circa 88 pixels).
+  De leesknop opent altijd het volledige momentje.
+- Alles werkt in Nederlands en Engels.
+
+KLEINE AI-BEELDEN
+Bij het schrijven kun je vrijwillig 'Maak er een klein AI-beeld bij' aanvinken.
+Die afzonderlijke toestemming geldt ook als het momentje privé is.
+Na goedkeuring door de bestaande tekstcontrole kiest Gemini een passend,
+algemeen onderwerp en een stijl. Je laatste 12 gereserveerde/gemaakte beelden
+helpen de verhouding schets/foto in balans te houden. De AI krijgt ook het
+aantal van je momentjes mee. Alleen je eigen stijlhistorie telt mee.
+Een extra controle voorkomt grote scheefgroei en drie dezelfde stijlen op rij.
+
+Cloudflare ontvangt alleen een vaste algemene beschrijving van bijvoorbeeld
+een koffiekop, bloem, boek of zonlicht. Niet je oorspronkelijke tekst, naam,
+e-mailadres of de teksten van eerdere momentjes. Het beeld is een symbolisch
+sfeerbeeld; het is geen echte foto van wat de schrijver heeft meegemaakt.
+Er worden geen personen of gezichten afgebeeld.
+
+Opslag: maximaal 384 x 384 pixels, WebP (JPEG als WebP niet beschikbaar is),
+maximaal 200 KB per bestand. PHP GD moet ingeschakeld zijn, zoals ook voor
+profielfoto’s nodig is. Beelden staan op de lokale private Laravel-schijf,
+niet in public en niet via de publieke storage-koppeling.
+
+Privébeelden zijn alleen voor hun eigenaar bereikbaar. Beheerder zijn geeft
+geen toegang tot iemands privébeeld. Alleen goedgekeurde, expliciet openbare
+momentjes van actieve accounts kunnen hun afbeelding openbaar tonen.
+Bij aanpassen vervalt het oude beeld direct. Bij verwijderen wordt het bestand
+opgeruimd. Een oude achtergrondtaak mag geen oude versie terugplaatsen.
+
+BESTAANDE MOMENTJES
+Er wordt niets ongevraagd vervangen of naar een extra beeldprovider gestuurd.
+Open bij je eigen goedgekeurde momentje 'Aanpassen of beheren' en kies onderaan
+'Maak een klein beeld', met toestemming. Dat kan ook opnieuw na een fout.
+
+BEELDTEGOED
+De bestaande Cloudflare-instellingen in je .env worden hergebruikt.
+Deze versie ondersteunt voor momentjes Cloudflare, zonder nieuwe betaalprovider.
+De accountbrede bestaande verzoeklimiet en providerlimiet blijven gelden.
+Daarnaast geldt standaard maximaal 6 momentjesbeeldpogingen per UTC-dag,
+inclusief mislukte pogingen. Een klein opgeslagen beeld kost nog steeds een
+beeldgeneratie; verkleinen bespaart vooral opslag en laadtijd.
+
+Optioneel in .env:
+   MOMENT_IMAGES_PER_DAY=6
+   MOMENT_IMAGES_ENABLED=true
+
+Na een .env-aanpassing: php artisan optimize:clear en herstart de workers.
+Bij dagtegoed op wacht de taak tot na de volgende UTC-reset; maximaal 7 dagen.
+Bij een technische fout blijft het momentje bewaard en kan de schrijver de
+afbeelding opnieuw aanvragen. Vernieuw de pagina om nieuw gemaakte beelden te zien.
+
+OOK INBEGREPEN
+De eerder geleverde beveiliging en vertaling, de laatste homepage-aanpassingen
+en de uitgewerkte keuzepagina met groene menuknop zitten opnieuw in dit pakket.
+De steunpagina volgt het gekozen voorstel 3, met jullie originele gezinsfoto.
+De twee oude sfeerfoto’s worden daar niet meer getoond. Het donatieformulier
+behoudt zijn bestaande werking. De brief, gratis/reclamevrij-belofte en dunne
+handtekening staan in een persoonlijke knipselcollage.
+
+Na een door de bestaande betaalcontrole bevestigde betaling krijgt de betaler
+een bedankpopup. Een URL-parameter of alleen terugkomen van de betaalpagina
+is geen betaalbewijs. Open, mislukte of niet te controleren betalingen geven
+geen popup. De gewone statuspagina blijft beschikbaar. Het bedankje verschijnt
+één keer per bijdrage binnen dezelfde browsersessie.
+
+De drie subtiele herinneringskaartjes zijn nog voorstellen. Er is nog geen
+herinneringskaartje actief; daarvoor moet eerst de gewenste variant gekozen
+worden. Afgesproken richting: geen uitnodiging bij actieve maandelijkse steun;
+na stoppen minstens twee maanden rust; na eenmalige steun minstens een halfjaar;
+ook na bezoeken van de steunpagina of wegklikken een ruime pauze.

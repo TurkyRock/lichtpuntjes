@@ -1,8 +1,28 @@
 @extends('community.layout')
 @section('content')
-<h1>De zonneschijncentrale ☀</h1><p class="admin-intro">Hier houd je Jouw Lichtpuntje gezellig. Reacties in de twijfelbak zijn nog niet zichtbaar op de site.</p><div class="admin-status-tabs">@foreach(['doubt'=>'Twijfelbak','pending'=>'Wachtend','rejected'=>'Afgewezen','approved'=>'Geplaatst'] as $key=>$label)<a class="button {{ $filter===$key?'':'quiet' }}" href="/beheer?status={{ $key }}">{{ $label }} ({{ $counts[$key]??0 }})</a>@endforeach</div>
-<form method="get" action="/beheer" class="admin-search"><input type="hidden" name="status" value="{{ $filter }}"><input name="q" value="{{ request('q') }}" placeholder="Zoek in reacties" maxlength="100" aria-label="Zoek reacties"><button>Zoeken</button></form>
-@forelse($comments as $comment)<section class="panel"><p class="small">#{{ $comment->id }} · {{ $comment->user->name }} · {{ $comment->created_at }} @if($comment->appealed_at)· Menselijke blik aangevraagd
-@endif</p><a href="/?story={{ $comment->article_id }}" target="_blank" rel="noopener">{{ $comment->article->nl['title']??$comment->article->source_title }}</a><p class="comments">{{ $comment->body }}</p><div class="sunny"><strong>AI-inschatting: {{ $comment->ai_confidence===null?'nog niet gekeurd':round($comment->ai_confidence*100).'%' }}</strong><p>{{ $comment->ai_reason }}</p>@if($comment->ai_error)<p>AI-storing. Geen inhoudelijk oordeel.</p>@endif</div>@if($comment->moderator_note)<p>Vorige beheernotitie: {{ $comment->moderator_note }}</p>@endif
+<h1>De zonneschijncentrale ☀</h1><p class="admin-intro">Hier houd je Jouw Lichtpuntje gezellig. Reacties in de twijfelbak zijn nog niet zichtbaar op de site.</p><div class="admin-status-tabs">
+@foreach(['doubt'=>'Twijfelbak','pending'=>'Wachtend','rejected'=>'Afgewezen','approved'=>'Geplaatst'] as $key=>$label)<a class="button {{ $filter===$key?'':'quiet' }}" href="/beheer/reacties?status={{ $key }}">{{ $label }} ({{ $counts[$key]??0 }})</a>
+@endforeach</div>
+<form method="get" action="/beheer/reacties" class="admin-search"><input type="hidden" name="lang" value="{{ app()->getLocale() }}"><input type="hidden" name="status" value="{{ $filter }}"><input name="q" value="{{ request('q') }}" placeholder="Zoek in reacties" maxlength="100" aria-label="Zoek reacties"><button>Zoeken</button></form>
+@forelse($comments as $comment)<section class="panel"><p class="small">#{{ $comment->id }} · {{ $comment->user->name }} · {{ $comment->created_at }} 
+@if($comment->appealed_at)· Menselijke blik aangevraagd
+@endif</p>
+@if($comment->article && \App\Models\Article::visible()->whereKey($comment->article_id)->exists())<a href="{{ \App\Support\StorySeo::path($comment->article,app()->getLocale()) }}" target="_blank" rel="noopener">{{ $comment->article->nl['title']??$comment->article->source_title }}</a>
+@else<span>Artikel niet meer op de site</span>
+@endif
+@if($comment->parent)<div class="sunny"><strong>In reactie op {{ $comment->parent->user?->name??'een eerdere reactie' }}</strong><p>{{ \Illuminate\Support\Str::limit($comment->parent->body,220) }}</p></div>
+@endif<p class="comments">{{ $comment->body }}</p><p>{{ $comment->hearts_count }} likes · {{ $comment->replies_count }} antwoorden</p><div class="sunny"><strong>AI-inschatting: {{ $comment->ai_confidence===null?'nog niet gekeurd':round($comment->ai_confidence*100).'%' }}</strong><p>{{ $comment->ai_reason }}</p>
+@if($comment->ai_error)<p>AI-storing. Geen inhoudelijk oordeel.</p>
+@endif</div>
+@if($comment->moderator_note)<p>Vorige beheernotitie: {{ $comment->moderator_note }}</p>
+@endif
 <form method="post" action="/beheer/comments/{{ $comment->id }}">@csrf<label>Jouw beslissing<select name="decision" required><option value="" selected disabled>Kies een beslissing</option><option value="approved">Goedkeuren ☀</option><option value="rejected">Afwijzen</option><option value="doubt">In twijfel laten</option></select></label><label>Reden / notitie<textarea name="note" minlength="3" maxlength="1000" required></textarea></label><p><button>Beslissing bewaren</button></p></form>
-<form method="post" action="/beheer/users/{{ $comment->user_id }}">@csrf<input type="hidden" name="suspended" value="{{ $comment->user->is_suspended?0:1 }}"><button class="{{ $comment->user->is_suspended?'quiet':'danger' }}">{{ $comment->user->is_suspended?'Account weer activeren':'Account pauzeren' }}</button></form></section>@empty<section class="panel admin-empty"><h2>Alles is rustig ☀</h2><p>Geen reacties om te beoordelen. Tijd voor koffie.</p></section>@endforelse<div class="pagination">@if($comments->previousPageUrl())<a href="{{ $comments->previousPageUrl() }}">← Vorige</a>@endif @if($comments->hasMorePages())<a href="{{ $comments->nextPageUrl() }}">Volgende →</a>@endif</div>@endsection
+<p><a class="button quiet" href="/beheer/gebruikers/{{ $comment->user_id }}">Gebruiker bekijken</a></p>
+@if(!$comment->user->is_admin && $comment->user_id!==auth()->id())<form method="post" action="/beheer/users/{{ $comment->user_id }}">@csrf<input type="hidden" name="suspended" value="{{ $comment->user->is_suspended?0:1 }}"><label>Reden<input name="note" minlength="3" maxlength="1000" required></label><button class="{{ $comment->user->is_suspended?'quiet':'danger' }}">{{ $comment->user->is_suspended?'Account weer activeren':'Account pauzeren' }}</button></form>
+@endif</section>
+@empty<section class="panel admin-empty"><h2>Alles is rustig ☀</h2><p>Geen reacties om te beoordelen. Tijd voor koffie.</p></section>
+@endforelse<div class="pagination">
+@if($comments->previousPageUrl())<a href="{{ $comments->previousPageUrl() }}">← Vorige</a>
+@endif 
+@if($comments->hasMorePages())<a href="{{ $comments->nextPageUrl() }}">Volgende →</a>
+@endif</div>@endsection

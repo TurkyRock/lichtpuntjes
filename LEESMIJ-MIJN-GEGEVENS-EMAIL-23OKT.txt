@@ -1,0 +1,54 @@
+JOUW LICHTPUNTJE — MIJN GEGEVENS — 23 oktober 2026
+
+INSTALLEREN
+1. Maak een reservekopie van je websitebestanden en database.
+2. Pak deze zip uit over C:\Users\e_tur\Herd\lichtpunt-schoon.
+   De mappen app, bootstrap, database, public, resources, routes en tests staan
+   direct in de zip. Overschrijf de meegeleverde bestanden.
+3. Voer vanuit die projectmap uit:
+   php artisan migrate --force
+   php artisan optimize:clear
+4. Vernieuw de browser met Ctrl+F5. Open Mijn gegevens.
+
+Dit is een aanvulling op de bestaande website, geen volledige installatie.
+De vorige update Mijn gegevens + Lichtpuntjespost is ook inbegrepen.
+Er worden geen .env, database, uploads of vendor-bestanden overschreven.
+Voer de migratie uit voordat je Mijn gegevens opent: die pagina gebruikt de
+nieuwe tabel account_email_changes.
+
+WAT KAN EEN GEBRUIKER AANPASSEN?
+- Gebruikersnaam, met de bestaande controle op beledigende namen.
+- Profielfoto toevoegen, vervangen of verwijderen, met bestaande fotocontrole.
+- E-mailadres, met bevestiging van het nieuwe adres.
+- Wachtwoord en alle apparaten uitloggen.
+Er worden geen extra adres-, telefoon- of geboortedatumvelden verzameld.
+
+E-MAILADRES WIJZIGEN
+Vul het nieuwe adres tweemaal in en bevestig met het huidige wachtwoord.
+Je huidige adres blijft werken tot je de mail op het nieuwe adres bevestigt.
+De link is 60 minuten geldig. Log in op hetzelfde account en bevestig op
+de bevestigingspagina. Alleen het openen van de mail wijzigt niets.
+Daarna log je opnieuw in met je nieuwe adres; oude sessies worden ingetrokken.
+Het oude adres krijgt de bestaande beveiligingsmelding via de bestaande
+databasewachtrij lichtpuntjes. Houd de bestaande queue worker actief.
+De bevestigingsmail zelf wordt direct verstuurd via de ingestelde mailer.
+Bij een verzendfout blijft het huidige adres behouden en verschijnt een fout.
+
+Een aanvraag is te annuleren vanuit Mijn gegevens. Een nieuwe aanvraag maakt
+de vorige link ongeldig. Wachtwoord- en andere beveiligingswijzigingen maken
+oude aanvragen ongeldig. Het adres moet bij bevestiging nog steeds vrij zijn.
+Maximaal drie aanvragen per uur. Adressen worden niet openbaar getoond.
+Wachtwoorden worden niet teruggezet in formulieren of sessie-invoer.
+Alleen aanmelden via Google/Apple/Microsoft? Stel eerst via Wachtwoord vergeten
+een wachtwoord in met het huidige adres. De bestaande koppeling blijft werken.
+
+CONTROLES
+44 gerichte tests geslaagd, 418 assertions: e-mailadres wijzigen, oude sessies,
+adresbevestiging, verlopen/gewijzigde/verkeerde links, annulering, uniek adres,
+eigendomscontrole, verzendfout, throttling, accountinstellingen, inloggen via
+gekoppelde aanbieders en bijdragenpagina. Geen echte mails of betalingen.
+12 browsercontroles geslaagd: Nederlands en Engels, breedtes 320–1440 px.
+Een oudere ProfilePreferencesTest heeft een bestaande afwijking bij de
+profielfotoprompt op het overzicht; die staat los van deze e-mailwijziging.
+De eerder gemelde 500-fout is hiermee niet als opgelost aangemerkt; daarvoor
+blijft de concrete foutmelding uit de eigen installatie nodig.

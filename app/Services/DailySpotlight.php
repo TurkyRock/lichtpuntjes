@@ -5,7 +5,7 @@ use App\Support\StorySeo;
 use Illuminate\Support\Facades\{Cache,DB};
 class DailySpotlight {
  public function edition():string {$date=now('Europe/Amsterdam');if($date->hour<7)$date->subDay();return $date->toDateString();}
- private function usable(?Article $a):bool {return $a&&StorySeo::readable($a)&&count($a->nl['body']??[])>0&&count($a->en['body']??[])>0&&StorySeo::safeUrl($a->photo['url']??null)&&app(ArticlePhotoFinder::class)->current($a);}
+ private function usable(?Article $a):bool {return $a&&StorySeo::readable($a)&&count($a->nl['body']??[])>0&&count($a->en['body']??[])>0&&StorySeo::safeUrl($a->photo['url']??null)&&app(ArticlePhotoFinder::class)->available($a);}
  private function category(Article $a):string {return $a->origin==='community'?'community':(string)$a->category;}
  public function choose(bool $replace=false,?Article $manual=null):?object {
   $date=$this->edition();$current=DB::table('daily_spotlights')->where('edition_date',$date)->first();

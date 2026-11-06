@@ -1,33 +1,31 @@
 @php
-$en = app()->getLocale() === 'en';
-$current = $progress['current'];
-$next = $progress['next'];
+$en=app()->getLocale()==='en';
+$current=$progress['current'];
+$next=$progress['next'];
 @endphp
-<style>
-.ladder-panel{background:#fffef9}.ladder-kicker{font-size:12px;letter-spacing:1.2px;text-transform:uppercase;font-weight:750;color:#00786e;margin:0 0 8px}.ladder-top{display:flex;align-items:center;justify-content:space-between;gap:24px}.ladder-top h2{font-size:36px;margin:0 0 9px}.ladder-top p{margin:0;color:#536862}.ladder-count{border:1px solid #d6e2d1;border-radius:16px;padding:13px 20px;text-align:center;flex-shrink:0;background:#e9f1e7}.ladder-count strong{display:block;font-size:30px;line-height:1.15}.ladder-current{display:flex;align-items:center;gap:20px;padding:20px;margin:22px 0 14px;background:#fff3c5;border:1px solid #e8db9e;border-radius:16px}.ladder-current img{width:88px;height:88px;flex-shrink:0}.ladder-current h3{font-size:22px;margin:0 0 4px}.ladder-current p{margin:4px 0;color:#536862}.ladder-meter-label{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:14px;margin-bottom:8px}.ladder-panel progress{display:block;margin:0 0 24px}.ladder-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;list-style:none;padding:0;margin:0}.ladder-step{position:relative;min-width:0;padding:18px 12px 14px;border:1px solid #dfe6dc;border-radius:16px;text-align:center;background:#fff}.ladder-number{position:absolute;top:9px;left:10px;font-size:10px;color:#536862;font-weight:750}.ladder-step img{width:76px;height:76px;display:block;margin:0 auto 9px;transform:rotate(-3deg)}.ladder-step:nth-child(even) img{transform:rotate(3deg)}.ladder-step h3{font-size:14px;line-height:1.3;margin:0 0 7px}.ladder-step p{font-size:12px;line-height:1.45;margin:8px 0;color:#536862}.ladder-state{display:inline-block;font-size:10px;font-weight:750;border-radius:12px;background:#e9f1e7;color:#153e39;padding:3px 8px}.ladder-step.is-locked img{filter:grayscale(1);opacity:.55}.ladder-step.is-locked .ladder-state{background:#f0f1ee;color:#536862}.ladder-step.is-current{border:2px solid #00786e;background:#f3f8ef;padding:17px 11px 13px}.ladder-step.is-next{border:1px dashed #00786e}.ladder-tip{margin:20px 0 0;font-size:13px;color:#536862}.ladder-how{margin-top:24px;padding-top:20px;border-top:1px solid #dfe6dc}.ladder-how h3{margin:0 0 8px}.ladder-how p{margin:0 0 16px}@media(max-width:760px){.ladder-steps{grid-template-columns:repeat(3,minmax(0,1fr))}.ladder-top{align-items:flex-start}.ladder-top h2{font-size:30px}}@media(max-width:520px){.ladder-steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.ladder-top{flex-direction:column;gap:14px}.ladder-count{display:flex;align-items:center;gap:8px}.ladder-count strong{font-size:24px}.ladder-current{padding:15px;gap:12px}.ladder-current img{width:66px;height:66px}.ladder-current h3{font-size:19px}.ladder-step{padding:18px 9px 12px}.ladder-step.is-current{padding:17px 8px 11px}}
-.ladder-collection>summary{cursor:pointer;font-size:14px;font-weight:650;color:#00786e;padding:12px 16px;background:#e9f1e7;border:1px solid #d6e2d1;border-radius:12px}.ladder-collection[open]>summary{margin-bottom:16px}.ladder-collection>summary:focus-visible{outline:3px solid #bc8500;outline-offset:3px}
-</style>
-<section class="panel ladder-panel" aria-labelledby="ladderTitle">
-<p class="ladder-kicker">{{ $en ? 'Your badge collection' : 'Jouw badgeverzameling' }}</p>
-<div class="ladder-top"><div><h2 id="ladderTitle">{{ $en ? 'The bright points ladder' : 'De Lichtpuntenladder' }}</h2><p>{{ $en ? 'A growing collection. No climbing shoes required. Just a little kindness.' : 'Een verzameling die met je meegroeit. Geen klimuitrusting nodig. Een beetje vriendelijkheid is genoeg.' }}</p></div><div class="ladder-count"><strong>{{ $progress['points'] }}</strong><span>{{ $en ? 'bright points' : 'lichtpunten' }}</span></div></div>
-<div class="ladder-current"><img src="{{ $current['icon'] }}" width="88" height="88" alt=""><div><span class="small">{{ $en ? 'Your current badge' : 'Jouw huidige badge' }}</span><h3>{{ $current['name'] }}</h3><p>{{ $current['description'] }}</p><span class="small">{{ $progress['earned_count'] }} / {{ $progress['total_badges'] }} {{ $en ? 'badges unlocked' : 'badges vrijgespeeld' }}</span></div></div>
-<div class="ladder-meter-label"><span>{{ $next ? ($en ? 'Next up: ' : 'Volgende trede: ').$next['name'] : ($en ? 'Top step reached. You can keep spreading good news.' : 'Bovenste trede bereikt. Goed nieuws doorgeven kan gewoon verder.') }}</span>
-@if($next)
-<strong>{{ $next['points'] - $progress['points'] }} {{ $en ? 'bright points to go' : 'lichtpunten te gaan' }}</strong>
-@endif
-</div><progress value="{{ $progress['progress'] }}" max="100" aria-label="{{ $en ? 'Progress to your next badge' : 'Voortgang naar je volgende badge' }}">{{ $progress['progress'] }}%</progress>
-<details class="ladder-collection"><summary>{{ $en ? 'Show or hide all '.$progress['total_badges'].' badges' : 'Bekijk of verberg alle '.$progress['total_badges'].' badges' }}</summary>
-<ol class="ladder-steps">
+@push('page-styles')<link rel="stylesheet" href="/css/badge-path.css?v={{ filemtime(public_path('css/badge-path.css')) }}"><script src="/js/badge-path.js?v={{ filemtime(public_path('js/badge-path.js')) }}" defer></script>@endpush
+<section class="badge-path" aria-label="{{ $en?'Your badge collection':'Jouw badgeverzameling' }}">
+<div class="badge-path-summary">
+<div class="badge-path-total"><strong>{{ $progress['points'] }}</strong><span>{{ $en?'bright points':'lichtpunten' }}</span></div>
+<div class="badge-path-count"><strong>{{ $progress['earned_count'] }} <span>{{ $en?'of':'van' }}</span> {{ $progress['total_badges'] }}</strong><span>{{ $en?'badges earned':'badges behaald' }}</span></div>
+<div class="badge-path-current">@include('shared.paper-badge',['badge'=>$current])<div><span>{{ $en?'Your current badge':'Jouw huidige badge' }}</span><strong>{{ $current['name'] }}</strong></div></div>
+@if($next)<div class="badge-path-next">@include('shared.paper-badge',['badge'=>$next])<div><span>{{ $en?'Next badge':'Volgende badge' }}</span><strong>{{ $next['name'] }}</strong><span>{{ $en?'Another ':'Nog ' }}<b>{{ $next['points']-$progress['points'] }}</b> {{ $en?'bright points':'lichtpunten' }}</span></div></div>@else<div class="badge-path-next"><strong>{{ $en?'Every badge earned!':'Alle badges behaald!' }}</strong><span>{{ $en?'Keep sharing a little light.':'Blijf een beetje licht doorgeven.' }}</span></div>@endif
+<progress value="{{ $progress['progress'] }}" max="100" aria-label="{{ $en?'Progress towards your next badge':'Voortgang naar je volgende badge' }}">{{ $progress['progress'] }}%</progress>
+</div>
+<ol class="badge-path-grid">
 @foreach($progress['stages'] as $stage)
 @php
-$earned = $stage['points'] <= $progress['points'];
-$isCurrent = $stage['id'] === $current['id'];
-$isNext = $next && $stage['id'] === $next['id'];
+$earned=$stage['points']<=$progress['points'];
+$isCurrent=$stage['id']===$current['id'];
+$isNext=$next&&$stage['id']===$next['id'];
 @endphp
-<li class="ladder-step {{ $earned ? 'is-earned' : 'is-locked' }} {{ $isCurrent ? 'is-current' : '' }} {{ $isNext ? 'is-next' : '' }}" @if($isCurrent) aria-current="step" @endif><span class="ladder-number">{{ str_pad((string)$loop->iteration, 2, '0', STR_PAD_LEFT) }}</span><img src="{{ $stage['icon'] }}" width="76" height="76" alt="" loading="lazy"><h3>{{ $stage['name'] }}</h3><strong class="small">{{ $stage['points'] }} {{ $en ? 'bright points' : 'lichtpunten' }}</strong><p>{{ $stage['description'] }}</p><span class="ladder-state">{{ $isCurrent ? ($en ? 'You are here' : 'Hier sta je') : ($earned ? ($en ? 'Unlocked' : 'Vrijgespeeld') : ($isNext ? ($en ? 'Next step' : 'Volgende trede') : ($en ? 'Still locked' : 'Nog op slot'))) }}</span></li>
+<li class="badge-path-step {{ $earned?'is-earned':'is-locked' }} {{ $isCurrent?'is-current':'' }} {{ $isNext?'is-next':'' }}" @if($isCurrent)aria-current="step"@endif>
+<span class="badge-path-number" aria-hidden="true">{{ str_pad((string)$loop->iteration,2,'0',STR_PAD_LEFT) }}</span>
+<div class="badge-path-disc">@include('shared.paper-badge',['badge'=>$stage])</div>
+<h2>{{ $stage['name'] }}</h2><p>{{ $stage['points'] }} {{ $en?'bright points':'lichtpunten' }}</p>
+<span class="badge-path-state">{{ $isCurrent?($en?'You are here':'Hier sta je'):($isNext?($en?'Next badge':'Volgende badge'):($earned?($en?'Unlocked':'Vrijgespeeld'):($en?'Still locked':'Nog op slot'))) }}</span>
+<details class="badge-path-description"><summary>{{ $en?'About this badge':'Over deze badge' }}</summary><p>{{ $stage['description'] }}</p></details>
+</li>
 @endforeach
 </ol>
-</details>
-<p class="ladder-tip">{{ $en ? 'For fun, not a race. Badges follow your active bright points; moderation can change your total.' : 'Voor de lol, geen wedstrijd. Badges volgen je actieve lichtpunten; door moderatie kan je totaal veranderen.' }}</p>
-<div class="ladder-how"><h3>{{ $en ? 'How to climb a step' : 'Zo kom je een trede hoger' }}</h3><p>{{ $en ? 'Read a story, share a bright spot or post a kind comment. An approved moment earns one point per day, private or shared. Your published original story earns five points, once per article. A heart earns one point per item per day. Approved comments earn points. Invite a friend for an extra boost.' : 'Lees een verhaal, deel een lichtpuntje of plaats een vriendelijke reactie. Een goedgekeurd momentje levert één punt per dag op, privé of gedeeld. Een gepubliceerd eigen artikel levert vijf punten op, eenmaal per artikel. Een hartje levert één punt per bericht of momentje per dag op. Goedgekeurde reacties leveren punten op. Nodig een vriend uit voor een extra zetje.' }} <a href="/huisregels?lang={{ $en ? 'en' : 'nl' }}">{{ $en ? 'The points rules' : 'De puntenregels' }}</a></p><a class="button secondary" href="/?lang={{ $en ? 'en' : 'nl' }}">{{ $en ? 'Find my next bright spot' : 'Zoek mijn volgende lichtpuntje' }} →</a></div>
 </section>

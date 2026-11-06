@@ -1,0 +1,40 @@
+LICHTPUNTJE — KEUZEPAGINA IN KNIPSELSTIJL — 22 OKTOBER 2026
+
+Pak dit pakket uit over je bestaande project en vervang de meegeleverde bestanden.
+Voer vanuit de projectmap uit:
+
+php artisan view:clear
+
+Vernieuw daarna je browser met Ctrl+F5.
+Er zijn geen migraties of aanpassingen aan je .env nodig.
+
+Op /lichtpuntje/delen staat nu de uitgewerkte eerste ontwerpvariant:
+- Twee gelijkwaardige papieren kaarten met tape, textuur en kleine illustraties.
+- Een momentje: een paar zinnen, privé bewaren of delen, zonder omslagafbeelding.
+- Een verhaal: uitgebreider, met titel, na controle openbaar met AI-afbeelding.
+- Korte voorbeelden en twee even grote knipselknoppen.
+- Op kleine schermen staan de kaarten onder elkaar.
+- De tekst en de voorbeelden zijn ook in het Engels beschikbaar.
+
+De bestaande routes blijven in gebruik:
+/mijn-momentjes?lang=nl#new-moment
+/lichtpuntje/schrijven?lang=nl
+
+In het hoofdmenu heeft 'Deel een lichtpuntje' nu dezelfde papieren knipselvorm
+als de gele steun-knop, maar dan in groen met witte tekst.
+
+De community-layout heeft alleen een extra plaats gekregen om de eigen
+stylesheet van de keuzepagina te laden. De beveiligingsupdate blijft behouden.
+Dit pakket bevat geen wijzigingen aan de nieuws- of beeldgeneratie.
+
+Controle: beide talen op 1440, 1024, 768, 390 en 320 pixels breed in Chromium.
+Knoppen, uitlijning, afbeeldingsladen, links en horizontale overflow gecontroleerd.
+Deze controle gebruikte de echte pagina-HTML/CSS in een lokale weergave,
+zonder ingelogde Laravel-sessie, database of externe API-aanvragen.
+
+Illustraties gemaakt met de ingebouwde beeldgenerator:
+- Kopje koffie met een papieren zonnetje, stoom en twee groene blaadjes;
+  tactiele papercollage, crèmekleur/salie/donkergroen/geel, transparante achtergrond.
+- Papier met een groen potlood en een madeliefje; dezelfde papercollage,
+  zachte papierschaduwen, geen tekst en een transparante achtergrond.
+De twee PNG-bestanden zijn meegeleverd; ze worden niet op je server gegenereerd.

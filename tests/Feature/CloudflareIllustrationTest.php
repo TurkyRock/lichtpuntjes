@@ -11,6 +11,11 @@ class CloudflareIllustrationTest extends TestCase {
   parent::setUp();Sleep::fake();$this->counter=storage_path('app/test-cloudflare-'.\Illuminate\Support\Str::uuid().'.json');
   config(['database.default'=>'sqlite','database.connections.sqlite.database'=>':memory:','cache.default'=>'array','news_images.provider'=>'cloudflare','news_images.cloudflare_account_id'=>str_repeat('a',32),'news_images.cloudflare_token'=>'test-cloudflare-secret','news_images.cloudflare_state_file'=>$this->counter]);
   DB::purge('sqlite');$this->artisan('migrate',['--force'=>true])->assertExitCode(0);Http::preventStrayRequests();
+  // Provider transport is isolated here; subject and photo rejection have their own tests.
+  $this->partialMock(\App\Services\ArticleVisualBrief::class,function($m){
+   $m->shouldReceive('plan')->andReturnUsing(fn($a)=>['scene'=>'Football equipment on an empty football pitch','must_show'=>'Football equipment and a football pitch','avoid'=>'portraits, unrelated objects','people'=>false,'confidence'=>.95,'content_hash'=>app(\App\Services\ArticleVisualBrief::class)->contentHash($a),'version'=>1]);
+   $m->shouldReceive('review')->andReturn(['match'=>true,'photorealistic'=>true,'confidence'=>.95,'reason'=>'Passend fotorealistisch beeld.']);
+  });
  }
  protected function tearDown():void {File::delete($this->counter);parent::tearDown();}
  private function article():Article {return Article::create(['fingerprint'=>hash('sha256',uniqid()),'source_title'=>'Team celebrates','source_name'=>'News','source_url'=>'https://example.com/news','status'=>'replacement','category'=>'sport','nl'=>['title'=>'Team viert feest'],'en'=>['title'=>'Team celebrates','teaser'=>str_repeat('A positive team story. ',100)]]);}
@@ -25,7 +30,7 @@ class CloudflareIllustrationTest extends TestCase {
   try{
    $f=app(ArticlePhotoFinder::class);$f->attach($a);$f->attach($a);Http::assertSentCount(1);
    $this->assertSame('replacement',$a->fresh()->status);$this->assertSame(CloudflareIllustrator::MODEL,$a->fresh()->photo['model']);$this->assertTrue($f->current($a->fresh()));
-   Http::assertSent(fn($r)=>$r->method()==='POST'&&strlen($r['prompt'])<=2048&&str_contains($r['prompt'],'Photorealistic')&&str_contains($r['prompt'],'Team celebrates')&&$r['steps']===4&&array_keys($r->data())===['prompt','steps']&&$r->hasHeader('Content-Type','application/json')&&$r->hasHeader('Authorization','Bearer test-cloudflare-secret')&&!str_contains($r->url(),'test-cloudflare-secret'));
+   Http::assertSent(fn($r)=>$r->method()==='POST'&&strlen($r['prompt'])<=2048&&str_contains($r['prompt'],'Photorealistic')&&str_contains($r['prompt'],'Football equipment')&&$r['steps']===4&&array_keys($r->data())===['prompt','steps']&&$r->hasHeader('Content-Type','application/json')&&$r->hasHeader('Authorization','Bearer test-cloudflare-secret')&&!str_contains($r->url(),'test-cloudflare-secret'));
    $this->assertSame(1,json_decode(File::get($this->counter),true)['requests']);
   }finally{File::delete($file);}
  }
@@ -41,7 +46,7 @@ class CloudflareIllustrationTest extends TestCase {
   try{
    $finder=app(ArticlePhotoFinder::class);$finder->attach($a);$a->refresh();
    $this->assertSame(\App\Services\LichtpuntIllustrationPrompt::PHOTO_STYLE,$a->photo['style']);$this->assertTrue($finder->current($a));
-   Http::assertSent(fn($r)=>$r->method()==='POST'&&strlen($r['prompt'])<=2048&&str_contains($r['prompt'],'Photorealistic')&&str_contains($r['prompt'],'not evidence')&&!str_contains($r['prompt'],'cut-paper')&&$r['steps']===4);
+   Http::assertSent(fn($r)=>$r->method()==='POST'&&strlen($r['prompt'])<=2048&&str_contains($r['prompt'],'Photorealistic')&&str_contains($r['prompt'],'not documentary evidence')&&!str_contains($r['prompt'],'cut-paper')&&$r['steps']===4);
    $finder->attach($a);Http::assertSentCount(1);
   }finally{File::delete($file);}
  }

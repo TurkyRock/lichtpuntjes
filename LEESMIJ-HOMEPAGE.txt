@@ -1,0 +1,29 @@
+JOUW LICHTPUNTJE - HOMEPAGE-UPDATE - 29 OKTOBER 2026
+
+Pak dit pakket uit over je bestaande projectmap lichtpunt-schoon.
+Overschrijf de drie meegeleverde bestanden op hun bestaande plaats.
+Dit is een vervolgupdate op het groene prikbord-pakket.
+
+Voer daarna uit:
+php artisan optimize:clear
+
+Ververs de homepage met Ctrl+F5.
+Er is geen databasemigratie nodig. Bestaande artikelen blijven behouden.
+
+Aangepast:
+- Compactere uitgelichte kaarten met ruimere fotokolommen en papieren fotokaders.
+- Foto's worden niet uitgerekt en rekken de kaarten zelf niet meer op.
+- Het zonnetje staat op desktop aan de bovenzijde tussen foto en tekst.
+- Op mobiel staat het zonnetje rechtsboven, vrij van het categorielabel.
+- Tablet- en mobiele indeling voorkomen extreem smalle en hoge foto's.
+- De leesknop blijft onderaan de tekst uitgelijnd.
+- Een lang tekstfragment wordt visueel begrensd; het volledige artikel is bereikbaar via de leesknop.
+- De drie uitgelichte artikelen blijven zichtbaar bij elke categorie, sortering en vervolgpagina.
+- Alleen de gewone artikellijst onder de categorieen wordt gefilterd.
+
+NIEUWE ARTIKELEN TOEVOEGEN (bestaande collectie behouden):
+php -d memory_limit=512M artisan news:import --pages=10 --limit=50
+Dit beoordeelt maximaal 50 kandidaten; alleen geschikte artikelen worden geplaatst.
+
+Gecontroleerd met 12 PHP-tests (192 assertions), 18 browserlayouts in NL/EN,
+en 4 categorienavigaties op desktop/mobiel. Geen echte AI-aanvragen uitgevoerd.

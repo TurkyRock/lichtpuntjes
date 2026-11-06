@@ -3,9 +3,18 @@ namespace App\Services;
 use App\Models\Article;
 use Illuminate\Support\Facades\{Cache,File};
 class ArticlePhotoFinder {
+ // Display validity must not depend on the current generation recipe or provider.
+ public function available(Article $a):bool {
+  $photo=$a->photo??[];$url=$photo['url']??'';$hash=$photo['sha256']??'';
+  return !empty($photo['generated'])&&is_string($url)&&is_string($hash)
+   &&preg_match('~^/news-images/([a-f0-9]{64})\.(jpg|png)$~',$url,$match)
+   &&hash_equals($match[1],$hash)&&is_file(public_path(ltrim($url,'/')))
+   &&hash_file('sha256',public_path(ltrim($url,'/')))===$hash;
+ }
  public function current(Article $a):bool {
   $p=$a->photo??[];$url=$p['url']??'';
-  return !empty($p['generated'])&&in_array($p['style']??'',[LichtpuntIllustrationPrompt::STYLE,LichtpuntIllustrationPrompt::PHOTO_STYLE],true)&&($p['style']??'')===app(LichtpuntIllustrationPrompt::class)->style($a)&&in_array($p['model']??'',app(ArticleImageGenerator::class)->acceptedModels(),true)&&($p['subject_hash']??'')===hash('sha256',app(LichtpuntIllustrationPrompt::class)->positive($a))&&preg_match('~^/news-images/[a-f0-9]{64}\.(jpg|png)$~',$url)&&is_file(public_path(ltrim($url,'/')))&&hash_file('sha256',public_path(ltrim($url,'/')))===($p['sha256']??'');
+  if(isset($p['visual_brief'])&&(!is_array($p['visual_brief'])||($p['visual_brief']['content_hash']??'')!==app(ArticleVisualBrief::class)->contentHash($a)))return false;
+  return !empty($p['generated'])&&in_array($p['style']??'',[LichtpuntIllustrationPrompt::STYLE,LichtpuntIllustrationPrompt::PHOTO_STYLE,LichtpuntIllustrationPrompt::COLLAGE_STYLE],true)&&($p['style']??'')===app(LichtpuntIllustrationPrompt::class)->style($a)&&in_array($p['model']??'',app(ArticleImageGenerator::class)->acceptedModels(),true)&&in_array($p['subject_hash']??'',[hash('sha256',app(LichtpuntIllustrationPrompt::class)->positive($a)),hash('sha256',app(LichtpuntIllustrationPrompt::class)->legacyPositive($a))],true)&&preg_match('~^/news-images/[a-f0-9]{64}\.(jpg|png)$~',$url)&&is_file(public_path(ltrim($url,'/')))&&hash_file('sha256',public_path(ltrim($url,'/')))===($p['sha256']??'');
  }
  public function attach(Article $article,bool $realOnly=false,bool $replaceAi=false,bool $force=false):bool {
   if($realOnly)throw new NewsServiceException('Externe fotozoekdiensten zijn verwijderd. Gebruik news:illustrations.');

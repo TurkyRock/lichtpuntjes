@@ -1,0 +1,57 @@
+/* Administration uses the same green board, paper sheets and cut buttons as the homepage. */
+.admin-paper.account-scrapbook{background:#faf9f3;color:var(--lp-ink);font-size:15px}
+.admin-paper.account-scrapbook .account-shell{position:relative;isolation:isolate;align-items:start;max-width:1116px;width:calc(100% - 64px);padding:22px;margin:25px auto;background:var(--lp-board) var(--lp-grain);border-radius:24px;box-shadow:var(--lp-shadow);gap:24px}
+.admin-paper.account-scrapbook .admin-content{padding:0;min-width:0;background:none;box-shadow:none}
+.admin-paper.account-scrapbook .admin-content :is(p,small,label,input,textarea,select,table,summary,.small,.intro,.admin-intro,.button,button){font-size:15px;line-height:1.55}
+.admin-paper .admin-content h1{font:700 clamp(28px,3vw,37px)/1.15 Georgia,serif;margin:0 0 12px;color:var(--lp-ink)}
+.admin-paper .admin-content h2{font:700 25px/1.2 Georgia,serif;color:var(--lp-ink)}
+.admin-paper .admin-content h3{font:700 21px/1.25 Georgia,serif;color:var(--lp-ink)}
+.admin-paper .admin-content .admin-eyebrow{font-size:12px;font-weight:750;text-transform:uppercase;letter-spacing:.8px;color:#506e4d}
+.admin-paper.account-scrapbook .admin-sidebar{position:sticky;top:18px;align-self:start;background:none;padding:19px 12px 20px;box-shadow:var(--lp-shadow);min-width:0}
+.admin-paper.account-scrapbook .admin-sidebar::before{background:var(--lp-cream) url('/images/scrap-paper-ivory.webp') center/cover no-repeat;clip-path:none;mask:var(--lp-paper-mask) center/100% 100% no-repeat;-webkit-mask:var(--lp-paper-mask) center/100% 100% no-repeat}
+.admin-paper .admin-sidebar .account-sidebar-title{font:700 23px/1.25 Georgia,serif;padding:0 31px 12px 5px;margin:0 0 8px;background:url('/images/site-paper-sun.svg') right top/27px 27px no-repeat}
+.admin-paper.account-scrapbook .admin-sidebar nav{gap:7px;padding:0;min-width:0}
+.admin-paper.account-scrapbook .admin-sidebar nav a{position:relative;isolation:isolate;display:flex;align-items:center;gap:9px;min-height:44px;min-width:0;padding:10px 9px;border:0;border-radius:0;font:600 14px/1.35 system-ui,sans-serif;color:var(--lp-ink);text-decoration:none;background:none}
+.admin-paper.account-scrapbook .admin-sidebar nav a::before{content:"";position:absolute;inset:0;z-index:-1;background:#e7ecdb var(--lp-grain);mask:var(--lp-button-mask) center/100% 100% no-repeat;-webkit-mask:var(--lp-button-mask) center/100% 100% no-repeat}
+.admin-paper.account-scrapbook .admin-sidebar nav a[aria-current=page]{color:#fffbed}
+.admin-paper.account-scrapbook .admin-sidebar nav a[aria-current=page]::before{background:var(--lp-green) var(--lp-grain)}
+.admin-paper.account-scrapbook .admin-sidebar nav a[aria-current=page]::after{content:"✓";margin-left:auto;flex:none;color:var(--lp-yellow);font-weight:800}
+.admin-paper.account-scrapbook .admin-sidebar nav a:hover::before{filter:brightness(.96)}
+.admin-paper .admin-sidebar nav a span{min-width:0;overflow-wrap:anywhere}.admin-paper .admin-sidebar nav a svg{width:20px;height:20px;flex:none}
+.admin-paper.account-scrapbook .admin-content .panel{position:relative;isolation:isolate;padding:23px;margin-bottom:22px;border:0;border-radius:0;background:none;box-shadow:var(--lp-shadow);min-width:0}
+.admin-paper.account-scrapbook .admin-content .panel::before{background:var(--lp-cream) url('/images/scrap-paper-ivory.webp') center/cover no-repeat;clip-path:none;mask:var(--lp-paper-mask) center/100% 100% no-repeat;-webkit-mask:var(--lp-paper-mask) center/100% 100% no-repeat}
+.admin-paper.account-scrapbook .admin-content .panel::after{content:"";top:-5px;left:22px;width:42px;height:12px;background:#c9ad6c55;transform:rotate(-4deg)}
+.admin-paper.account-scrapbook .admin-content .admin-yellow::before{background:#f7e6a7 var(--lp-grain)}
+.admin-paper .admin-content .admin-metric{min-height:130px;gap:10px}
+.admin-paper .admin-content .admin-metric strong{font:700 clamp(27px,3vw,36px)/1.15 Georgia,serif}
+.admin-paper .admin-content .admin-metrics{gap:16px}
+.admin-paper .admin-content :is(.admin-count,.admin-tag){background:#efda97 var(--lp-grain);border-radius:2px;color:#35573f}
+.admin-paper .admin-content .admin-tabs{margin:0 0 20px;gap:9px}
+.admin-paper.account-scrapbook .admin-content :is(button,.button,.pagination a){--admin-button-paper:var(--lp-green);position:relative;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:10px 15px;color:#fffbed;background:none;border:0;border-radius:0;box-shadow:none;max-width:100%;font:650 15px/1.4 system-ui,sans-serif;text-decoration:none;text-align:center;white-space:normal;filter:drop-shadow(0 2px 1px #3f583127)}
+.admin-paper.account-scrapbook .admin-content :is(button,.button,.pagination a)::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:var(--admin-button-paper) var(--lp-grain);mask:var(--lp-button-mask) center/100% 100% no-repeat;-webkit-mask:var(--lp-button-mask) center/100% 100% no-repeat;border:0;opacity:1}
+.admin-paper.account-scrapbook .admin-content :is(button,.button).quiet{--admin-button-paper:#e1e8d4;color:var(--lp-ink)}
+.admin-paper.account-scrapbook .admin-content :is(button,.button).secondary,.admin-paper.account-scrapbook .admin-content .admin-tabs a[aria-current=page]{--admin-button-paper:var(--lp-yellow);color:var(--lp-ink)}
+.admin-paper.account-scrapbook .admin-content :is(button,.button).danger{--admin-button-paper:#975360;color:#fffbed}
+.admin-paper.account-scrapbook .admin-content :is(button,.button):disabled{opacity:.55;cursor:not-allowed}
+.admin-paper .admin-content :is(input:not([type=checkbox]):not([type=radio]):not([type=hidden]),textarea,select){width:100%;max-width:100%;min-width:0;border:1px solid #b8c6aa;border-radius:7px;background:#fffdf5;padding:10px 12px;color:var(--lp-ink);box-shadow:inset 0 1px 2px #6676480a}
+.admin-paper .admin-content input[type=hidden]{display:none}
+.admin-paper .admin-content label{font-weight:650}
+.admin-paper .admin-content :is(.status,.sunny){background:#f5e7b1 var(--lp-grain);border-radius:8px;color:var(--lp-ink)}
+.admin-paper .admin-content .errors{background:#f5e1d6;color:#813e38;border-radius:8px}
+.admin-paper .admin-content :is(table,.article-admin-table,.member-table){font-size:15px;border-collapse:separate;border-spacing:0;width:100%}
+.admin-paper .admin-content :is(table,.article-admin-table,.member-table) th{padding:12px 11px;background:#e5ead7;font-size:15px;color:var(--lp-ink);border-bottom:1px solid #c8d2bc}
+.admin-paper .admin-content :is(table,.article-admin-table,.member-table) td{padding:13px 11px;background:transparent;border-bottom:1px dashed #cbd3c0;vertical-align:top;overflow-wrap:anywhere}
+.admin-paper .admin-content :is(table,.article-admin-table,.member-table) tbody tr:nth-child(even){background:#f0f1e233}
+.admin-paper .admin-content :is(.article-admin-scroll,.admin-table-scroll,.table-scroll){max-width:100%;overflow-x:auto;scrollbar-width:thin;scrollbar-color:#b8c8a8 #f2f0df}
+.admin-paper .admin-content .admin-polaroid{background:var(--lp-cream) var(--lp-grain);padding:7px 7px 18px;transform:rotate(-1deg);filter:drop-shadow(0 2px 2px #43593628);box-shadow:none}
+.admin-paper .admin-content .admin-polaroid img{object-fit:contain;background:#eeeadd}
+.admin-paper .admin-content .admin-member-avatar{background:var(--lp-cream) var(--lp-grain);padding:7px;object-fit:contain}
+.admin-paper .admin-content :is(.admin-workitem,.admin-facts>div,.admin-review){border-color:#c1ceb3}
+.admin-paper .admin-content .comments{max-height:420px;overflow:auto}
+.admin-paper :is(a,button,input,textarea,select,summary):focus-visible{outline:3px solid #a36d24;outline-offset:3px}
+@media(max-width:1000px){.admin-paper.account-scrapbook .account-shell{gap:18px;padding:18px}.admin-paper .admin-content .panel{padding:20px}.admin-paper .admin-content .admin-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.admin-paper.account-scrapbook .account-shell{display:block;width:calc(100% - 40px);padding:15px;border-radius:18px}.admin-paper.account-scrapbook .admin-sidebar{position:static;margin-bottom:24px;padding:15px 11px}.admin-paper.account-scrapbook .admin-sidebar nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.admin-paper.account-scrapbook .admin-sidebar nav a{padding:9px 8px;font-size:13px}.admin-paper.account-scrapbook .admin-sidebar::after{display:none}.admin-paper .admin-content .admin-metrics{gap:12px}.admin-paper.account-scrapbook .admin-content .panel{padding:19px 15px}.admin-paper .admin-content h1{font-size:29px}.admin-paper .admin-content h2{font-size:23px}.admin-paper .admin-content .admin-metric strong{font-size:29px}}
+@media(max-width:400px){.admin-paper.account-scrapbook .account-shell{width:calc(100% - 24px);padding:12px}.admin-paper .admin-content .admin-metrics{grid-template-columns:minmax(0,1fr)}.admin-paper .admin-content .admin-filter-grid,.admin-paper .admin-content .article-admin-filters{grid-template-columns:minmax(0,1fr)}}
+@media(forced-colors:active){.admin-paper.account-scrapbook .account-shell{border:1px solid CanvasText}.admin-paper .admin-sidebar nav a::before,.admin-paper .admin-content .panel::before,.admin-paper .admin-content button::before{display:none}.admin-paper .admin-sidebar nav a[aria-current=page]{background:Highlight;color:HighlightText}.admin-paper .admin-content :is(button,.button){background:ButtonFace;color:ButtonText;border:1px solid ButtonText}}
+/* Clear legacy border-image layers so the shared paper colours stay authoritative. */
+.admin-paper.account-scrapbook .admin-sidebar::before,.admin-paper.account-scrapbook .admin-content .panel::before,.admin-paper.account-scrapbook .admin-sidebar nav a::before{border:0;border-image:none;transform:none;box-shadow:none}

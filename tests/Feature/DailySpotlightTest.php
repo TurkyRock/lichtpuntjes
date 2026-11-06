@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\{DB,Http};
 use Illuminate\Support\Sleep;
 class DailySpotlightTest extends TestCase {
  use RefreshDatabase;
- protected function setUp():void {parent::setUp();config(['cache.default'=>'array']);$this->travelTo(\Carbon\Carbon::parse('2026-10-14 10:00:00','Europe/Amsterdam'));$this->mock(ArticlePhotoFinder::class,fn($m)=>$m->shouldReceive('current')->andReturn(true));Http::preventStrayRequests();Sleep::fake();}
+ protected function setUp():void {parent::setUp();config(['cache.default'=>'array']);$this->travelTo(\Carbon\Carbon::parse('2026-10-14 10:00:00','Europe/Amsterdam'));$this->mock(ArticlePhotoFinder::class,fn($m)=>$m->shouldReceive('available')->andReturn(true));Http::preventStrayRequests();Sleep::fake();}
  protected function tearDown():void {$this->travelBack();parent::tearDown();}
  private function user(bool $admin=true):User{return User::forceCreate(['name'=>'Sunny','email'=>bin2hex(random_bytes(6)).'@example.com','password'=>'TestPassword123','email_verified_at'=>now(),'community_accepted_at'=>now(),'is_admin'=>$admin]);}
  private function story(array $extra=[]):Article {return Article::create($extra+['fingerprint'=>bin2hex(random_bytes(16)),'origin'=>'news','status'=>'published','source_title'=>'Happy news','source_name'=>'Source','source_url'=>'https://example.com/news','category'=>'nature','published_at'=>now()->subHours(2),'daily_score'=>85,'daily_reason'=>['nl'=>'Breed en hoopvol','en'=>'Broad and hopeful'],'daily_scored_at'=>now(),'photo'=>['url'=>'/news-images/'.str_repeat('a',64).'.png','generated'=>true],'nl'=>['title'=>'Een zonnig verhaal','teaser'=>'Een mooie ontwikkeling','body'=>['Een betrouwbaar positief verhaal.']],'en'=>['title'=>'A sunny story','teaser'=>'A lovely development','body'=>['A reliable uplifting story.']]]);}
@@ -91,7 +91,7 @@ class DailySpotlightTest extends TestCase {
   $a=$this->story(['photo'=>['url'=>'/news-images/'.str_repeat('a',64).'.png','generated'=>true,'style'=>'lichtpunt-paper-v1']]);
   $html=$this->get('/')->assertOk()->getContent();$body=preg_replace('/<script\b[^>]*>.*?<\/script>/is','',substr($html,strpos($html,'<body')));
   $this->assertStringNotContainsString('AI-gegenereerde illustratie',$body);$this->assertStringContainsString('Onze afbeeldingen worden gemaakt met AI',$body);
-  $html=$this->get(\App\Support\StorySeo::path($a))->assertOk()->getContent();$body=preg_replace('/<script\b[^>]*>.*?<\/script>/is','',substr($html,strpos($html,'<body')));$this->assertStringNotContainsString('AI-gegenereerde illustratie',$body);$this->assertStringContainsString('Met AI gemaakte samenvatting',$body);
+  $html=$this->get(\App\Support\StorySeo::path($a))->assertOk()->getContent();$body=preg_replace('/<script\b[^>]*>.*?<\/script>/is','',substr($html,strpos($html,'<body')));$this->assertStringNotContainsString('AI-gegenereerde illustratie',$body);$this->assertStringNotContainsString('Met AI gemaakte samenvatting',$body);
   $a->update(['photo'=>['url'=>'/news-images/'.str_repeat('a',64).'.png','generated'=>true,'style'=>'older-realistic-style']]);
   $html=$this->get(\App\Support\StorySeo::path($a))->assertOk()->getContent();$body=preg_replace('/<script\b[^>]*>.*?<\/script>/is','',substr($html,strpos($html,'<body')));$this->assertStringContainsString('AI-gegenereerde illustratie',$body);
  }

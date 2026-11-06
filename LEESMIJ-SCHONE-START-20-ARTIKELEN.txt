@@ -1,0 +1,76 @@
+JOUW LICHTPUNTJE – SCHONE START MET 20 ARTIKELEN – 23 OKTOBER 2026
+
+INSTALLEREN EN STARTEN
+Laat een lopende import/beeldbatch eerst afronden of stop hem met Ctrl+C.
+Pak dit hele pakket uit over C:\Users\e_tur\Herd\lichtpunt-schoon.
+Start ComfyUI en voer in de projectmap uit:
+
+php artisan optimize:clear
+php artisan news:fresh --count=20 --pages=50
+
+De opdracht verwijdert bij de eerste uitvoering ALLE oude geïmporteerde
+nieuwsartikelen: ook verborgen artikelen, het archief, concepten, afgekeurde
+kandidaten en eerder voorbereide nieuwsartikelen. Zelfgeschreven bijdragen,
+kleine momentjes, accounts en donatiegegevens blijven behouden.
+Bijbehorende reacties en likes van verwijderde nieuwsartikelen verdwijnen mee.
+Er wordt eerst een gecontroleerde herstelkopie in storage/app/news-replacement-backups gemaakt.
+Oude afbeeldingsbestanden blijven beschikbaar voor eventueel herstel.
+
+De nieuwscollectie is daarna tijdelijk leeg terwijl de 20 nieuwe artikelen
+worden opgehaald, positief beoordeeld, vertaald en van papierbeelden voorzien.
+Pas als alle 20 compleet zijn, publiceert de opdracht de nieuwe collectie.
+De verdeling is 4 natuur, 4 duurzaamheid en 3 per overige nieuwscategorie.
+Er zijn voldoende geschikte bronberichten en werkende bestaande API-koppelingen nodig.
+
+HERVATTEN
+Bij een onderbreking voer je precies dezelfde opdracht opnieuw uit:
+
+php artisan news:fresh --count=20 --pages=50
+
+Al geslaagde artikelen en beelden worden overgeslagen en NIET opnieuw gewist.
+De nieuwe opdracht gebruikt een eigen voortgangsbestand, onafhankelijk van oude
+proefbatches van 30 of 100 artikelen. Is deze nieuwe batch klaar, dan doet dezelfde
+opdracht niets meer. De voltooiingsmelding noemt dat uitdrukkelijk.
+Zijn de bronpaginas op, herstart dan alleen de bronpaginering:
+
+php artisan news:fresh --count=20 --pages=50 --restart-feed
+
+--restart-feed behoudt alle al voorbereide nieuwe artikelen en beelden.
+Gebruik geen --force; dat is voor deze nieuwe opdracht niet nodig en bestaat hier niet.
+
+NIEUWE BEELDINSTRUCTIES
+Het warme fijne papierwerk van het goedgekeurde huis blijft de basis:
+groen, geel, terracotta/oranje, bruin, beige en crème, met fijn laagjeswerk,
+zacht daglicht en herkenbare onderwerpen. Een of twee kleine accenten in
+abrikoos, warm koraal of zacht hemelblauw mogen nu voor extra vrolijkheid zorgen.
+De accenten blijven ongeveer een tiende van het beeld of minder; geen regenboogpalet.
+De vaste zonnepanelen-beschrijving wordt alleen bij artikelen over zonnepanelen
+gebruikt. Zij staat niet meer in de instructie van ieder nieuwsartikel.
+
+BETERE AFHANDELING VAN BEELDAFKEUR
+De controle blijft streng op een herkenbaar hoofdonderwerp. Voor de papierstijl
+beoordeelt zij het samenhangende totaalbeeld, zonder ieder vezeltje te eisen.
+Na een concrete onderwerpmisser wordt de tweede opdracht explicieter.
+Er zijn maximaal twee beeldkandidaten per artikel. Worden die beide afgekeurd,
+dan toont de opdracht de laatste concrete reden en zoekt de schone import een
+ander artikel om de collectie tot 20 aan te vullen. Deze inhoudelijke afkeuring
+stopt de schone import niet na drie opeenvolgende afkeuringen.
+Een providerstoring of bereikt tegoed onderbreekt de import wel. Hervatten
+bewaart de eerder goedgekeurde resultaten. Gemini behoudt de bestaande tijdelijke
+herpogingen na 60 en 300 seconden.
+
+OVERIG
+Geen database-migratie en geen aanpassing van .env nodig. De bestaande lokale
+ComfyUI en Gemini-koppeling blijven in gebruik. Het lokale beeldmodel kan nog
+variatie geven ten opzichte van het hier getoonde stijlvoorbeeld.
+De eerdere homepage-reparatie is inbegrepen: geldige beelden blijven bruikbaar
+voor dagartikel, meest gelezen en meeste likes, los van de stijlversie.
+Ververs na afloop de website met Ctrl+F5.
+
+GEVERIFIEERD
+85 tests, 560 assertions. Onder andere: volledig nieuwsarchief verwijderen,
+herstelkopie en foutafhandeling, 20 nieuwe artikelen, categorieën, vervangende
+kandidaten bij beeldafkeuring, hervatten zonder dubbele generatie, homepageblokken,
+en compatibiliteit met bestaande import- en beeldopdrachten.
+Externe API-antwoorden zijn tijdens tests nagebootst. De echte schone import
+wordt op jouw computer uitgevoerd met bovenstaande opdracht.

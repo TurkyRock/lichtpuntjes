@@ -1,0 +1,84 @@
+JOUW LICHTPUNTJE - DRIE NIEUWE ARTIKELEN PER CATEGORIE - 29 OKTOBER 2026
+
+INSTALLEREN
+Pak dit pakket uit over je projectmap lichtpunt-schoon en overschrijf de bestanden.
+Er is geen databasemigratie nodig. Bestaande artikelen blijven behouden.
+
+Voer uit:
+php artisan config:clear
+
+EEN RONDE STARTEN OF HERVATTEN
+php -d memory_limit=512M artisan news:hourly --per-category=3
+
+Doel: drie nieuwe, inhoudelijk goedgekeurde artikelen met passende fotorealistische
+AI-afbeelding in elk van de zes nieuwscategorieen (18 in totaal).
+Media, Sport, Duurzaamheid, Natuur, Wetenschap, Mens & maatschappij.
+Zelfgeschreven wordt gevuld door gebruikers en telt niet mee.
+
+Het programma blijft kandidaten ophalen en beoordelen; er is geen standaardlimiet
+van 50 of 200 te beoordelen berichten. Er wordt gericht gezocht voor categorieen
+die in deze ronde nog geen drie nieuwe artikelen hebben.
+Het totale aantal oudere artikelen per categorie bepaalt deze nieuwe quota niet.
+De daadwerkelijke categorie na de AI-beoordeling bepaalt waar een artikel meetelt.
+Ongeschikte berichten, onvoldoende brontekst, dubbelen en ongeschikte afbeeldingen
+worden niet gepubliceerd om de aantallen te halen.
+
+Voortgang staat prive in storage/app/news-hourly/state.json.
+Na onderbreken of een quotafout gaat dezelfde opdracht verder met de open ronde.
+Ook als inmiddels een nieuw uur is begonnen, wordt eerst de open ronde afgerond.
+Een voltooide ronde wordt binnen hetzelfde uur niet opnieuw uitgevoerd.
+De volgende uitvoering in een later uur start een nieuwe ronde.
+Er worden geen gemiste uren ingehaald met extra batches bovenop elkaar.
+
+Wanneer de bronnen uitgeput zijn, een provider/budget blokkeert of de uitvoering
+55 minuten duurt, pauzeert de ronde met behoud van voortgang. Dit is geen garantie
+dat elke categorie binnen ieder klokuur drie geschikte nieuwe berichten krijgt.
+De opdracht meldt per categorie hoeveel er echt zijn geplaatst.
+Uitgangscode 0 = compleet/al afgerond/andere import actief; 2 = ronde nog incompleet;
+1 = fout. Een andere actieve import wordt niet afgebroken en er zijn geen gelijktijdige
+nieuwsimports toegestaan. Na een harde processtop kan een lock tijdelijk blijven staan.
+
+AUTOMATISCH IEDER UUR
+Voeg aan je eigen .env toe:
+NEWS_HOURLY_ENABLED=true
+NEWS_HOURLY_PER_CATEGORY=3
+
+Voer daarna uit:
+php artisan config:clear
+php -d memory_limit=512M artisan schedule:work
+
+Laat deze terminal open en je pc aan. De planner start op ieder heel uur.
+De nieuwe uurlijkse planning vervangt dan de oude vijf dagelijkse news:cycle-rondes.
+De andere onderhoudstaken blijven bestaan. De uurlijkse import draait zelf ook op 512 MB.
+Als je al iedere minuut schedule:run via cron/Taakplanner uitvoert, hoef je geen tweede
+planner te starten. Draai niet daarnaast nog een aparte uurlijkse news:import-taak.
+
+Planning bekijken:
+php artisan schedule:list
+
+Logboek van automatisch uitgevoerde uurrondes:
+storage/logs/news-hourly.log
+
+DAGLIMIETEN - BELANGRIJK VOOR 18 ARTIKELEN PER UUR
+18 per uur betekent bij 24 complete rondes 432 nieuwe artikelen per dag.
+De bestaande standaardlimieten blijven staan: 30 nieuwsbeeldpogingen per UTC-dag
+en 50 Cloudflare-afbeeldingsaanvragen per UTC-dag (de laatste geldt ook voor momentjes).
+Mislukte aanvragen en herpogingen tellen eveneens mee. Voor 432 nieuwe beelden is dus
+minstens zoveel ruimte nodig, plus eventuele extra pogingen en gebruikersbeelden.
+De kwaliteitseisen en providerlimieten worden niet omzeild.
+
+De lokale limieten zijn nu bewust instelbaar in .env. Standaarden:
+NEWS_IMAGES_DAILY_LIMIT=30
+CLOUDFLARE_DAILY_IMAGE_REQUEST_LIMIT=50
+
+Verhoog die alleen passend bij jouw gekozen provider, tegoed en budget, en voer daarna
+php artisan config:clear uit. Een hogere lokale limiet vergroot het echte providertegoed niet.
+Bij lokale ComfyUI is de Cloudflare-aanvraaglimiet niet van toepassing, maar de lokale
+nieuwsbeeldlimiet blijft wel gelden. De gekozen provider en het model worden niet gewijzigd.
+
+CONTROLES
+23 tests met 280 assertions geslaagd: quota per ronde, ongelijke bestaande aantallen,
+geen dubbele uurronde, nieuwe ronde volgend uur, herclassificatie door AI, afwijzingen,
+503-herpoging, echte dagbudgetcontrole, hervatten na quotafout, crashherstel,
+bronuitputting, beschadigde voortgang, bestaande locks en uurlijkse planning met 512 MB.
+Er zijn tijdens de controles geen echte nieuws- of AI-aanvragen uitgevoerd.

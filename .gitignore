@@ -27,3 +27,5 @@ yarn-error.log
 /database/*.sqlite*
 /storage/app/**
 /public/news-images/**
+
+*.zip

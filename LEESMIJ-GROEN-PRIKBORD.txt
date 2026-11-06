@@ -1,0 +1,28 @@
+JOUW LICHTPUNTJE - HET GROENE PRIKBORD VOOR HOMEPAGE EN BEHEER
+24 oktober 2026
+
+INSTALLEREN
+Maak vooraf een reservekopie van je project. Pak dit pakket uit over lichtpunt-schoon. Behoud de mapstructuur en vervang de gelijknamige bestanden.
+Voer in de projectmap uit:
+php artisan optimize:clear
+Vernieuw daarna de homepage en beheer met Ctrl+F5.
+Er is geen migratie nodig.
+
+HOMEPAGE: VOORSTEL 3
+Een doorlopend groen papierbord verbindt de welkomstbanner, uitgelichte artikelen, categoriewaslijn, nieuwskaarten, momentjes en het onderste verhaalblok.
+De kaarten hebben dezelfde creme papierafwerking, knipselranden en rustige schaduw. Foto's krijgen een zichtbare papieren rand. De foto's behouden hun verhoudingen; voor passende kaders wordt waar nodig een uitsnede gebruikt. Het volledige beeld is beschikbaar bij het artikel.
+De categoriewaslijn en het sorteer-uitklapmenu blijven behouden. De actieve categorie blijft donkergroen met witte tekst en een expliciet vinkje en Gekozen-label. Sortering en categorie blijven na verversen behouden.
+Het blok onderaan met Een andere blik. Dezelfde wereld., de glimlachkaart, bronnen en AI-uitleg sluit aan op hetzelfde groene bord. De bestaande teksten worden hiervoor niet vervangen.
+
+BEHEER IN DEZELFDE STIJL
+Open /beheer met je bestaande beheerdersaccount.
+Het menu, overzicht, artikel- en gebruikerslijsten, donaties, moderatie, profielfoto's en detailpagina's gebruiken hetzelfde groene bord, creme papieren kaarten en knipselknoppen. De actieve beheerpagina krijgt een donker menu-item met een vinkje.
+Formulieren blijven goed leesbaar en bruikbaar; tabellen kunnen binnen hun kader horizontaal schuiven op kleine schermen.
+De bestaande toegangsbescherming, gegevens, acties en menu-items blijven van kracht. De bron van het beheermenu wordt in dit pakket niet vervangen, zodat bijvoorbeeld je bestaande Testgroep-link blijft staan.
+
+CONTROLES
+20 gerelateerde PHP-tests geslaagd, waaronder beheertoegang, donatietotalen, moderatie en artikelweergave.
+50 browsergevallen gecontroleerd: homepage Nederlands/Engels, zeven schermbreedtes, categorie- en sorteerkeuze, en tien beheerweergaven op drie schermbreedtes. Geen horizontale pagina-overloop of JavaScript-fouten gevonden.
+
+INHOUD
+Dit is een vormgevingsupdate. Er staan geen database, gebruikersgegevens, API-sleutels, nieuwsimportwijzigingen of nieuwe artikelafbeeldingen in het pakket.

@@ -11,8 +11,8 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\PasswordReset;
 class CommunityAuthController extends Controller {
  public function register(Request $r){
-  $r->merge(['email'=>strtolower(trim((string)$r->input('email')))]);
-  $v=$r->validate(['name'=>['required','string','min:2','max:40','regex:/^[\pL\pN _.-]+$/u'],'email'=>'required|email|max:254|unique:users,email','password'=>['required','confirmed','max:128',PasswordRule::min(12)->mixedCase()->numbers()],'intentions'=>'accepted','website'=>'prohibited','invite'=>'nullable|string|size:32']);
+  $r->merge(['name'=>trim((string)$r->input('name')),'email'=>strtolower(trim((string)$r->input('email')))]);
+  $v=$r->validate(['name'=>\App\Rules\FriendlyDisplayName::rules(),'email'=>'required|email|max:254|unique:users,email','password'=>\App\Support\AccountPasswords::rules(),'intentions'=>'accepted','website'=>'prohibited','invite'=>'nullable|string|size:32']);
   $u=User::create(['name'=>trim($v['name']),'email'=>strtolower($v['email']),'password'=>$v['password']]);
   $u->forceFill(['community_accepted_at'=>now(),'community_version'=>'2026-10-10','invite_code'=>bin2hex(random_bytes(16)),'referred_by'=>isset($v['invite'])?User::where('invite_code',$v['invite'])->where('is_suspended',false)->value('id'):null])->save();
   Auth::login($u);$r->session()->regenerate();
@@ -31,7 +31,7 @@ class CommunityAuthController extends Controller {
  public function logout(Request $r){Auth::logout();$r->session()->invalidate();$r->session()->regenerateToken();return redirect('/');}
  public function forgot(Request $r){$r->validate(['email'=>'required|email']);try{Password::sendResetLink(['email'=>strtolower($r->email)]);}catch(\Throwable $e){}return back()->with('status','Als dit adres bij ons bekend is, ontvang je een link om je wachtwoord te herstellen.');}
  public function reset(Request $r){
-  $v=$r->validate(['token'=>'required','email'=>'required|email','password'=>['required','confirmed','max:128',PasswordRule::min(12)->mixedCase()->numbers()]]);
+  $v=$r->validate(['token'=>'required','email'=>'required|email','password'=>\App\Support\AccountPasswords::rules()]);
   $status=Password::reset($v,function(User $u,string $password){$u->forceFill(['password'=>Hash::make($password),'remember_token'=>Str::random(60)])->save();if(config('session.driver')==='database')\Illuminate\Support\Facades\DB::table(config('session.table','sessions'))->where('user_id',$u->id)->delete();event(new PasswordReset($u));});
   return $status===Password::PasswordReset?redirect('/inloggen')->with('status','Wachtwoord vernieuwd. Je kunt weer inloggen.'):back()->withErrors(['email'=>'Deze herstellink is ongeldig of verlopen.']);
  }

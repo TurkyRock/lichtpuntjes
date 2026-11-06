@@ -8,9 +8,9 @@ class ArticleAdminController extends Controller {
  private function owner(Request $request):void {abort_unless($request->user()?->is_admin,403);}
  public function index(Request $request){
   $this->owner($request);
-  $input=$request->validate(['q'=>'nullable|string|max:200','status'=>'sometimes|in:published,hidden','origin'=>'sometimes|in:all,news,community','page'=>'sometimes|integer|min:1|max:1000000']);
+  $input=$request->validate(['q'=>'nullable|string|max:200','status'=>'sometimes|in:published,hidden,all,pending,draft,rejected,error,insufficient,replacement,news_ready,community_pending','origin'=>'sometimes|in:all,news,community','page'=>'sometimes|integer|min:1|max:1000000']);
   $status=$input['status']??'published';$origin=$input['origin']??'all';$search=trim($input['q']??'');$query=Article::query()->with('author');
-  if($status==='hidden')$query->whereNotNull('hidden_at');elseif($status!=='all')$query->visible();
+  if($status==='hidden')$query->whereNotNull('hidden_at');elseif($status==='published')$query->visible();elseif($status!=='all')$query->where('status',$status);
   if($origin!=='all')$query->where('origin',$origin);
   if($search!=='')$query->where(function($q)use($search){$term='%'.$search.'%';$q->where('nl->title','like',$term)->orWhere('en->title','like',$term)->orWhere('source_title','like',$term)->orWhere('source_name','like',$term);if(ctype_digit($search))$q->orWhere('id',(int)$search);});
   $articles=$query->orderByDesc('id')->paginate(30)->withQueryString();

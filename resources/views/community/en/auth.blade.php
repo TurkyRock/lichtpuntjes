@@ -10,7 +10,7 @@
 @if($mode==='reset')<input type="hidden" name="token" value="{{ $token }}">@endif
 <label for="email">Email address</label><input id="email" type="email" name="email" value="{{ old('email', $email ?? '') }}" maxlength="254" autocomplete="email" required>
 @if($mode!=='forgot')<label for="password">Password</label><input id="password" type="password" name="password" autocomplete="{{ $mode==='login'?'current-password':'new-password' }}" maxlength="128" required>@endif
-@if(in_array($mode,['register','reset']))<p class="small">At least 12 characters, including an uppercase letter, a lowercase letter and a number.</p><label for="password_confirmation">Repeat your password</label><input id="password_confirmation" type="password" name="password_confirmation" autocomplete="new-password" maxlength="128" required>@endif
+@if(in_array($mode,['register','reset']))<p class="small">At least 15 characters. Choose a long password phrase; spaces are welcome. Known breached passwords are rejected.</p><label for="password_confirmation">Repeat your password</label><input id="password_confirmation" type="password" name="password_confirmation" autocomplete="new-password" maxlength="128" required>@endif
 @if($mode==='register')<label><input type="checkbox" name="intentions" value="1" required> I share happy stories and respond kindly. I accept the <a href="/huisregels?lang=en" target="_blank" rel="noopener">community rules</a>.</label>@endif
 @if($mode==='login')<label><input type="checkbox" name="remember" value="1"> Remember me on this device</label>@endif
 <p><button>{{ ['register'=>'Yes, I’ll bring some sunshine ☀','login'=>'Log in','forgot'=>'Send a reset link','reset'=>'Save new password'][$mode] }}</button></p></form>

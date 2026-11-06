@@ -6,7 +6,12 @@ use Illuminate\Support\Facades\{DB,File,Http};
 use Tests\TestCase;
 class LichtpuntIllustrationTest extends TestCase {
  private array $files=[];
- protected function setUp():void {parent::setUp();config(['database.default'=>'sqlite','database.connections.sqlite.database'=>':memory:','cache.default'=>'array','news_images.provider'=>'comfyui','news_images.comfy_url'=>'http://127.0.0.1:8188','news_images.checkpoint'=>'sd_xl_base_1.0.safetensors']);DB::purge('sqlite');$this->artisan('migrate',['--force'=>true])->assertExitCode(0);Http::preventStrayRequests();}
+ protected function setUp():void {parent::setUp();config(['database.default'=>'sqlite','database.connections.sqlite.database'=>':memory:','cache.default'=>'array','news_images.provider'=>'comfyui','news_images.comfy_url'=>'http://127.0.0.1:8188','news_images.checkpoint'=>'sd_xl_base_1.0.safetensors']);DB::purge('sqlite');$this->artisan('migrate',['--force'=>true])->assertExitCode(0);Http::preventStrayRequests();
+  // Provider transport is isolated here; subject and photo rejection have their own tests.
+  $this->partialMock(\App\Services\ArticleVisualBrief::class,function($m){
+   $m->shouldReceive('plan')->andReturnUsing(fn($a)=>['scene'=>'Football equipment on an empty football pitch','must_show'=>'Football equipment and a football pitch','avoid'=>'portraits, unrelated objects','people'=>false,'confidence'=>.95,'content_hash'=>app(\App\Services\ArticleVisualBrief::class)->contentHash($a),'version'=>1]);
+   $m->shouldReceive('review')->andReturn(['match'=>true,'photorealistic'=>true,'confidence'=>.95,'reason'=>'Passend fotorealistisch beeld.']);
+  });}
  protected function tearDown():void {foreach($this->files as $file)File::delete($file);parent::tearDown();}
  private function article(string $tag='one'):Article {return Article::create(['fingerprint'=>hash('sha256',$tag),'source_title'=>'Ajax celebrates a win','source_name'=>'News','source_url'=>'https://example.com/'.$tag,'category'=>'sport','status'=>'published','nl'=>['title'=>'Ajax viert een overwinning','teaser'=>'Samen blij','body'=>['Het team viert feest.']],'en'=>['title'=>'Ajax celebrates a win','teaser'=>'Team spirit','body'=>['The team celebrates together.']],'photo'=>['generated'=>false,'url'=>'/old.jpg','creator'=>'Old author']]);}
  private function fakeServer(string $bytes):void {
@@ -15,7 +20,7 @@ class LichtpuntIllustrationTest extends TestCase {
  public function test_graph_contains_article_specific_scene_brand_style_and_only_local_nodes():void {
   $a=$this->article();$bytes=File::get(public_path('images/lichtpunt-zon.png'));$this->fakeServer($bytes);$this->files[]=public_path('news-images/'.hash('sha256',$bytes).'.png');
   $generator=app(ArticleImageGenerator::class);$generator->check();$p=$generator->generate($a);$this->assertTrue($p['generated']);$this->assertSame(LichtpuntIllustrationPrompt::PHOTO_STYLE,$p['style']);$this->assertSame(hash('sha256',$bytes),$p['sha256']);$this->assertFileExists(public_path(ltrim($p['url'],'/')));
-  Http::assertSent(function($r)use($a){if(!str_ends_with($r->url(),'/prompt'))return false;$g=$r['prompt'];$this->assertStringContainsString('Ajax',$g['6']['inputs']['text']);$this->assertStringContainsString('Photorealistic',$g['6']['inputs']['text']);$this->assertStringNotContainsString('linocut',$g['6']['inputs']['text']);$this->assertSame(1024,$g['5']['inputs']['width']);$this->assertSame(576,$g['5']['inputs']['height']);$this->assertSame('lichtpunt-'.$a->id.'-'.$g['3']['inputs']['seed'],$g['9']['inputs']['filename_prefix']);$this->assertArrayNotHasKey('extra_data',$r->data());return true;});
+  Http::assertSent(function($r)use($a){if(!str_ends_with($r->url(),'/prompt'))return false;$g=$r['prompt'];$this->assertStringContainsString('Football equipment',$g['6']['inputs']['text']);$this->assertStringContainsString('Photorealistic',$g['6']['inputs']['text']);$this->assertStringNotContainsString('linocut',$g['6']['inputs']['text']);$this->assertSame(1024,$g['5']['inputs']['width']);$this->assertSame(576,$g['5']['inputs']['height']);$this->assertSame('lichtpunt-'.$a->id.'-'.$g['3']['inputs']['seed'],$g['9']['inputs']['filename_prefix']);$this->assertArrayNotHasKey('extra_data',$r->data());return true;});
   Http::assertSentCount(4);
  }
  public function test_resume_skips_current_images_and_changed_story_requires_new_one():void {

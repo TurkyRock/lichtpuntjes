@@ -1,0 +1,24 @@
+.support-invitation-slot{grid-column:1/-1;min-height:1px;margin:0;min-width:0}
+.support-invitation-slot:has(>.support-invitation-card:not([hidden])){margin:16px 0 22px}
+.support-invitation-card{position:relative;isolation:isolate;display:flex;align-items:center;gap:22px;padding:25px 80px 24px 25px;color:#153e39;filter:drop-shadow(0 3px 2px #364b2420);min-width:0;overflow-wrap:anywhere}
+.support-invitation-card[hidden]{display:none}
+.support-invitation-card::before{content:"";position:absolute;inset:0;z-index:-1;background:#ffe69d url('/images/button-paper-grain.svg');clip-path:polygon(1% 1%,13% 0,25% 1%,38% 0,51% 1%,64% 0,77% 1%,90% 0,99% 1%,100% 22%,99% 43%,100% 64%,99% 83%,100% 99%,87% 100%,74% 99%,61% 100%,48% 99%,35% 100%,22% 99%,9% 100%,0 99%,1% 79%,0 58%,1% 37%,0 16%)}
+.support-invitation-card::after{content:"";position:absolute;left:48%;top:-6px;width:46px;height:18px;background:#dac593aa;transform:rotate(7deg);pointer-events:none}
+.support-invitation-sun{width:64px;height:64px;flex:none;object-fit:contain;pointer-events:none}
+.support-invitation-copy{flex:1;min-width:0}.support-invitation-copy h2,.account-scrapbook .account-content .support-invitation-copy h2{font:600 25px/1.2 Georgia,serif;letter-spacing:-.4px;margin:0 0 8px}
+.support-invitation-copy p{font:400 14px/1.6 system-ui,sans-serif;margin:0 0 12px;color:#29493b}
+.support-invitation-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.support-invitation-card .support-button{--support-button-paper:#00786e;color:white;font-size:13px;min-height:43px;padding:10px 18px}
+.support-invitation-card .support-invitation-later,.account-scrapbook .account-content .support-invitation-card button.support-invitation-later{display:inline-block;min-height:40px;padding:7px 3px;background:transparent;box-shadow:none;border:0;border-radius:0;color:#315747;font:400 13px/1.4 system-ui,sans-serif;text-decoration:underline;text-underline-offset:3px}
+.support-invitation-card .support-invitation-close,.account-scrapbook .account-content .support-invitation-card button.support-invitation-close{position:absolute;right:8px;top:6px;display:grid;place-items:center;width:40px;height:40px;padding:0;min-height:40px;background:transparent;border:0;border-radius:0;box-shadow:none;color:#29493b;font:400 27px/1 system-ui,sans-serif}
+.account-scrapbook .account-content .support-invitation-card button.support-invitation-later::before,.account-scrapbook .account-content .support-invitation-card button.support-invitation-later::after,.account-scrapbook .account-content .support-invitation-card button.support-invitation-close::before,.account-scrapbook .account-content .support-invitation-card button.support-invitation-close::after{display:none}
+.support-invitation-signature{position:absolute;right:25px;bottom:17px;font:400 36px/1.2 ErikInk,"Segoe Script",cursive;color:#314b56;transform:rotate(-6deg)}
+.support-invitation-card :is(a,button):focus-visible{outline:3px solid #00786e;outline-offset:3px}
+.support-invitation-dialog{width:min(640px,calc(100% - 28px));padding:0;border:0;background:transparent;max-height:85dvh;overflow:auto;filter:drop-shadow(0 12px 24px #153e3926)}
+.support-invitation-dialog::backdrop{background:#153e394d;backdrop-filter:blur(2px)}
+.support-invitation-dialog .support-invitation-card{display:block;padding:36px 30px 27px;text-align:center;filter:none}
+.support-invitation-dialog .support-invitation-sun{display:block;margin:0 auto 18px;width:75px;height:75px}
+.support-invitation-dialog h2{font-size:30px}.support-invitation-dialog p{font-size:16px;line-height:1.65}.support-invitation-dialog .support-invitation-actions{justify-content:center;margin:20px 0 30px}.support-invitation-dialog .support-invitation-signature{bottom:14px;right:25px}
+@media(max-width:750px){.support-invitation-card{padding:23px 45px 23px 20px;gap:15px}.support-invitation-sun{width:45px;height:45px}.support-invitation-copy h2,.account-scrapbook .account-content .support-invitation-copy h2{font-size:23px}.support-invitation-copy p{font-size:13px}.support-invitation-signature{display:none}.support-invitation-dialog .support-invitation-signature{display:block}.support-invitation-actions{gap:12px}}
+@media(max-width:420px){.support-invitation-card{display:block;padding:25px 20px 20px}.support-invitation-sun{width:39px;height:39px;margin:0 0 10px}.support-invitation-copy h2{padding-right:8px}.support-invitation-dialog .support-invitation-card{padding:30px 24px}.support-invitation-dialog h2{font-size:27px}}
+@media(forced-colors:active){.support-invitation-card{border:1px solid CanvasText;background:Canvas;filter:none}.support-invitation-card::before,.support-invitation-card::after{display:none}}

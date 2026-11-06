@@ -92,3 +92,23 @@
 .moment-washing-line{padding-bottom:20px}
 @media(max-width:850px){.moment-washing-line .moment-strip-footer{grid-template-columns:1fr}}
 @media(max-width:480px){.moment-washing-line .moment-footer-actions{grid-template-columns:1fr}}
+
+/* Keep a single share button at the bottom right, also without the evening prompt. */
+.moment-washing-line .moment-strip-footer{align-items:end}
+.moment-washing-line .moment-footer-actions{justify-self:end;align-self:end;width:100%;max-width:440px}
+.moment-washing-line .moment-footer-actions .moment-paper-action:only-child{grid-column:1/-1;justify-self:end;width:min(100%,220px)}
+/* One 384px source, small decorative images on the line, larger in the reader. */
+.moment-small-image{display:block;box-sizing:border-box;margin:0 0 12px;width:100%;height:135px;flex-shrink:0}
+.moment-small-image img{display:block;width:100%;height:100%;object-fit:cover;border:0;border-radius:1px}
+.moment-small-image.is-photo{padding:5px 5px 10px;background:#fffef9;box-shadow:0 2px 4px #29453222}
+.moment-small-image.is-sketch img{object-fit:contain;mix-blend-mode:multiply}
+.moment-small-image--account{height:110px;max-width:180px;margin:0 auto 10px}
+.moment-small-image--polaroid{height:125px;margin:0}
+.moment-small-image--home{width:88px;height:88px;align-self:center;margin:3px auto 10px}
+.moment-washing-line .moment-paper-note:has(>.moment-small-image){min-height:280px}
+.moment-washing-line .moment-paper-note:has(>.moment-small-image)>.moment-quote{font-size:16px;line-height:1.5}
+.moment-washing-line .moment-paper-note .moment-small-image--detail{display:none}
+.moment-detail-dialog .moment-small-image--detail{display:block;width:160px;height:160px;float:right;margin:17px 0 13px 20px}
+.moment-detail-dialog .moment-detail-text{white-space:pre-wrap;overflow-wrap:anywhere;font:400 21px/1.65 Georgia,serif}
+.moment-detail-dialog .moment-full-content::after{content:"";display:block;clear:both}
+@media(max-width:480px){.moment-small-image--home{width:78px;height:78px}.moment-small-image--polaroid{height:98px}.moment-detail-dialog .moment-small-image--detail{width:115px;height:115px;margin-left:12px}.moment-detail-dialog .moment-detail-text{font-size:18px}}

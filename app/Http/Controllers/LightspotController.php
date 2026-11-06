@@ -14,8 +14,8 @@ class LightspotController extends Controller {
   if(preg_match('~https?://|www\.|[\w.+-]+@[\w.-]+\.[a-z]{2,}~iu',$v['title'].' '.$v['body']))throw \Illuminate\Validation\ValidationException::withMessages(['body'=>'Laat links, e-mailadressen en contactgegevens weg.']);
   return array_intersect_key($v,array_flip(['title','body','language','category']));
  }
- public function create(Request $r){return view('community.lightspot-write',['submission'=>null]);}
- public function index(Request $r){return view('community.lightspot-list',['submissions'=>LightspotSubmission::where('user_id',$r->user()->id)->latest()->paginate(6)]);}
+ public function create(Request $r){return redirect('/mijn-lichtpuntjes?lang='.app()->getLocale().'#new-story');}
+ public function index(Request $r){return view('community.lightspot-list',['submissions'=>LightspotSubmission::where('user_id',$r->user()->id)->with('article')->latest()->paginate(6)->withQueryString()]);}
  public function store(Request $r){
   $this->author($r);$v=$this->fields($r);
   $s=DB::transaction(function()use($r,$v){$user=User::whereKey($r->user()->id)->lockForUpdate()->firstOrFail();abort_if($user->is_suspended,403);
@@ -42,10 +42,10 @@ class LightspotController extends Controller {
   return back()->with('status','Een beheerder kijkt opnieuw naar je verhaal.');
  }
  public function admin(Request $r){
-  abort_unless($r->user()->is_admin,403);$v=$r->validate(['status'=>'sometimes|in:doubt,pending,rejected,image_wait,published,reported']);$filter=$v['status']??'doubt';
-  $q=LightspotSubmission::with(['user','reports','reviews'=>fn($q)=>$q->latest('id')->limit(10)]);if($filter==='reported')$q->whereHas('reports',fn($q)=>$q->where('resolved',false));else $q->where('status',$filter);
-  $counts=LightspotSubmission::selectRaw('status, count(*) as total')->groupBy('status')->pluck('total','status');$counts['reported']=LightspotSubmission::whereHas('reports',fn($q)=>$q->where('resolved',false))->count();
-  return view('community.lightspot-admin',['filter'=>$filter,'submissions'=>$q->latest()->paginate(10),'counts'=>$counts]);
+  abort_unless($r->user()->is_admin,403);$v=$r->validate(['status'=>'sometimes|in:review,doubt,pending,rejected,image_wait,published,reported']);$filter=$v['status']??'review';
+  $q=LightspotSubmission::with(['user','reports','reviews'=>fn($q)=>$q->latest('id')->limit(10)]);if($filter==='reported')$q->whereHas('reports',fn($q)=>$q->where('resolved',false));elseif($filter==='review')$q->whereIn('status',['pending','doubt','image_wait']);else $q->where('status',$filter);
+  $counts=LightspotSubmission::selectRaw('status, count(*) as total')->groupBy('status')->pluck('total','status');$counts['review']=LightspotSubmission::whereIn('status',['pending','doubt','image_wait'])->count();$counts['reported']=LightspotSubmission::whereHas('reports',fn($q)=>$q->where('resolved',false))->count();
+  return view('community.lightspot-admin',['filter'=>$filter,'submissions'=>$q->latest()->paginate(10)->withQueryString(),'counts'=>$counts]);
  }
  public function decide(Request $r,LightspotSubmission $submission,LightspotProcessor $processor){
   abort_unless($r->user()->is_admin,403);$v=$r->validate(['decision'=>'required|in:image_wait,rejected,doubt','note'=>'required|string|min:3|max:1000']);

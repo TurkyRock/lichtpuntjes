@@ -28,13 +28,10 @@ class CommunityTest extends TestCase {
    ->assertDontSee('href="/beheer',false);
   foreach(['/beheer','/beheer/artikelen','/beheer/lichtpuntjes','/beheer/privacy'] as $adminPath)$this->get($adminPath)->assertForbidden();
  }
- public function test_admin_has_both_account_and_administration_navigation():void {
+ public function test_admin_account_and_administration_have_separate_navigation():void {
   $this->actingAs($this->user(['is_admin'=>true]));
-  foreach(['/profiel','/beheer'] as $accountPath)$this->get($accountPath.'?lang=nl')->assertOk()
-   ->assertSee('class="account-sidebar"',false)
-   ->assertSee('class="account-admin-menu"',false)
-   ->assertSee('href="/mijn-lichtpuntjes?lang=nl"',false)
-   ->assertSee('href="/beheer/artikelen?lang=nl"',false);
+  $this->get('/profiel?lang=nl')->assertOk()->assertSee('class="account-sidebar"',false)->assertDontSee('href="/beheer',false);
+  $this->get('/beheer?lang=nl')->assertOk()->assertSee('class="account-sidebar admin-sidebar"',false)->assertDontSee('href="/mijn-lichtpuntjes',false)->assertSee('href="/beheer/artikelen?lang=nl"',false);
  }
  public function test_english_account_navigation_and_unverified_account_are_available():void {
   $this->actingAs($this->user(['email_verified_at'=>null]))->get('/profiel?lang=en')->assertOk()
@@ -48,7 +45,7 @@ class CommunityTest extends TestCase {
   foreach(['overview','badges','comments','invite','points'] as $section){
    $response=$this->get('/profiel?lang=nl&section='.$section)->assertOk()->assertSee('data-account-section="'.$section.'"',false);
    $this->assertMatchesRegularExpression('/href="\/profiel\?lang=nl&amp;section='.$section.'"\s+aria-current="page"/',$response->getContent());
-   foreach(['badges'=>'id="ladderTitle"','comments'=>'id="myCommentsTitle"','invite'=>'id="inviteTitle"'] as $otherSection=>$marker){
+   foreach(['badges'=>'class="badge-path-grid"','comments'=>'id="myCommentsTitle"','invite'=>'id="inviteTitle"'] as $otherSection=>$marker){
     if($section===$otherSection)$response->assertSee($marker,false);else $response->assertDontSee($marker,false);
    }
   }
@@ -66,5 +63,5 @@ class CommunityTest extends TestCase {
  public function test_paused_account_cannot_like_or_comment():void {$a=$this->article();$this->actingAs($this->user(['is_suspended'=>true]))->postJson('/news/'.$a->id.'/like',['liked'=>true])->assertForbidden();$this->postJson('/news/'.$a->id.'/comments',['body'=>'Wat mooi!'])->assertForbidden();}
  public function test_owner_command_assigns_only_one_admin():void {$first=$this->user(['is_admin'=>true]);$second=$this->user();$this->artisan('lichtpunt:admin',['email'=>$second->email])->assertExitCode(0);$this->assertFalse($first->fresh()->is_admin);$this->assertTrue($second->fresh()->is_admin);}
  public function test_badge_thresholds_and_private_account_data():void {$u=$this->user();$p=app(Lightpoints::class);$p->award($u,'test:first','test',400,'Testpunten');$this->assertSame('Wandelend zonnetje',$p->summary($u)['current']['name']);$this->actingAs($u)->get('/profiel')->assertOk()->assertSee('Wandelend zonnetje');$this->assertArrayNotHasKey('email',$u->toArray());}
- public function test_admin_page_renders_empty_and_appealed_comments():void {$admin=$this->user(['is_admin'=>true]);$this->actingAs($admin)->get('/beheer')->assertOk();Comment::create(['user_id'=>$this->user()->id,'article_id'=>$this->article()->id,'body'=>'Wat mooi!','status'=>'doubt','appealed_at'=>now()]);$this->get('/beheer')->assertOk()->assertSee('Menselijke blik aangevraagd');}
+ public function test_admin_page_renders_empty_and_appealed_comments():void {$admin=$this->user(['is_admin'=>true]);$this->actingAs($admin)->get('/beheer')->assertOk();Comment::create(['user_id'=>$this->user()->id,'article_id'=>$this->article()->id,'body'=>'Wat mooi!','status'=>'doubt','appealed_at'=>now()]);$this->get('/beheer/reacties')->assertOk()->assertSee('Menselijke blik aangevraagd');}
 }

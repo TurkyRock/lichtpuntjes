@@ -1,0 +1,56 @@
+JOUW LICHTPUNTJE – KLEURRIJKE KNIPSELS EN DELEN – 23 OKTOBER 2026
+
+INSTALLEREN
+Pak dit hele pakket uit over C:\Users\e_tur\Herd\lichtpunt-schoon.
+Voer in die projectmap uit:
+
+php artisan optimize:clear
+
+Ververs de browser met Ctrl+F5. Geen nieuwe database-migratie nodig.
+Dit pakket bevat ook de vorige update van de artikelpagina (de knipselkrant).
+Je .env, instellingen, accounts, artikelteksten en bestaande uploads worden niet overschreven.
+
+NIEUWE BATCH AFBEELDINGEN
+Start je lokale ComfyUI zoals eerder. De bestaande provider/modelinstelling blijft gelden.
+Voer daarna uit:
+
+php artisan news:illustrations --collage --all
+
+Dit maakt de nieuwe versie voor ALLE huidige gepubliceerde nieuwsartikelen.
+Alleen de afbeeldingen veranderen. Er worden geen nieuwe nieuwsartikelen opgehaald.
+Verborgen/oude collectie, concepten en persoonlijke inzendingen worden overgeslagen.
+De nieuwe versie heeft een eigen stijlcode. --force is daarom NIET nodig.
+Bij hervatten met dezelfde opdracht slaat hij succesvolle nieuwe beelden over.
+Bij mislukken blijft de oude afbeelding staan. Vorige fotogegevens blijven in
+storage/app/illustration-backups; het CSV-rapport noemt het resultaat per artikel.
+Na drie opeenvolgende fouten of een providerstoring stopt de bestaande batchbeveiliging.
+
+Alleen één zichtbaar nieuwsartikel opnieuw maken:
+php artisan news:illustrations --collage --article=HET_ARTIKELNUMMER --force
+Vervang HET_ARTIKELNUMMER door het echte ID.
+
+WAT IS ER ANDERS?
+- Frisse, vrolijke, heldere papiercollages: alle passende kleuren zijn toegestaan.
+  De aap is vertaald naar het stijlrecept: herkenbaar onderwerp, fijn papierwerk,
+  rijk kleurcontrast en mooi daglicht. Er is geen beperking tot groen/crème.
+  Dit is een tekstueel stijlrecept, geen pixelreferentie/IP-Adapter-workflow.
+- Gemini leest de Nederlandse en Engelse titel en artikelinhoud en kiest eerst
+  een concrete scène en onderscheidende kenmerken. Die komen vooraan in een
+  gerichte beeldopdracht; het beeldmodel krijgt geen lange artikel-JSON meer.
+- Medicijnen blijven medicijnen; een diersoort krijgt een herkenbare vorm.
+  Mensen zijn alleen aanwezig als ze echt bij het onderwerp horen.
+- Na generatie bekijkt Gemini het beeld op onderwerp, frisse kleuren en papierstijl.
+  Maximaal twee kandidaten per artikel. Bij onzekerheid of storing wordt niets vervangen.
+  Dit verkleint de kans op fouten, maar AI-controle blijft feilbaar.
+- ComfyUI maakt de beelden lokaal. De onderwerp- en beeldcontrole gebruiken de
+  bestaande Gemini-koppeling en het bijbehorende tegoed; er is geen nieuwe dienst nodig.
+  Tijdelijke Gemini-fouten krijgen automatisch een nieuwe poging na 60 en 300 seconden.
+- Deelvensters hebben weer een nette opbouw: even grote knipselkaarten,
+  grotere platformicoontjes in herkenbare kleuren, en de kopieerlink eronder.
+  Instagram en TikTok blijven linkkopieeropties; er wordt niets automatisch gepost.
+
+CONTROLES
+49 geautomatiseerde tests (inclusief genereren, bewaren, hervatten en artikelweergave).
+54 browserformaten/-scenario's plus controles op delen, kopiëren en reacties.
+Externe AI-antwoorden zijn tijdens tests nagebootst. De echte nieuwe afbeeldingen
+worden op jouw computer gemaakt wanneer je de batchopdracht uitvoert.

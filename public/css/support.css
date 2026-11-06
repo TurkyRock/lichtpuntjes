@@ -19,28 +19,34 @@ main.support-frame::before,main.support-frame::after{content:none;display:none}
 .support-photo{position:relative;min-width:0;margin:0 0 18px;padding:10px;background:#fffef9;border:1px solid #dfe6dc;border-radius:18px;filter:none;transform:none}.support-photo img{display:block;width:100%;height:auto;border-radius:11px;clip-path:none}.support-photo figcaption{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:7px 2px 0;font:400 12px/1.5 system-ui,sans-serif;color:#536862}.support-photo figcaption a{color:#536862;text-decoration:none;border:0}.support-photo figcaption a:hover{text-decoration:underline}.support-page .support-sunshine-photo{margin:18px 0 0;padding:0;background:transparent;border:0;border-radius:0}
 .support-thanks{max-width:750px;margin:24px auto}.support-sun{display:block;font-size:48px;line-height:1.2;color:#bd8a09}.support-home-note{display:flex;align-items:center;gap:24px;background:#edf0db url('/images/scrap-paper-sage.webp') center/100% 100%;padding:26px 32px;margin:32px 0 24px;border-radius:18px}.support-home-note>span{font-size:48px;color:#a97506}.support-home-note h2{font:32px/1.2 Georgia,serif;margin:0 0 8px}.support-home-note p{margin:0}.support-home-note .support-button{flex:none;margin-left:auto}
 @media(max-width:750px){main.support-frame{margin:12px auto;padding:0 20px}.support-page .support-heading{padding:18px;margin-bottom:14px}.support-grid{grid-template-columns:1fr;grid-template-areas:"action" "story";gap:0}.support-page .support-paper{padding:20px;margin-bottom:14px}.support-page .support-paper h2{font-size:25px}.support-photo{margin-bottom:14px}.support-home-note{padding:22px;flex-wrap:wrap;gap:14px}.support-home-note .support-button{margin-left:0}.support-home-note>span{font-size:36px}}
-
-/* A personal sign-off at the right edge of the letter. */
-.support-page .support-signature{text-align:left;margin:16px 0 18px;font:italic 17px/1.5 Georgia,serif}
-.support-page .support-signature>span{display:block}
-.support-page .support-signature .support-signature-name{text-align:right;font-family:"Segoe Script","Bradley Hand","URW Chancery L",cursive;font-size:32px;font-weight:400;line-height:1.35;margin-top:3px}
-
-/* Keep every element inside the paper, with a bright handmade sun. */
-.support-home-note{position:relative;isolation:isolate;display:grid;grid-template-columns:76px minmax(0,1fr) auto;align-items:center;gap:22px;box-sizing:border-box;min-width:0;background:#edf3e9;padding:30px 56px;margin:32px 0 24px;border-radius:18px}
-.support-home-note::before{content:"";position:absolute;inset:12px;z-index:-1;background:url('/images/scrap-paper-sage.webp') center/100% 100% no-repeat;pointer-events:none}
-.support-home-note .support-note-sun{display:block;width:76px;height:76px;object-fit:contain;filter:drop-shadow(1px 3px 1px #c6b66c35)}
-.support-home-note .support-note-copy{min-width:0}
-.support-home-note h2{font:400 28px/1.2 Georgia,serif;margin:0 0 8px;overflow-wrap:anywhere}
-.support-home-note p{font:400 15px/1.6 system-ui,sans-serif;margin:0;overflow-wrap:anywhere}
-.support-home-note .support-button{justify-self:end;max-width:240px;min-width:120px;margin:0;padding:14px 20px;white-space:normal;text-align:center}
-@media(max-width:750px){.support-home-note{grid-template-columns:56px minmax(0,1fr);padding:28px 32px;gap:12px 16px}.support-home-note .support-note-sun{width:56px;height:56px}.support-home-note h2{font-size:25px}.support-home-note .support-button{grid-column:2;justify-self:start;max-width:100%;margin:0}}
-@media(max-width:380px){.support-home-note{padding:26px 24px;gap:12px}.support-home-note h2{font-size:23px}}
-
-/* The closing sentence matches body copy; only the name is calligraphic. */
-@font-face{font-family:"Lichtpunt Erik Signature";src:url('/fonts/lichtpunt-erik-signature.woff') format('woff');font-style:normal;font-weight:400;font-display:swap}
-.support-page .support-signature{font:400 15px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}
-.support-page .support-signature .support-signature-name{font-family:"Lichtpunt Erik Signature","Monotype Corsiva","Segoe Script",cursive;font-size:36px;font-style:normal;font-weight:400;font-synthesis:none;line-height:1.25;letter-spacing:.2px;margin-top:5px;text-align:right}
-
-/* Fine flowing fountain-pen lettering, locally hosted. */
-@font-face{font-family:"Lichtpunt Ink Signature";src:url('/fonts/lichtpunt-ink-signature.woff') format('woff');font-weight:400;font-style:normal;font-display:swap}
-.support-page .support-signature .support-signature-name{display:block;width:max-content;max-width:100%;margin:5px 2px 0 auto;font-family:"Lichtpunt Ink Signature","Segoe Script",cursive;font-size:42px;font-weight:400;font-style:normal;font-synthesis:none;line-height:1.25;letter-spacing:0;color:#244654;text-align:right;transform:rotate(-2deg);transform-origin:right center}
+/* The chosen family collage. The contribution form keeps its existing controls. */
+main.support-frame{max-width:1360px}.support-page{max-width:1280px}.support-grid{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px}
+.support-page .support-heading{position:relative;isolation:isolate;padding-right:140px;background:#edf3e9 url('/images/button-paper-grain.svg');border-radius:25px}
+.support-page .support-heading::after{content:"";position:absolute;right:26px;top:50%;transform:translateY(-50%) rotate(8deg);width:90px;height:90px;background:url('/images/account-paper-sun.svg') center/contain no-repeat;pointer-events:none}
+.support-page .support-heading h1{font-size:clamp(30px,3.2vw,43px)}
+.support-page .support-family-letter{display:flow-root;position:relative;background:#edf3e9 url('/images/button-paper-grain.svg');border-radius:25px;padding:26px}
+.support-family-letter h2{font-size:30px!important;line-height:1.15!important}
+.support-family-photo{position:relative;float:left;width:47%;margin:7px 21px 16px 0;padding:10px 10px 12px;background:#fffdf4 url('/images/button-paper-grain.svg');box-shadow:0 3px 6px #27443524;transform:rotate(-2deg)}
+.support-family-photo::before{content:"";position:absolute;top:-8px;left:32%;width:38%;height:21px;background:#dfcfa7b8;transform:rotate(-5deg);clip-path:polygon(2% 0,100% 4%,98% 98%,0 100%);pointer-events:none}
+.support-family-photo img{display:block;width:100%;height:auto;object-fit:contain;border-radius:0}
+.support-family-photo figcaption{font:400 13px/1.5 "Segoe Print","Bradley Hand",cursive;text-align:center;padding:8px 1px 0;color:#25483c;overflow-wrap:anywhere}
+.support-family-photo figcaption span{font-size:19px;vertical-align:middle}
+.support-page .support-promise-slip{display:flow-root;position:relative;background:#ffdf7d url('/images/button-paper-grain.svg');padding:9px 12px;margin:11px 0 14px;font:600 17px/1.4 Georgia,serif;clip-path:polygon(1% 0,16% 3%,35% 0,55% 3%,76% 0,99% 2%,100% 50%,99% 98%,78% 100%,58% 97%,37% 100%,17% 98%,0 100%,1% 50%)}
+.support-page .support-signature{clear:both;text-align:left;font:400 15px/1.65 system-ui,sans-serif;margin:17px 0 0}
+.support-signature>span{display:block}.support-signature-name,.support-popup-signature{font-family:"Segoe Script","Apple Chancery","URW Chancery L",cursive;font-style:italic;font-weight:300;letter-spacing:-1px;line-height:1.2;color:#314b56;text-align:right}
+.support-page .support-signature .support-signature-name{font-size:37px;margin-top:8px;transform:rotate(-5deg);transform-origin:right center}
+.support-thanks-dialog{position:fixed;isolation:isolate;width:min(540px,calc(100% - 32px));max-height:88dvh;overflow:auto;margin:auto;padding:34px 36px 30px;border:0;border-radius:23px;background:#fffdf4 url('/images/button-paper-grain.svg');color:#213f36;box-shadow:0 16px 70px #153e3940;text-align:center}
+.support-thanks-dialog::backdrop{background:#153e3959;backdrop-filter:blur(2px)}
+.support-thanks-dialog h2{font:500 31px/1.2 Georgia,serif;letter-spacing:-.5px;margin:16px 0}
+.support-thanks-dialog p{font:400 15px/1.65 system-ui,sans-serif;margin:12px 0}
+.support-thanks-dialog .support-kicker{display:inline-block;background:#ffe395;padding:4px 10px;font-size:11px;letter-spacing:1px;text-transform:uppercase}
+.support-thanks-paper-sun{display:block;width:76px;height:76px;background:url('/images/account-paper-sun.svg') center/contain no-repeat;margin:0 auto 14px}
+.support-thanks-dialog .support-popup-signature{font:italic 300 40px/1.25 "Segoe Script","Apple Chancery","URW Chancery L",cursive;text-align:right;margin:14px 8px 20px}
+.support-thanks-close{position:absolute;right:10px;top:9px;display:grid;place-items:center;width:40px;height:40px;padding:0;background:#e6ecd9;border:0;border-radius:50%;font:400 27px/1 system-ui,sans-serif;color:#213f36}
+.support-thanks-close:focus-visible{outline:3px solid #00786e;outline-offset:3px}
+@media(max-width:1000px) and (min-width:751px){.support-family-photo{float:none;width:80%;max-width:275px;margin:14px auto 22px}.support-family-letter h2{font-size:27px!important}}
+@media(max-width:750px){.support-grid{grid-template-columns:1fr;gap:0}.support-page .support-heading{padding-right:75px}.support-page .support-heading::after{right:14px;width:48px;height:48px}.support-page .support-family-letter{padding:23px}.support-family-photo{float:left;width:44%;margin-right:18px}.support-page .support-promise-slip{font-size:16px}.support-thanks-dialog{padding:30px 24px 25px}.support-thanks-dialog h2{font-size:27px}}
+@media(max-width:480px){.support-family-photo{float:none;width:85%;max-width:270px;margin:18px auto 24px}.support-page .support-family-letter{padding:21px}.support-page .support-promise-slip{text-align:center}.support-family-letter h2{font-size:27px!important}}
+@media(prefers-reduced-motion:reduce){.support-family-photo,.support-page .support-signature .support-signature-name{transform:none}}
+@font-face{font-family:ErikInk;src:url('/fonts/erik-ink.ttf') format('truetype');font-style:normal;font-weight:400;font-display:swap}
+.support-page .support-signature .support-signature-name,.support-thanks-dialog .support-popup-signature{font-family:ErikInk,"Segoe Script",cursive;font-style:normal;font-weight:400;letter-spacing:0;font-size:43px;line-height:1.2}

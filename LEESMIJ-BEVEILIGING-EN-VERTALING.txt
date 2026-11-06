@@ -1,0 +1,115 @@
+LICHTPUNTJES — ACCOUNTBEVEILIGING EN VERTALING — 19 OKTOBER 2026
+
+Installeren
+1. Maak een back-up van je project en database. Bewaar je bestaande APP_KEY.
+   Die sleutel hoort bij versleutelde momentjes, sessies en vertalingen.
+2. Pak dit updatepakket over je bestaande project uit.
+3. Voer vanuit de projectmap uit:
+
+   php artisan migrate
+   php artisan optimize:clear
+   php artisan queue:restart
+
+4. Start je bestaande queueworker opnieuw. Gebruik de bestaande configuratie
+   voor de queues lichtpuntjes,default. Vernieuw de browser met Ctrl+F5.
+
+Er worden geen bestaande bijdragen, punten, accounts of wachtwoorden verwijderd.
+Door de veiligere sessieopslag kan opnieuw inloggen nodig zijn.
+
+Wat is toegevoegd
+- Account > Accountbeveiliging, bereikbaar op /beveiliging.
+- Lange nieuwe wachtwoordzinnen: minimaal 15, maximaal 128 tekens. Spaties mogen;
+  een verplicht cijfer of hoofdletter is niet meer nodig. Bestaande wachtwoorden
+  blijven bruikbaar bij inloggen; er is geen geforceerde wachtwoordwissel.
+- Controle op eerder gelekte wachtwoorden bij registratie, herstel en wijzigen.
+  Alleen de eerste vijf tekens van een SHA-1-hash gaan naar Pwned Passwords;
+  nooit het wachtwoord of de volledige hash. De wachtwoordopslag zelf gebruikt
+  nog steeds Laravel hashing, geen SHA-1. Uitkomsten per prefix worden gecachet.
+  Bij een onbereikbare controle wordt het nieuwe wachtwoord niet stilzwijgend
+  geaccepteerd: de gebruiker krijgt een vriendelijke melding om later te proberen.
+- Overal uitloggen trekt andere sessies en onthoud-mij-tokens in. Dit werkt via
+  een accountversie, ook als de sessieopslag geen database is.
+- Een wachtwoordwijziging/herstel trekt oude sessies in en zet een beveiligingsmail
+  klaar. Een wijziging van het e-mailadres via applicatiecode trekt oude sessies
+  ook in, maakt e-mailbevestiging ongeldig en waarschuwt het oude adres. Deze update
+  voegt geen formulier toe waarmee gebruikers hun e-mailadres kunnen wijzigen.
+- Beheer vraagt na 30 minuten opnieuw om een wachtwoordbevestiging. Een echte
+  nieuwe login telt als bevestiging; automatisch inloggen met onthoud-mij niet.
+  Voor een account dat alleen sociaal inlogt: log opnieuw in via de gekoppelde
+  aanbieder, of stel met wachtwoord herstellen een lokaal wachtwoord in.
+- Persoonlijke beveiligingsacties tonen alleen type en datum, geen privétekst,
+  wachtwoord, IP-adres of locatie. Dit is geen volledige log van inlogapparaten.
+- Geen verplichte 2FA voor gewone gebruikers.
+
+Beveiligingsmails
+De bestaande mailinstellingen moeten echte bezorging ondersteunen. MAIL_MAILER=log
+stuurt geen e-mail. De berichten lopen via de bestaande database-queue.
+Er zijn tijdens het bouwen geen echte beveiligingsmails verstuurd.
+
+Configuratiecontrole
+
+   php artisan security:check
+
+Dit commando toont geen sleutels of wachtwoorden en start geen betaling of externe
+controle. Een lokale Herd-installatie krijgt aandachtspunten voor productiewaarden.
+Voor je openbare site horen in je eigen .env onder andere:
+
+   APP_ENV=production
+   APP_DEBUG=false
+   APP_URL=https://jouw-echte-domein.nl
+   SESSION_SECURE_COOKIE=true
+   SESSION_HTTP_ONLY=true
+   SESSION_ENCRYPT=true
+   SECURITY_CHECK_BREACHED_PASSWORDS=true
+
+Neem dit niet blind over voor je lokale ontwikkelomgeving. Zorg voor werkende
+HTTPS- en proxy-instellingen op de hosting. De uitgaande firewall moet onder meer
+api.pwnedpasswords.com bereikbaar laten voor de wachtwoordcontrole. De bestaande
+Google Gemini-, nieuws-, afbeeldings-, OAuth- en mailverbindingen blijven nodig.
+
+De configuratiecontrole is geen penetratietest. Updates van PHP/Laravel/pakketten,
+toegang tot de hosting, firewall, herstelbare back-ups en bescherming van sleutels
+moeten op de echte server gecontroleerd worden. Wijzig APP_KEY nooit zomaar.
+
+Nederlandse en Engelse eigen bijdragen
+- Eigen artikelen hadden al een Nederlands/Engels publicatieproces. Dit blijft
+  behouden; ook een Engels origineel wordt niet door een AI-versie overschreven.
+- Goedgekeurde korte momentjes en reacties krijgen nu ook een Nederlandse en
+  Engelse tekst. De taalkeuze van de website bepaalt de leesversie.
+- Het origineel blijft ongewijzigd bewaard en staat in het bewerkingsformulier.
+- Vertalingen van momentjes en reacties worden versleuteld opgeslagen.
+- Privémomentjes blijven alleen van hun schrijver. Ze worden nooit openbaar door
+  vertaling en verschijnen niet in het gewone moderatiebeheer.
+- Nieuwe momentjes vermelden dat Gemini de tekst controleert EN vertaalt.
+- Alleen goedgekeurde bijdragen gaan door naar de vertaling. Een wijziging
+  verwijdert de oude vertaling. Verouderde jobs kunnen een nieuwe versie niet
+  overschrijven. Vertalen levert geen extra punten op.
+- Bij uitval blijft de oorspronkelijke tekst leesbaar. De vertaaljob probeert
+  het maximaal vijf keer opnieuw; daarna kan de beheerder de vertaling hervatten.
+
+Eerder geplaatste bijdragen laten vertalen
+
+   php artisan community:translate --limit=50
+
+Dit zet maximaal 50 goedgekeurde openbare momentjes/reacties klaar. Laat de worker
+deze eerst verwerken en herhaal de opdracht voor de volgende batch. Het gebruikt
+Gemini-aanvragen, maar maakt geen nieuwe afbeeldingen.
+
+Wil je ook eerder bewaarde privémomentjes laten vertalen, gebruik dan:
+
+   php artisan community:translate --limit=50 --include-private
+
+Privémomentjes worden alleen meegenomen wanneer eerdere AI-toestemming is
+vastgelegd. De opdracht verandert hun zichtbaarheid niet. Na een latere AI-storing
+kun je dezelfde opdracht opnieuw gebruiken voor ontbrekende/mislukte vertalingen.
+
+Bewaar dit pakket niet publiek op de server. Het bevat geen .env, database,
+gebruikersinhoud, API-sleutels of nieuwe afbeeldingen.
+
+Controle tijdens het bouwen
+- 254 PHP-tests geslaagd (2064 assertions).
+- De zeven bestaande frontendtestscripts geslaagd.
+- Composer audit --locked meldt geen bekende kwetsbaarheden of verlaten
+  pakketten op het moment van controleren. Dit is geen veiligheidsgarantie.
+- Geen echte betalingen, beveiligingsmails of AI-vertalingen uitgevoerd tijdens
+  de tests; externe diensten zijn daarvoor gemockt.

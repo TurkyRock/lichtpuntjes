@@ -19,7 +19,7 @@ class PositiveMomentsTest extends TestCase {
   Queue::fake();$u=$this->user();$this->actingAs($u)->post('/momentjes',['body'=>'Een privézin die niet in de database leesbaar mag staan.','visibility'=>'private'])->assertSessionHasErrors('ai_processing');$this->post('/momentjes',['body'=>'Een privézin die niet in de database leesbaar mag staan.','visibility'=>'private','ai_processing'=>1])->assertRedirect();$m=PositiveMoment::firstOrFail();$this->assertSame('pending',$m->status);$this->assertStringNotContainsString('privézin',DB::table('positive_moments')->value('body'));Queue::assertPushed(ReviewMoment::class);$this->get('/momentjes')->assertDontSee('Een privézin');
  }
  public function test_private_and_unapproved_moments_never_leak_into_public_feed_or_admin_detail():void {
-  $u=$this->user();$this->moment($u,['body'=>'MIJN_GEHEIME_MOMENT','status'=>'approved']);$this->moment($u,['body'=>'NIET_GOEDGEKEURD','visibility'=>'public','status'=>'rejected']);$this->moment($u,['body'=>'Een openbaar fijn moment.','visibility'=>'public','status'=>'approved']);$this->get('/momentjes')->assertOk()->assertSee('Een openbaar fijn moment.')->assertDontSee('MIJN_GEHEIME_MOMENT')->assertDontSee('NIET_GOEDGEKEURD');$this->actingAs($this->user(['is_admin'=>true]))->get('/beheer/gebruikers/'.$u->id)->assertOk()->assertDontSee('MIJN_GEHEIME_MOMENT')->assertSee('NIET_GOEDGEKEURD');
+  $u=$this->user();$this->moment($u,['body'=>'MIJN_GEHEIME_MOMENT','status'=>'approved']);$this->moment($u,['body'=>'NIET_GOEDGEKEURD','visibility'=>'public','status'=>'rejected']);$this->moment($u,['body'=>'Een openbaar fijn moment.','visibility'=>'public','status'=>'approved']);$this->get('/momentjes')->assertOk()->assertSee('Een openbaar fijn moment.')->assertDontSee('MIJN_GEHEIME_MOMENT')->assertDontSee('NIET_GOEDGEKEURD');$this->actingAs($this->user(['is_admin'=>true]))->get('/beheer/gebruikers/'.$u->id.'?section=moments')->assertOk()->assertDontSee('MIJN_GEHEIME_MOMENT')->assertSee('NIET_GOEDGEKEURD');
  }
  public function test_private_moments_are_sent_to_ai_but_explicit_vulgar_word_is_rejected_even_if_model_approves():void {
   $u=$this->user();$m=$this->moment($u,['body'=>'Ik had een kut dag.']);$this->ai();app(MomentModerator::class)->review($m,1);$this->assertSame('rejected',$m->fresh()->status);$this->assertSame(0,DB::table('lightpoint_events')->where('user_id',$u->id)->count());$this->actingAs($u)->get('/mijn-momentjes')->assertOk()->assertSee('Gebruik vriendelijker taalgebruik');
@@ -68,7 +68,8 @@ class PositiveMomentsTest extends TestCase {
  public function test_all_scrapbook_account_pages_render_in_dutch_and_english():void {
   $this->actingAs($this->user());
   foreach(['nl','en'] as $lang){
-   foreach(['/profiel','/profiel?section=badges','/profiel?section=comments','/profiel?section=invite','/profiel?section=points','/mijn-momentjes','/mijn-lichtpuntjes','/lichtpuntje/delen','/lichtpuntje/schrijven','/privacy/verzoeken'] as $path){
+   $this->get('/lichtpuntje/schrijven?lang='.$lang)->assertRedirect('/mijn-lichtpuntjes?lang='.$lang.'#new-story');
+   foreach(['/profiel','/profiel?section=badges','/profiel?section=comments','/profiel?section=invite','/profiel?section=points','/mijn-momentjes','/mijn-lichtpuntjes','/lichtpuntje/delen','/privacy/verzoeken'] as $path){
     $this->get($path.(str_contains($path,'?')?'&':'?').'lang='.$lang)->assertOk()->assertSee('class="account-scrapbook"',false);
    }
   }

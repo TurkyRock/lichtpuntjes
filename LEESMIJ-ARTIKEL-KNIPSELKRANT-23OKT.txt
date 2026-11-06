@@ -1,0 +1,73 @@
+JOUW LICHTPUNTJE — ARTIKEL ALS KNIPSELKRANT — 23 oktober 2026
+
+INSTALLEREN
+1. Maak een reservekopie van je websitebestanden.
+2. Pak de volledige zip uit over C:\Users\e_tur\Herd\lichtpunt-schoon.
+   Laat de mappen app, public, resources en tests samenvoegen en overschrijf
+   de meegeleverde bestanden. Kopieer niet alleen de hoofdview: die gebruikt
+   ook de nieuwe artikelpartial en het nieuwe stylesheet.
+3. Voer in de projectmap uit:
+
+   php artisan optimize:clear
+
+4. Vernieuw de browser met Ctrl+F5. Open een artikel vanaf de homepage en
+   via zijn eigen link. Beide gebruiken hetzelfde ontwerp.
+
+Er is voor deze artikelupdate geen nieuwe databasemigratie nodig.
+Dit is een aanvulling op je bestaande website met de vorige updates.
+Het pakket bevat geen .env, database, uploads, vendor of voorbeeldartikelen.
+
+WAT IS AANGEPAST?
+- Voorstel 2: de knipselkrant. Foto en tekst staan op brede schermen naast
+  elkaar, op mobiel onder elkaar. De normale inhoudsbreedte blijft gelijk.
+- Een duidelijke groene papierbalk bevat een grotere hartjesknop, het aantal
+  hartjes, een grotere leesteller en de knop om het artikel te delen.
+- Gewone teksten, formulieren, uitleg en reacties hebben dezelfde grootte:
+  15 px. Koppen en tellers hebben een eigen duidelijke hiërarchie.
+- Knoppen gebruiken dezelfde echte knipselmasker-afbeelding als de website.
+- De tekst dat het artikel een AI-samenvatting is, is verwijderd.
+- De oorspronkelijke bron, datum, bronknop en AI-beeldvermelding blijven staan.
+- De bestaande afbeeldingen blijven behouden. Deze update genereert niets.
+- De grote algemene uitlegsectie van de homepage wordt niet nog eens onder
+  een los artikel getoond. De homepage zelf houdt deze sectie wel.
+
+INTERACTIE
+- Een hartje geven of terugnemen werkt met de bestaande accountcontroles.
+  Tellerupdates behouden de grote weergave en de tekst op de knop.
+- Lezen en de bestaande lichtpuntenregeling blijven via de bestaande routes
+  werken; er worden geen voorbeeldcijfers of extra beloningen opgeslagen.
+- Delen via WhatsApp, Facebook, LinkedIn, X, e-mail, Instagram, TikTok en
+  link kopiëren. Ondersteunt de browser delen via het systeem, dan verschijnt
+  ook Meer opties. Instagram en TikTok krijgen een kopieeractie met uitleg,
+  geen automatische publicatie of video.
+- De bronknop blijft een gewone link die in een nieuw tabblad opent.
+- Het reactieformulier en de gesprekken hebben eigen papierkaartjes.
+  Antwoorden blijven bij de oorspronkelijke reactie, met bestaande
+  reactie-likes, uitklappen en paginering.
+- Inloggen, bevestigde e-mail en huisregels blijven nodig waar dat al gold.
+  Alleen de schrijver ziet de eigen nog niet goedgekeurde reacties.
+- De spelregels zijn uitklapbaar; meldingen voor eigen communityverhalen
+  blijven beschikbaar en privé. Er is geen nieuwe commentaar-meldfunctie
+  toegevoegd die op de oude site niet bestond.
+- Eigen communityverhalen tonen de schrijver en krijgen geen externe bronknop.
+- Onderaan staan maximaal drie andere zichtbare artikelen met echte links.
+  Concepten, verborgen artikelen en verborgen auteurs worden uitgesloten.
+
+SEO EN TECHNIEK
+De volledige artikeltekst, titel, bron, afbeelding en tellers staan ook zonder
+JavaScript in de HTML. Interactie wordt daarna geactiveerd. Canonieke links,
+taalversies en gestructureerde gegevens blijven behouden. De bestaande
+moderatie-, veiligheids- en betaalcode is niet vervangen.
+Je ComfyUI- en AI-instellingen staan in je eigen .env en worden niet gewijzigd.
+Bij een ontbrekende afbeelding blijft de tekst leesbaar; de afbeelding wordt
+niet platgedrukt. De popup sluit met de sluitknop en de bestaande dialogbediening.
+
+CONTROLES
+38 gerichte tests geslaagd, 434 assertions: artikelweergave, Nederlands/Engels,
+SEO, bestaande hartjes/leestellers, reactierechten, gesprekken, verborgen
+artikelen, privéfeedback en gerelateerde artikelen.
+54 browsercontroles: negen situaties op 320, 390, 768, 1024, 1180 en 1440 px.
+Extra interactiecontroles: hartje geven/terugnemen, tellers na verversen van
+reacties, deelopties, links kopiëren, antwoorden, reactie-likes, gebruikersrechten,
+communitymelding en popup sluiten. De gegenereerde inline scripts zijn op
+syntaxis gecontroleerd. Geen echte AI-aanvragen, e-mails of betalingen.

@@ -1,0 +1,34 @@
+Jouw Lichtpuntje - delen, profielfoto en gebruikersnaam
+22 oktober 2026
+
+INSTALLEREN
+Pak dit pakket uit over je bestaande project, met overschrijven.
+Voer vanuit je projectmap uit:
+
+php artisan optimize:clear
+
+Vernieuw de browser met Ctrl+F5. Geen databasemigratie nodig.
+
+AANPASSINGEN
+- Delen met anderen staat als eerste keuze bij een nieuw momentje en is
+  standaard geselecteerd. De privacykeuze van bestaande momentjes blijft staan.
+- Na een foto-upload verdwijnt het fotovlak van Overzicht. Bij Mijn gegevens
+  blijft de foto inclusief controlestatus te bekijken, wijzigen of verwijderen.
+- Bij Mijn gegevens kan de gebruiker zijn openbare gebruikersnaam aanpassen.
+  E-mailadres, wachtwoord en beheerdersrechten veranderen hierbij niet.
+- Dezelfde naamcontrole geldt bij gewone registratie, afronden van sociale
+  registratie en naamswijzigingen. Er is een verzoeklimiet bij wijzigen.
+- Een lokale lijst blokkeert veelvoorkomende Nederlandse/Engelse scheldwoorden,
+  beledigingen en enkele haatzinnen. Hoofdletters, accenten, losse letters met
+  spaties/punten en veelgebruikte cijfervervangingen worden genormaliseerd.
+  Gewone namen zoals Dick, Dickinson en Erik Turkesteen blijven toegestaan.
+  Dit is geen volledige betekeniscontrole: nieuwe scheldvarianten en alle
+  negatief bedoelde namen zijn niet automatisch herkenbaar. De lijst staat
+  centraal in app/Rules/FriendlyDisplayName.php en kan uitgebreid worden.
+  Namen gaan voor deze controle niet naar een externe AI-dienst.
+- Bestaande gebruikersnamen worden niet stilzwijgend gewijzigd.
+- Het eerdere herstel van menu en paginabreedte is opnieuw inbegrepen.
+
+VERIFICATIE
+5 gerichte tests, 43 controles geslaagd: naamfilter, registratie, beveiligde
+naamswijziging, fotovlak en openbare/privekeuze. Geen externe AI-oproepen.

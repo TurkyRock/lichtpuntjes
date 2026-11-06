@@ -1,0 +1,239 @@
+JOUW LICHTPUNTJE — LICHTPUNTJESDAGBOEK EN ALLE EERDERE UPDATES
+22 oktober 2026
+
+INSTALLEREN
+1. Maak een back-up van je bestanden en database.
+2. Pak dit pakket uit in de hoofdmap van je bestaande Laravel-site.
+   Overschrijven is de bedoeling. Je .env, APP_KEY, database en bestaande
+   uploads zitten niet in dit pakket en mogen niet worden vervangen.
+3. Voer uit in PowerShell vanuit C:\Users\e_tur\Herd\lichtpunt-schoon:
+
+   php artisan migrate --force
+   php artisan optimize:clear
+   php artisan queue:restart
+
+4. Start je bestaande queueworker opnieuw zoals je gewend bent.
+   Start daarnaast in een apart PowerShell-venster deze beeldworker:
+
+   php artisan queue:work database --queue=moment-images --timeout=180 --sleep=3
+
+   Laat dit venster draaien. Op hosting moet een procesbeheerder deze worker
+   blijven draaien. De bestaande worker voor lichtpuntjes/default blijft nodig
+   voor controle en vertaling. Zo houden beelden de tekstcontrole niet op.
+5. Vernieuw de browser met Ctrl+F5.
+
+WAT IS NIEUW?
+- De badgepagina volgt het gekozen lichtpad, met 24 geknipte papieren badges.
+  Alle badges staan direct open. Een route verbindt ze; bovenaan staan je
+  echte punten, huidige badge en volgende stap. De uitleg staat onderaan.
+  Je huidige badge op Overzicht gebruikt dezelfde nieuwe papierillustratie.
+- De steunpagina volgt het nieuwste compacte voorstel: originele gezinsfoto,
+  tekst bovenaan ernaast en drie papieren kaartjes in diezelfde kolom.
+  Onder de foto staat: Mijn gezin en ik — mijn lichtpuntjes. Alle gewone
+  tekst blijft 15 pixels, ook op mobiel. Het betaalproces is niet gewijzigd.
+- Tijdelijke Gemini-fouten bij news:import, news:replace en news:collage-batch
+  worden automatisch herhaald: eerst na 60 seconden, daarna steeds na
+  5 minuten totdat Gemini weer antwoordt. Dit geldt voor HTTP 408, 500, 502,
+  503 en 504 en verbindingstime-outs. Ctrl+C blijft mogelijk; daarna kun je
+  dezelfde opdracht hervatten. Laat het terminalvenster open voor automatisch
+  doorgaan. De voortgang wordt bewaard en dezelfde kandidaat wordt herprobeerd.
+  Deze storingen gebruiken geen inhoudelijke beoordelingspoging.
+  Een ongeldige sleutel, ongeldige invoer en quota/snelheidslimiet (429)
+  stoppen wel met een duidelijke melding. Er wordt geen betaalde fallback
+  aangezet en er zijn tijdens het testen geen echte providerverzoeken gedaan.
+- Mijn reacties volgt nu het gekozen gespreksprikbord: groene achtergrond,
+  knipselkaartjes, kleine artikelpolaroids en tellers voor ontvangen hartjes
+  en antwoorden. Gesprekken staan bij hun oorspronkelijke reactie, ook als
+  je zelf op een antwoord hebt gereageerd. Drie gesprekken per pagina.
+- Hartjes geven kan nu ook bij openbare artikelreacties. Je kunt je hartje
+  intrekken; een eigen reactie liken geeft geen extra punten en is niet mogelijk.
+- Verdwenen artikelen hebben geen actieve link of antwoordformulier meer;
+  eigen reacties blijven bewaard. Afgekeurde tekst en moderatorfeedback van
+  anderen blijven privé. Je eigen keuring, aanpassen en bezwaar blijven werken.
+- Bestaande antwoordrelaties worden bij migrate bewaard en gegroepeerd.
+  Er worden geen voorbeeldreacties, fictieve hartjes of gebruikers toegevoegd.
+- Reacties hebben een eigen snelheidslimiet: andere acties vullen deze teller
+  niet meer. Een 429-melding toont nu een Nederlandse wachttijd en bewaart tekst.
+- De badgezin 'Voor de lol, geen wedstrijd.' is verwijderd, ook in het Engels.
+
+EERDER IN DEZE UPDATE-REEKS
+- Mijn verhalen volgt het gekozen verhalenprikbord: direct schrijven, met
+  eerdere eigen verhalen ernaast op desktop. De ondertitel is verwijderd.
+  Een gele inspiratiekaart geeft tips zonder je eigen tekst te overschrijven.
+  Bij het formulier staat dat AI na goedkeuring een passende afbeelding maakt.
+  Publicatie, vertaling, keuring, herbeoordeling en de bestaande limieten blijven.
+- Mijn verhalen heet ook in het menu zo, zonder '& feedback'.
+- Delen met anderen staat bij nieuwe momentjes vooraan en standaard aan.
+- De momentjes-ondertitel en het zichtbare label Jouw momentje zijn verwijderd.
+- Menuafmetingen en paginabreedte volgen overal de gedeelde accountopmaak.
+- Profielfoto's worden na upload alleen bij Mijn gegevens beheerd. Daar kan
+  ook de gebruikersnaam aangepast worden. Veelvoorkomende scheldwoorden worden
+  bij registratie en wijzigen lokaal gefilterd; dit is geen volledige AI-keuring.
+- De compacte steunpagina is doorgevoerd met de projectnaam Jouw Lichtpuntje.
+- Nodig iemand uit volgt nu het gekozen voorstel 4: een zonnetje in een
+  papieren envelop, snelle knipselknoppen en een persoonlijk berichtje.
+  Alle knoppen gebruiken nu dezelfde echte papieren knipselvorm als de header,
+  inclusief de sociale deelopties, kopieerknoppen en knoppen in de pop-up.
+  WhatsApp, Facebook, Messenger, Instagram, TikTok, LinkedIn, Threads, X,
+  Pinterest, Telegram, Signal en e-mail staan bij elkaar, met kopieerknoppen
+  en het deelmenu van de telefoon waar beschikbaar.
+- Voor Instagram/TikTok kun je een persoonlijk PNG-kaartje (1080x1920)
+  downloaden. Je uitnodigingslink staat erop en is ook los te kopiëren.
+  Messenger/Signal gebruiken kopiëren of het deelmenu; er worden geen
+  berichten automatisch geplaatst of verstuurd. Geen sociale trackingwidgets.
+- Het berichtje is aanpasbaar, de persoonlijke uitnodigingslink blijft intact.
+  De bestaande uitnodigingsbeloning verandert niet. Geen punten voor klikken.
+- Het puntenoverzicht volgt nu het gekozen lichtpuntjesdagboek (voorstel 1):
+  papieren kaartjes per dag, een klein potje vol zonnetjes, het actuele totaal,
+  vandaag verdiend en je huidige badge. Knoppen gebruiken de echte knipselvorm
+  uit de header. Gewone tekst blijft 15px, menu en paginabreedte blijven gelijk.
+- Activiteiten worden per soort en per dag samengevoegd. Je bladert door drie
+  complete dagen per pagina; de oude beperking van 25 losse regels is vervallen.
+  Historische datums volgen de opgeslagen Nederlandse dag, niet de servertijd.
+- Ingetrokken activiteiten blijven herkenbaar, maar tellen niet mee. Het totaal
+  en de badge blijven gebaseerd op alle actieve lichtpunten van je eigen account.
+  Bestaande regels en beloningen zijn niet gewijzigd; er zijn geen voorbeeld-
+  punten toegevoegd. Ook een leeg dagboek krijgt de nieuwe vormgeving.
+
+30 NIEUWE NIEUWSARTIKELEN MET KNIPSELBEELDEN
+Voer NA installeren uit:
+
+   php artisan news:collage-batch --pages=50
+
+Deze nieuwe opdracht gebruikt eigen voortgang en wordt dus niet geblokkeerd
+door een afgeronde fotoproef of de eerdere 100-artikelenvervanging.
+Hij haalt nieuwe nieuwskandidaten op, keurt ze en bereidt 30 positieve artikelen
+voor (5 per categorie), elk met een nieuwe knipselcollage. Pas wanneer alle
+30 met hun beelden klaar zijn, verdwijnen de overige openbare nieuwsartikelen
+en komen de nieuwe online. Zelfgeschreven verhalen en momentjes blijven staan.
+Oude nieuwsartikelen worden verborgen, niet fysiek gewist; reacties en likes
+blijven bewaard. Voor het wisselen wordt ook een herstelkopie geschreven.
+
+Dit gebruikt je bestaande nieuws- en AI-tegoed. 30 beelden passen niet per se
+in één dagtegoed. Bij pauze, storing of limiet: voer later exact dezelfde
+opdracht opnieuw uit. Reeds voltooide beelden worden niet opnieuw gegenereerd.
+Als bronpaginering verlopen is of er onvoldoende geschikte kandidaten zijn:
+
+   php artisan news:collage-batch --pages=50 --restart-feed
+
+Dat bewaart reeds gemaakte artikelen/beelden. Een afgeronde knipselbatch wordt
+niet opnieuw uitgevoerd door dezelfde opdracht. Er zijn lokaal geen echte
+nieuws- of beeld-API-aanvragen voor jouw account uitgevoerd.
+
+EERDERE WIJZIGINGEN OOK INBEGREPEN
+- Mijn momentjes volgt voorstel 3: schrijven eerst, bewaarde momentjes ernaast
+  op desktop. Op kleine schermen komt het schrijfblok bovenaan.
+- Compact schrijfblok, karakterteller, privacykeuze en toestemming zichtbaar.
+- Bewaarde momentjes als opgeprikte briefjes, met maandselectie en beheer.
+- /momentjes toont 15 openbare, goedgekeurde momentjes per pagina, als
+  polaroidprikbord. Klik op een kaartje voor de volledige tekst en afbeelding.
+  De popup werkt ook met toetsenbord en Escape; zonder JavaScript kan de
+  volledige tekst onder het kaartje worden geopend.
+- De waslijn op de homepage toont dezelfde kleine beelden (circa 88 pixels).
+  De leesknop opent altijd het volledige momentje.
+- Alles werkt in Nederlands en Engels.
+
+KLEINE AI-BEELDEN
+Bij het schrijven kun je vrijwillig 'Maak er een klein AI-beeld bij' aanvinken.
+Die afzonderlijke toestemming geldt ook als het momentje privé is.
+Na goedkeuring door de bestaande tekstcontrole kiest Gemini een passend,
+algemeen onderwerp en een stijl. Je laatste 12 gereserveerde/gemaakte beelden
+helpen de verhouding schets/foto in balans te houden. De AI krijgt ook het
+aantal van je momentjes mee. Alleen je eigen stijlhistorie telt mee.
+Een extra controle voorkomt grote scheefgroei en drie dezelfde stijlen op rij.
+
+Cloudflare ontvangt alleen een vaste algemene beschrijving van bijvoorbeeld
+een koffiekop, bloem, boek of zonlicht. Niet je oorspronkelijke tekst, naam,
+e-mailadres of de teksten van eerdere momentjes. Het beeld is een symbolisch
+sfeerbeeld; het is geen echte foto van wat de schrijver heeft meegemaakt.
+Er worden geen personen of gezichten afgebeeld.
+
+Opslag: maximaal 384 x 384 pixels, WebP (JPEG als WebP niet beschikbaar is),
+maximaal 200 KB per bestand. PHP GD moet ingeschakeld zijn, zoals ook voor
+profielfoto’s nodig is. Beelden staan op de lokale private Laravel-schijf,
+niet in public en niet via de publieke storage-koppeling.
+
+Privébeelden zijn alleen voor hun eigenaar bereikbaar. Beheerder zijn geeft
+geen toegang tot iemands privébeeld. Alleen goedgekeurde, expliciet openbare
+momentjes van actieve accounts kunnen hun afbeelding openbaar tonen.
+Bij aanpassen vervalt het oude beeld direct. Bij verwijderen wordt het bestand
+opgeruimd. Een oude achtergrondtaak mag geen oude versie terugplaatsen.
+
+BESTAANDE MOMENTJES
+Er wordt niets ongevraagd vervangen of naar een extra beeldprovider gestuurd.
+Open bij je eigen goedgekeurde momentje 'Aanpassen of beheren' en kies onderaan
+'Maak een klein beeld', met toestemming. Dat kan ook opnieuw na een fout.
+
+BEELDTEGOED
+De bestaande Cloudflare-instellingen in je .env worden hergebruikt.
+Deze versie ondersteunt voor momentjes Cloudflare, zonder nieuwe betaalprovider.
+De accountbrede bestaande verzoeklimiet en providerlimiet blijven gelden.
+Daarnaast geldt standaard maximaal 6 momentjesbeeldpogingen per UTC-dag,
+inclusief mislukte pogingen. Een klein opgeslagen beeld kost nog steeds een
+beeldgeneratie; verkleinen bespaart vooral opslag en laadtijd.
+
+Optioneel in .env:
+   MOMENT_IMAGES_PER_DAY=6
+   MOMENT_IMAGES_ENABLED=true
+
+Na een .env-aanpassing: php artisan optimize:clear en herstart de workers.
+Bij dagtegoed op wacht de taak tot na de volgende UTC-reset; maximaal 7 dagen.
+Bij een technische fout blijft het momentje bewaard en kan de schrijver de
+afbeelding opnieuw aanvragen. Vernieuw de pagina om nieuw gemaakte beelden te zien.
+
+OOK INBEGREPEN
+De eerder geleverde beveiliging en vertaling, de laatste homepage-aanpassingen
+en de uitgewerkte keuzepagina met groene menuknop zitten opnieuw in dit pakket.
+De steunpagina volgt het gekozen voorstel 3, met jullie originele gezinsfoto.
+De twee oude sfeerfoto’s worden daar niet meer getoond. Het donatieformulier
+behoudt zijn bestaande werking. De brief, gratis/reclamevrij-belofte en dunne
+handtekening staan in een persoonlijke knipselcollage.
+
+Na een door de bestaande betaalcontrole bevestigde betaling krijgt de betaler
+een bedankpopup. Een URL-parameter of alleen terugkomen van de betaalpagina
+is geen betaalbewijs. Open, mislukte of niet te controleren betalingen geven
+geen popup. De gewone statuspagina blijft beschikbaar. Het bedankje verschijnt
+één keer per bijdrage binnen dezelfde browsersessie.
+
+NIEUW IN DIT PAKKET
+Mijn momentjes gebruikt weer de oorspronkelijke websitebreedte: maximaal
+1180 pixels. Het schrijfblok staat vooraan en blijft binnen dezelfde kaders.
+
+Het gekozen gele steunkaartje is nu actief op de homepage na vier artikelen
+en bij Mijn account > Overzicht. Wegklikken laat de content eronder opschuiven.
+Bezoeken tellen maximaal eenmaal per dag; vernieuwen telt niet opnieuw.
+- Vanaf vijf bezoekdagen kan het kaartje verschijnen.
+- Vanaf tien bezoekdagen kan eenmaal een popup op de homepage verschijnen,
+  na 60 seconden of na het sluiten van een gelezen artikel (minstens 20 seconden).
+  Andere dialogs, schrijven en het cookiepaneel worden niet onderbroken.
+- Tussen uitnodigingen zit minstens zeven dagen rust.
+- Wegklikken of de steunpagina bezoeken geeft minstens 90 dagen rust.
+- Eenmalige steun geeft minstens 180 dagen rust.
+- Actieve maandelijkse supporters krijgen geen uitnodiging.
+- Na stoppen met maandelijkse steun geldt minstens 60 dagen rust.
+Bij accounts gelden voorkeuren over apparaten heen. Bij gasten werkt dit
+alleen met toestemming voor de bestaande optionele cookies, per browser.
+Zonder die toestemming krijgen gasten geen automatische uitnodigingen.
+
+KNIPSELACHTIGE ARTIKELBEELDEN PROBEREN
+De artikelindeling blijft hetzelfde. Nieuw is een beeldstijl met geknipt
+papier, zachte kleuren en zichtbare laagjes, passend bij de website.
+In Beheer > Beeldproef (/beheer/beeldproef) staan drie gemaakte voorbeelden.
+Dat bekijken gebruikt geen beeldtegoed.
+
+Om dezelfde stijl bij maximaal drie actuele artikelen te laten genereren:
+
+   php artisan news:collage-trial
+
+Dit gebruikt je bestaande beeldprovider en beeldtegoed. De huidige grenzen
+blijven gelden. Bij een onderbreking voer je dezelfde opdracht opnieuw uit;
+die hervat dezelfde selectie en kiest niet nog drie nieuwe artikelen.
+Artikelen en teksten worden niet vervangen. De oude beeldgegevens worden
+bewaard in storage/app/article-collage-trial.json. Bewaar dat herstelbestand.
+Terug naar de oorspronkelijke beelden van uitsluitend deze proef:
+
+   php artisan news:collage-trial --restore
+
+Nieuwere beeldwijzigingen worden bij herstel overgeslagen. De algemene
+standaard voor nieuw binnenkomende artikelen verandert nog niet automatisch.
+De proef laat je eerst beoordelen of de nieuwe stijl bevalt.

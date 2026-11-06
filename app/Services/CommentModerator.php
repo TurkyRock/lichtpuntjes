@@ -27,6 +27,7 @@ PROMPT,['author_name'=>$comment->user->name,'article_title'=>$comment->article->
     $c->update(['status'=>$status,'ai_reason'=>$result['reason'],'ai_confidence'=>$result['confidence'],'ai_error'=>$error,'ai_model'=>config('news.gemini_model'),'approved_at'=>$status==='approved'?now():null]);
     if($status==='approved'&&$c->article->status==='published'&&!$c->user->is_suspended)$this->points->comment($c);
    },3);
+   ContributionTranslator::queue('comment',$comment->id);
   }finally{$lock->release();}
  }
  public function decide(Comment $comment,string $status,\App\Models\User $admin,string $note):void {
@@ -37,5 +38,6 @@ PROMPT,['author_name'=>$comment->user->name,'article_title'=>$comment->article->
    DB::table('comment_reviews')->insert(['comment_id'=>$c->id,'moderator_id'=>$admin->id,'from_status'=>$old,'to_status'=>$status,'note'=>$note,'created_at'=>now()]);
    if($status==='approved')$this->points->comment($c);else $this->points->revokeComment($c);
   },3);
+  ContributionTranslator::queue('comment',$comment->id);
  }
 }

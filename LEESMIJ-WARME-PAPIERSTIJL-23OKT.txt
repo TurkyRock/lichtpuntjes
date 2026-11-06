@@ -1,0 +1,51 @@
+JOUW LICHTPUNTJE – WARME PAPIERSTIJL – 23 OKTOBER 2026
+
+INSTALLEREN
+Laat een eventueel lopende illustratiebatch eerst afronden of stop die met Ctrl+C.
+Pak dit pakket uit over je bestaande project lichtpunt-schoon.
+Voer in de projectmap uit:
+
+php artisan optimize:clear
+
+Start ComfyUI en maak de nieuwe versies met:
+
+php artisan news:illustrations --collage --all
+
+--force is niet nodig: dit recept heeft een nieuwe versie (warm-paper-v4).
+Met dezelfde opdracht hervatten slaat al geslaagde nieuwe versies over.
+Dit vernieuwt afbeeldingen van de huidige openbare nieuwsartikelen.
+Artikelteksten, persoonlijke inzendingen en verborgen artikelen worden niet gewijzigd.
+Geen database-migratie nodig. De bestaande provider/modelinstellingen blijven gelden.
+
+STIJL VAN HET GOEDGEKEURDE HUIS EN DE AAP
+- Fijne overlappende matte papierstukjes en zichtbare vezels.
+- Herkenbare, natuurlijk gevormde onderwerpen en subtiele schaduw tussen laagjes.
+- Het hele beeld is van papier, niet een fotografisch onderwerp op een papieren achtergrond.
+- Zacht warm daglicht, crèmekleurige lichte delen en frisse groentinten.
+- Hoofdkleuren: bosgroen, olijfgroen, geel, terracotta/oranje, warm bruin, beige en crème.
+- Geen decoratieve regenboogkleuren, neon, felroze, paars of elektrisch blauwe achtergronden.
+- Kenmerkende echte kleuren van een onderwerp blijven waar nodig herkenbaar.
+- Zonnepanelen krijgen donker antraciet met een subtiel groene zweem en fijne lichte lijnen.
+- Het onderwerp blijft afkomstig uit het artikel; geen aap, huis, bos of zonnepanelen
+  toevoegen aan verhalen die daar niet over gaan.
+
+CONTROLE EN BEWAREN
+Gemini bepaalt eerst het onderwerp en controleert daarna de gegenereerde afbeelding
+op onderwerp, warme kleuren en fijn papierwerk. Maximaal twee beeldkandidaten.
+Bij mislukken blijft de oude afbeelding staan. De controle blijft feilbaar.
+ComfyUI maakt het beeld lokaal; onderwerp- en beeldcontrole gebruiken de bestaande Gemini-koppeling.
+Tijdelijke Gemini-fouten krijgen nieuwe pogingen na 60 en 300 seconden.
+
+Het goedgekeurde huis is vertaald naar een tekstueel stijlrecept. Dit pakket wisselt
+geen model en voegt geen beeldreferentie-adapter toe. Het lokale model kan daardoor
+nog afwijken van het hier gemaakte voorbeeld.
+
+De reparatie voor de drie homepageblokken is inbegrepen: bestaande geldige afbeeldingen
+blijven zichtbaar tijdens het vernieuwen. --collage-trial herstel ondersteunt ook oudere stijlen.
+Vorige afbeeldingsgegevens blijven in storage/app/illustration-backups.
+Resultaten per artikel staan in het CSV-rapport dat de opdracht noemt.
+
+VERIFICATIE
+64 tests, 396 assertions: stijlrecept, onderwerpcontrole, generatie, hervatten,
+oude stijlversies, foutafhandeling, homepageblokken en dagselectie.
+AI-antwoorden zijn tijdens tests nagebootst; echte generatie gebeurt op jouw computer.

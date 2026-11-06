@@ -17,6 +17,6 @@
       Psy\Exception\ParseErrorException::fromParseError(Object(PhpParser\Error))
 
   2   vendor\psy\psysh\src\CodeCleaner.php:273
-      Psy\CodeCleaner::parse("<?php cache()-;
+      Psy\CodeCleaner::parse("<?php Illuminate\Support\Facades\Cache::lock('lichtpunt-import')-;
 ")
 

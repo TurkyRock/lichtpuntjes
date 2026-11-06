@@ -13,7 +13,7 @@ class SupportPaymentsTest extends TestCase {
  private function pledge(array $v=[]):SupportPledge{return SupportPledge::create($v+['id'=>(string)Str::uuid(),'cents'=>500,'frequency'=>'once','mode'=>'test','first_payment_id'=>'tr_first']);}
  private function payment(SupportPledge $p,array $v=[]):array{return array_replace_recursive(['id'=>'tr_first','mode'=>'test','status'=>'paid','paidAt'=>'2026-10-19T12:00:00+00:00','amount'=>['currency'=>'EUR','value'=>'5.00'],'metadata'=>['support_pledge'=>$p->id]],$v);}
  public function test_public_and_english_pages_and_personal_note():void {
-  config(['support.key'=>'']);$this->get('/steun')->assertOk()->assertSee('überhaupt')->assertSee('nieuwe interessante functies')->assertSee('Bijdragen kan binnenkort')->assertSee('site-support');$this->get('/steun?lang=en')->assertOk()->assertSee('A little note from me');Http::assertNothingSent();
+  config(['support.key'=>'']);$this->get('/steun')->assertOk()->assertSee('Ik werk met liefde aan Jouw Lichtpuntje')->assertSee('Nieuwe functies')->assertSee('Bijdragen kan binnenkort')->assertSee('site-support');$this->get('/steun?lang=en')->assertOk()->assertSee('My promise to you');Http::assertNothingSent();
  }
  public function test_amounts_are_exact_and_invalid_values_are_rejected():void {
   $this->assertSame(1000000,SupportPayments::cents('10000'));$this->assertSame(1000001,SupportPayments::cents('10000,01'));$this->assertSame(201,SupportPayments::cents('2,01'));$this->assertSame(210,SupportPayments::cents('2.1'));
@@ -60,7 +60,7 @@ class SupportPaymentsTest extends TestCase {
   $this->post('/mijn-bijdragen/'.$p->id.'/stop',['confirm'=>'1'])->assertRedirect();$this->assertNotNull($p->fresh()->stopped_at);
  }
  public function test_account_and_admin_data_remain_private():void {
-  $this->pledge(['user_id'=>$this->member()->id,'cents'=>777]);$this->get('/mijn-bijdragen')->assertRedirect('/inloggen');$this->actingAs($this->member())->get('/mijn-bijdragen')->assertOk()->assertDontSee('7,77');$this->get('/beheer/bijdragen')->assertForbidden();$this->actingAs($this->member(['is_admin'=>true]))->get('/beheer/bijdragen')->assertOk()->assertSee('7,77');
+  $this->pledge(['user_id'=>$this->member()->id,'cents'=>777]);$this->get('/mijn-bijdragen')->assertRedirect('/inloggen');$this->actingAs($this->member())->get('/mijn-bijdragen')->assertOk()->assertDontSee('7,77');$this->get('/beheer/bijdragen')->assertForbidden();$this->actingAs($this->member(['is_admin'=>true]))->get('/beheer/bijdragen')->assertRedirect('/beheer/donaties?lang=nl');$this->get('/beheer/donaties')->assertOk()->assertSee('7,77')->assertViewHas('totals',fn($t)=>(int)$t->net===0);
  }
  public function test_monthly_checkout_creates_customer_and_first_payment():void {
   $u=$this->member();$id=(string)Str::uuid();Http::fake(['api.mollie.com/v2/customers'=>Http::response(['id'=>'cst_one'],201),'api.mollie.com/v2/payments'=>Http::response(['id'=>'tr_first','_links'=>['checkout'=>['href'=>'https://www.mollie.com/checkout/test']]],201)]);

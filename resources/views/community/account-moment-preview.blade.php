@@ -1,7 +1,7 @@
 <div class="account-keepsakes">
 @include('community.activity-calendar')
 <section class="panel account-latest-moments"><h2>{{ $profileEn?'Moments to keep':'Om te bewaren' }}</h2>
-@forelse($recentMoments->take(2) as $keptMoment)<article class="account-kept-note"><p class="small">{{ $keptMoment->moment_date->format('d-m-Y') }} · {{ $keptMoment->visibility==='private'?($profileEn?'Only for me':'Alleen voor mijzelf'):($profileEn?'Shared':'Gedeeld') }}</p><p class="comments">{{ $keptMoment->body }}</p></article>@empty<p>{{ $profileEn?'A coffee in the sunshine, a kind word or a little peace. Your first moment can be something small.':'Een kop koffie in de zon, een lief woord of even rust. Je eerste momentje mag iets kleins zijn.' }}</p>@endforelse
+@forelse($recentMoments->take(2) as $keptMoment)<article class="account-kept-note"><p class="small">{{ $keptMoment->moment_date->format('d-m-Y') }} · {{ $keptMoment->visibility==='private'?($profileEn?'Only for me':'Alleen voor mijzelf'):($profileEn?'Shared':'Gedeeld') }}</p><p class="comments">{{ $keptMoment->bodyFor() }}</p></article>@empty<p>{{ $profileEn?'A coffee in the sunshine, a kind word or a little peace. Your first moment can be something small.':'Een kop koffie in de zon, een lief woord of even rust. Je eerste momentje mag iets kleins zijn.' }}</p>@endforelse
 <a href="/mijn-momentjes?lang={{ app()->getLocale() }}">{{ $profileEn?'All my moments →':'Al mijn momentjes →' }}</a>
 </section>
 </div>

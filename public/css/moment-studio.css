@@ -1,0 +1,86 @@
+/* A compact writing desk and a cheerful, accessible polaroid collection. */
+
+body:has(.moments-studio) .account-content{background:transparent;padding:9px 0 0;box-shadow:none}
+
+
+.moments-studio,.moment-gallery{--moment-ink:#213f36;--moment-teal:#00786e;--moment-edge:polygon(0 .8%,8% 0,18% .6%,29% 0,40% .7%,51% 0,62% .6%,73% 0,84% .7%,95% 0,100% .8%,99.5% 15%,100% 30%,99.4% 45%,100% 60%,99.5% 75%,100% 90%,99% 100%,88% 99.4%,77% 100%,66% 99.5%,55% 100%,44% 99.5%,33% 100%,22% 99.4%,11% 100%,0 99%,.6% 85%,0 70%,.5% 55%,0 40%,.5% 25%);color:var(--moment-ink)}
+.moments-page-heading{display:flex;gap:15px;align-items:center;justify-content:space-between;margin-bottom:22px}
+.account-content .moments-page-heading h1,.moment-gallery h1{font:600 clamp(30px,3vw,40px)/1.15 Georgia,serif;margin:0 0 7px;padding:0;letter-spacing:-1px}
+.account-content .moments-page-heading h1::after{display:none}
+.moments-page-heading p{margin:0;font-size:14px;line-height:1.5;color:#4d6557;max-width:650px}
+.moments-heading-sun{display:block;width:58px;height:58px;flex-shrink:0;background:url('/images/account-paper-sun.svg') center/contain no-repeat}
+.moments-desk{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,.96fr) minmax(0,1.04fr);gap:28px;align-items:start;padding:24px;border-radius:30px;background:#e5ebd9 url('/images/button-paper-grain.svg')}
+.moment-writing-paper,.moment-keepsake{position:relative;isolation:isolate;min-width:0;filter:drop-shadow(0 3px 2px #284c3320)}
+.moment-writing-paper::before,.moment-keepsake::before{content:"";position:absolute;inset:0;z-index:-1;background:#fffdf5 url('/images/button-paper-grain.svg');clip-path:var(--moment-edge);pointer-events:none}
+.moment-writing-paper{padding:22px 22px 20px}
+.moment-paper-label{display:inline-block;position:relative;isolation:isolate;margin:-10px 0 12px;padding:7px 16px;font:600 24px/1.2 Georgia,serif}
+.moment-paper-label::before{content:"";position:absolute;z-index:-1;inset:0;background:#f9df8b url('/images/button-paper-grain.svg');clip-path:var(--moment-edge)}
+.moment-pin{position:absolute;left:26px;top:-15px;width:14px;height:31px;background:url('/images/moment-clothespin.svg') center/contain no-repeat;z-index:2;pointer-events:none;transform:rotate(8deg)}
+.moment-writing-paper>.moment-pin{left:auto;right:23px;transform:rotate(-8deg)}
+.account-content .moments-desk h2{font:600 24px/1.2 Georgia,serif;margin:0 0 12px;letter-spacing:-.5px}
+.moments-studio .moment-write-form{margin:0}
+.moments-studio .moment-write-form .moment-body-label{margin:0;font-size:13px;font-weight:600}
+.moments-studio .moment-write-form textarea{display:block;margin-top:5px;height:102px;min-height:90px;font-size:15px;line-height:1.5;padding:10px;border-radius:7px}
+.moment-writing-tools{display:flex;justify-content:space-between;align-items:start;gap:12px;margin:1px 0 8px}
+.moments-studio .moment-writing-tools summary,.moments-studio .moment-privacy summary{font-size:12px;min-height:30px;padding:5px 0;margin:0}
+.moment-count{white-space:nowrap;color:#526858;font-size:11px;margin-top:6px}
+.moment-inspiration ul{padding-left:17px;font-size:12px}.moment-inspiration a{font-size:12px}
+.moments-studio .moment-visibility{background:none;border:0;border-top:1px dashed #c9d1bd;padding:8px 0 0;margin:0 0 10px;min-width:0}
+.moments-studio .moment-visibility legend{font:600 13px/1.4 system-ui,sans-serif;padding:0 6px 0 0}
+.moment-visibility-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.moments-studio .moment-visibility-options label{display:flex;align-items:center;gap:7px;padding:8px;margin:0;font:500 12px/1.4 system-ui,sans-serif;background:#edf0e2;border-radius:8px}
+.moments-studio .moment-write-form input[type=radio]{width:17px;height:17px;flex:none;margin:0;padding:0}
+.moments-studio label.moment-consent{display:flex;gap:8px;align-items:start;font:400 12px/1.5 system-ui,sans-serif;margin:10px 0}
+.moments-studio .moment-consent input[type=checkbox]{width:17px;height:17px;flex:none;margin:2px 0 0}
+.moment-image-choice{padding-top:8px;border-top:1px dashed #d6d9c9}
+.moments-studio .moment-privacy{margin:5px 0 9px}.moment-privacy p{font-size:12px;line-height:1.6;margin:8px 0}.moment-privacy a{font-size:12px}
+.account-scrapbook .account-content .moment-cut-button,.moment-gallery .moment-cut-button{display:flex;align-items:center;justify-content:center;gap:16px;position:relative;isolation:isolate;width:100%;min-height:48px;margin:0;padding:11px 17px;border:0;border-radius:0;background:transparent;color:#fff;font:650 14px/1.4 system-ui,sans-serif;box-shadow:none;filter:drop-shadow(0 2px 2px #27483520);text-decoration:none;text-align:center}
+.account-scrapbook .account-content .moment-cut-button::before,.moment-gallery .moment-cut-button::before{content:"";position:absolute;inset:0;z-index:-1;opacity:1;background:#00786e url('/images/button-paper-cutout-v2.png') center/100% 130%;background-blend-mode:multiply;-webkit-mask:url('/images/button-paper-cutout-v2.png') center/100% 130% no-repeat;mask:url('/images/button-paper-cutout-v2.png') center/100% 130% no-repeat}
+.account-scrapbook .account-content .moment-cut-button::after{display:none}.moment-cut-button:hover{filter:brightness(.94)}
+.moment-keepsakes{min-width:0}.moment-keepsakes-heading{margin-bottom:22px;display:flex;align-items:center;flex-wrap:wrap;gap:8px;justify-content:space-between}
+.account-content .moment-keepsakes-heading h2{font-size:25px;margin:0}
+.moment-month-nav{display:flex;align-items:center;gap:12px;font-size:12px;white-space:nowrap;background:#fffdf4;border-radius:20px;padding:0 4px}
+.moment-month-nav a{display:flex;align-items:center;justify-content:center;width:30px;height:34px;text-decoration:none;font-size:25px}.moment-month-nav strong{font-weight:500}
+.moment-keepsake-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 14px;align-items:start}
+.moment-keepsake{padding:18px 15px 13px;min-height:180px;overflow-wrap:anywhere}
+.moment-keepsake:nth-child(3n+2)::before{background-color:#fff0ba}.moment-keepsake:nth-child(3n){grid-column:1/-1}
+.moment-keepsake time{display:block;font-size:11px;color:#526757;margin:0 0 8px}
+.moment-keepsake-text{font:400 17px/1.5 Georgia,serif;white-space:pre-wrap;margin:7px 0 12px}
+.moment-labels{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}.moment-labels>span{font-size:10px;line-height:1.4;padding:4px 8px;border-radius:14px;background:#dfe8d1}.moment-labels>.moment-label-pending{background:#f9dfa1}
+.moment-image-status{font-size:10px;line-height:1.5;color:#61725e;margin:8px 0}
+.moments-studio .moment-edit>summary{font-size:11px;min-height:29px;padding:6px 0;margin-top:5px}
+.moment-edit[open]{grid-column:1/-1}.moment-keepsake:has(.moment-edit[open]){grid-column:1/-1}
+.moment-edit>.moment-write-form{border-top:1px dashed #c7cfb8;padding-top:10px}.moment-edit>form+form{margin-top:14px;padding-top:10px;border-top:1px dashed #c7cfb8}
+.account-scrapbook .account-content .moment-delete-button{background:transparent;box-shadow:none;color:#8c4550;font-size:12px;min-height:36px;padding:6px 0;text-decoration:underline}.account-scrapbook .account-content .moment-delete-button::before,.account-scrapbook .account-content .moment-delete-button::after{display:none}
+.moment-keepsake-empty{grid-column:1/-1;text-align:center;padding:26px 22px}.moment-keepsake-empty>img{object-fit:contain;width:105px;height:105px}.moment-keepsake-empty h3{font:500 23px/1.3 Georgia,serif;margin:8px 0}.moment-keepsake-empty p{font-size:13px;line-height:1.6}.moment-keepsake-empty a{font-size:13px}
+/* Public cards: 15 per page. Summary is a keyboard-accessible detail opener. */
+body:has(.moment-gallery)>main{max-width:1380px;margin-top:26px}
+.moment-gallery .moments-page-heading{margin-bottom:30px}.moment-gallery .moments-page-heading>div:first-child{flex:1}.moment-gallery .moment-cut-button{width:auto;max-width:230px;min-width:190px}
+.polaroid-board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:30px 22px;padding:30px 25px;background:#e5ebd9 url('/images/button-paper-grain.svg');border-radius:28px}
+.moment-polaroid{position:relative;isolation:isolate;min-width:0;display:flex;flex-direction:column;background:#fffdf5 url('/images/button-paper-grain.svg');padding:12px 12px 14px;box-shadow:0 3px 7px #324d3326;transform:rotate(-1deg);border-radius:2px}
+.moment-polaroid:nth-child(3n+2){transform:rotate(1deg);background-color:#fff0c2}.moment-polaroid:nth-child(3n){transform:rotate(-.4deg)}
+.moment-polaroid::before{content:"";position:absolute;width:38px;height:17px;background:#d8c89ac2;left:calc(50% - 19px);top:-8px;transform:rotate(-7deg);pointer-events:none}
+.polaroid-entry{display:block;flex:1}.polaroid-entry>summary{display:flex;flex-direction:column;gap:10px;list-style:none;cursor:pointer;padding:0!important;color:#213f36;font-size:16px!important;min-height:240px}
+.polaroid-entry>summary::-webkit-details-marker{display:none}.polaroid-entry>summary{text-decoration:none}.polaroid-entry>summary:focus-visible{outline:3px solid #00786e;outline-offset:5px;border-radius:2px}
+.polaroid-preview-text{font:400 17px/1.5 Georgia,serif;overflow-wrap:anywhere}.polaroid-read-more{margin-top:auto;font:600 11px/1.4 system-ui,sans-serif;color:#3a6a58;text-decoration:underline;padding-bottom:6px}
+.polaroid-symbol{height:125px;display:grid;place-items:center;background:#f5f0df;border:5px solid #fffdf5}.polaroid-symbol img{width:85px;height:85px;object-fit:contain}
+.polaroid-footer{display:flex;align-items:center;gap:8px;justify-content:space-between;border-top:1px dashed #d9ddce;padding-top:10px;margin-top:10px}.polaroid-author{min-width:0;display:flex;align-items:center;gap:6px}.polaroid-author .member-photo{width:27px;height:27px;flex-shrink:0}.polaroid-author strong{display:block;font:600 11px/1.4 system-ui,sans-serif;overflow-wrap:anywhere}.polaroid-author small{font:400 10px/1.4 system-ui,sans-serif;color:#526858}.polaroid-footer .moment-heart{margin:0}.polaroid-footer .moment-heart button{min-width:36px;min-height:36px;font-size:12px;padding:6px}
+.polaroid-entry>.moment-full-content{padding-top:12px}.polaroid-entry>.moment-full-content .moment-small-image{display:none}
+.moment-gallery>nav{max-width:none;padding:20px 0}.moment-gallery .moment-gallery-empty{padding:30px;background:#fff2c3;border-radius:20px}
+@media(min-width:1101px){.moment-keepsake-grid{max-height:610px;overflow-y:auto;padding:16px 6px 7px;margin-top:-16px;scrollbar-width:thin;scrollbar-color:#a6b894 transparent}}
+@media(min-width:1101px) and (max-height:850px){.moments-page-heading{margin-bottom:14px}.moments-desk{padding:18px;gap:20px}.moment-writing-paper{padding:18px}.moment-paper-label{font-size:21px;margin-bottom:8px}.account-content .moments-desk h2{font-size:21px}.moments-studio .moment-write-form textarea{height:88px}.moments-studio label.moment-consent{font-size:11px;margin:8px 0}.moment-keepsake-grid{max-height:550px}}
+@media(max-width:1200px){.polaroid-board{grid-template-columns:repeat(4,minmax(0,1fr))}.moments-desk{gap:20px;padding:18px}.moment-writing-paper{padding-inline:17px}.moment-keepsake-grid{grid-template-columns:1fr}.moment-keepsake:nth-child(n){grid-column:auto}.moment-keepsake .moment-small-image--account{float:right;width:84px;height:84px;margin:0 0 8px 12px}.moment-keepsake::after{content:"";display:block;clear:both}.moment-keepsake:has(.moment-edit[open]) .moment-small-image--account{float:none}}
+@media(max-width:1100px){.moments-desk{grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:16px;padding:16px}.account-content .moments-desk h2{font-size:21px}.moment-visibility-options{grid-template-columns:1fr}.moments-studio .moment-visibility-options label{padding:6px}.polaroid-board{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:900px){.moments-desk{grid-template-columns:1fr}.moment-keepsake-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.moment-keepsake:nth-child(3n){grid-column:1/-1}.moment-visibility-options{grid-template-columns:1fr 1fr}.polaroid-board{gap:27px 18px;padding:25px 20px}.polaroid-preview-text{font-size:16px}}
+@media(max-width:760px){.moments-heading-sun{width:43px;height:43px}.moments-page-heading{margin-bottom:18px}.moments-page-heading p{font-size:13px}.moments-desk{padding:20px 15px;gap:30px;border-radius:22px}.moment-writing-paper{padding:20px}.moment-paper-label{font-size:23px}.account-content .moments-desk h2{font-size:23px}.moment-keepsakes-heading{gap:10px}.moment-gallery .moments-page-heading{flex-wrap:wrap;gap:15px}.moment-gallery .moments-page-heading>div:first-child{flex-basis:100%}.moment-gallery .moment-cut-button{min-width:170px;font-size:13px}.polaroid-board{grid-template-columns:repeat(2,minmax(0,1fr));padding:25px 17px;gap:28px 16px}.polaroid-entry>summary{min-height:235px}.polaroid-symbol{height:115px}.polaroid-author .member-photo{display:none}}
+@media(max-width:420px){.moments-desk{padding:19px 11px}.moment-writing-paper{padding:18px 16px}.moment-visibility-options{grid-template-columns:1fr}.moment-keepsake-grid{grid-template-columns:1fr}.moment-keepsake:nth-child(n){grid-column:auto}.moment-keepsakes-heading{display:block}.moment-month-nav{width:max-content;margin-top:12px}.moments-studio label.moment-consent{font-size:11px}.polaroid-board{padding:22px 12px;gap:24px 12px}.moment-polaroid{padding:9px}.polaroid-preview-text{font-size:15px}.polaroid-entry>summary{min-height:225px}.polaroid-symbol{height:98px}.polaroid-symbol img{width:68px;height:68px}.polaroid-footer{flex-wrap:wrap}.polaroid-footer .moment-heart{margin-left:auto}.moment-gallery h1{font-size:30px}body:has(.moment-gallery)>main{padding-inline:14px}}
+@media(forced-colors:active){.moment-writing-paper,.moment-keepsake,.moment-polaroid,.moment-cut-button{border:1px solid CanvasText;filter:none}.moment-writing-paper::before,.moment-keepsake::before,.moment-pin,.moment-polaroid::before,.moment-cut-button::before{display:none}.polaroid-board,.moments-desk{border:1px solid CanvasText}.moment-cut-button{color:ButtonText!important;background:ButtonFace!important}}
+/* Override shared button selectors, including their :not() specificity. */
+.account-scrapbook .account-content button.moment-cut-button{background:transparent;border-radius:0;box-shadow:none}
+.account-scrapbook .account-content button.moment-cut-button::before{inset:0;z-index:-1;opacity:1;background:#00786e url('/images/button-paper-cutout-v2.png') center/100% 130%;background-blend-mode:multiply;-webkit-mask:url('/images/button-paper-cutout-v2.png') center/100% 130% no-repeat;mask:url('/images/button-paper-cutout-v2.png') center/100% 130% no-repeat}
+.account-scrapbook .account-content button.moment-cut-button::after{display:none}
+
+/* Match the original account shell, including its sidebar and outer margins. */
+@media(min-width:761px){.moments-desk{padding:18px;gap:18px;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)}.moment-writing-paper{padding:18px 16px}.account-content .moments-desk h2{font-size:21px}.moment-keepsake-grid{grid-template-columns:1fr}.moment-keepsake:nth-child(n){grid-column:auto}.moment-keepsake .moment-small-image--account{float:right;width:78px;height:78px;margin:0 0 8px 10px}.moments-studio label.moment-consent{font-size:11px}.moment-keepsake-text{font-size:16px}}
+
+@media(min-width:761px) and (max-width:900px){.moments-desk{grid-template-columns:1fr}}

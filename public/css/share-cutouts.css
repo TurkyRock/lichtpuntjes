@@ -1,0 +1,17 @@
+/* Sharing panels are distinct from the account's two-column content panels. */
+#article .share-options,#siteShareDialog .share-options{display:block;min-width:0}
+#article .share-choices,#siteShareDialog .share-choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:1fr;gap:12px}
+#article .share-choices [data-share-option],#siteShareDialog .share-choices [data-share-option]{position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:7px;min-width:0;width:100%;min-height:126px;margin:0;padding:14px 8px 16px;border:0;border-radius:0;background:transparent;color:#25483d;font:650 15px/1.3 system-ui,sans-serif;text-align:center;text-decoration:none;filter:drop-shadow(0 2px 2px #274b3c15);transition:transform .15s}
+#article .share-choices [data-share-option]::before,#siteShareDialog .share-choices [data-share-option]::before{content:"";position:absolute;inset:0;z-index:-1;background:#edf0df url('/images/button-paper-grain.svg');mask:url('/images/button-paper-cutout-v2.png') center/100% 150% no-repeat;-webkit-mask:url('/images/button-paper-cutout-v2.png') center/100% 150% no-repeat;clip-path:none;pointer-events:none}
+#article .share-choices [data-share-option="facebook"]::before,#siteShareDialog [data-share-option="facebook"]::before,#article .share-choices [data-share-option="linkedin"]::before,#siteShareDialog [data-share-option="linkedin"]::before{background-color:#e6eff9}
+#article .share-choices [data-share-option="instagram"]::before,#siteShareDialog [data-share-option="instagram"]::before{background-color:#f9e7ec}
+#article .share-choices [data-share-option="email"]::before,#siteShareDialog [data-share-option="email"]::before,#article .share-choices [data-share-option="copy"]::before,#siteShareDialog [data-share-option="copy"]::before{background-color:#fff0c1}
+#article .share-choices [data-share-option]:hover,#siteShareDialog .share-choices [data-share-option]:hover{transform:translateY(-2px)}
+#article .share-choices [data-share-option]:focus-visible,#siteShareDialog .share-choices [data-share-option]:focus-visible{outline:3px solid #00786e;outline-offset:3px}
+#article .share-choices .share-icon,#siteShareDialog .share-choices .share-icon{display:block;width:48px;height:48px;object-fit:contain;flex:none;filter:drop-shadow(0 1px 1px #183d3820)}
+#article .share-choices small,#siteShareDialog .share-choices small{font:400 15px/1.3 system-ui,sans-serif;color:#536862}
+#article .share-url-label,#siteShareDialog .share-url-label{display:block;margin:16px 0 6px;font-size:15px}
+#article .share-feedback:empty,#siteShareDialog .share-feedback:empty{display:none}
+@media(max-width:650px){#article .share-choices,#siteShareDialog .share-choices{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#article .share-choices [data-share-option],#siteShareDialog .share-choices [data-share-option]{min-height:122px;padding:12px 6px}}
+@media(prefers-reduced-motion:reduce){#article .share-choices [data-share-option],#siteShareDialog .share-choices [data-share-option]{transition:none}}
+@media(forced-colors:active){#article .share-choices [data-share-option],#siteShareDialog .share-choices [data-share-option]{border:1px solid ButtonText;filter:none}#article .share-choices [data-share-option]::before,#siteShareDialog .share-choices [data-share-option]::before{background:Canvas;mask:none;-webkit-mask:none}}

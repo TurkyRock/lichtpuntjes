@@ -62,7 +62,7 @@ class SocialAuthController extends Controller
         $p = $this->pending($r);
         $r->merge(['email' => $p['email'] !== '' ? $p['email'] : strtolower(trim((string) $r->input('email')))]);
         $v = $r->validate([
-            'name' => ['required', 'string', 'min:2', 'max:40', 'regex:/^[\pL\pN _.-]+$/u'],
+            'name' => \App\Rules\FriendlyDisplayName::rules(),
             'email' => 'required|email|max:254', 'intentions' => 'accepted',
             'existing_password' => 'nullable|string|max:128', 'website' => 'prohibited',
         ]);

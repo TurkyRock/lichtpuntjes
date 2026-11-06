@@ -7,4 +7,10 @@
 @elseif(in_array($pledge->status,['failed','canceled','expired']))<h1>{{ $en?'Your payment did not complete':'Je betaling is niet afgerond' }}</h1><p>{{ $en?'No problem. Thank you for being here.':'Geen probleem. Fijn dat je er bent.' }}</p>
 @else<h1>{{ $en?'Your contribution is being processed':'Je bijdrage wordt verwerkt' }}</h1><p>{{ $en?'We are waiting for payment confirmation. Please check this page again in a moment.':'We wachten nog op de betaalbevestiging. Bekijk deze pagina zo nog een keer.' }}</p>@endif
 <a class="support-button" href="/">{{ $en?'Back to the bright spots':'Terug naar de lichtpuntjes' }}</a> @auth<a href="/mijn-bijdragen">{{ $en?'My contributions':'Mijn bijdragen' }}</a>@endauth</section>
+@if($showThanks??false)
+<dialog id="supportThanksDialog" class="support-thanks-dialog" aria-labelledby="supportThanksTitle" aria-describedby="supportThanksText"><button type="button" class="support-thanks-close" data-close-support-thanks aria-label="{{ $en?'Close thank-you message':'Bedankje sluiten' }}">×</button><span class="support-thanks-paper-sun" aria-hidden="true"></span><p class="support-kicker">{{ $en?'A little note from me':'Een briefje van mij' }}</p><h2 id="supportThanksTitle">{{ $en?'How lovely. Thank you!':'Wat ontzettend fijn, dank je wel!' }}</h2><p id="supportThanksText">{{ $en?'Your contribution helps me keep Lichtpuntje free and without advertising. I really appreciate that. Thank you for helping this place shine.':'Met jouw bijdrage help je mij Lichtpuntje gratis en reclamevrij te houden. Dat waardeer ik enorm. Bedankt dat je deze plek helpt stralen.' }}</p><p class="support-popup-signature">Erik</p><a class="support-button" href="/{{ $en?'en':'' }}">{{ $en?'Back to the bright spots':'Terug naar de lichtpuntjes' }} ☀</a></dialog>
+@endif
 @endsection
+@if($showThanks??false)
+@push('page-styles')<script src="/js/support-thanks.js?v={{ filemtime(public_path('js/support-thanks.js')) }}" defer></script>@endpush
+@endif

@@ -1,0 +1,54 @@
+JOUW LICHTPUNTJE — LICHTPUNTJESPOST BIJ MIJN BIJDRAGEN
+23 oktober 2026
+
+INSTALLEREN
+Dit is een gerichte update voor je bestaande website, inclusief de eerder
+gemaakte verplaatsing van Accountbeveiliging naar Mijn gegevens.
+
+1. Pak het pakket uit in C:\Users\e_tur\Herd\lichtpunt-schoon.
+2. Overschrijf de gelijknamige bestanden.
+3. Voer uit: php artisan optimize:clear
+4. Ververs met Ctrl+F5.
+
+Voor deze wijzigingen is geen nieuwe databasemigratie nodig. Je bestaande
+donatie- en beveiligingstabellen worden gebruikt. .env, database, uploads,
+Mollie-sleutels en vendor-bestanden zitten niet in dit pakket.
+
+MIJN BIJDRAGEN
+- Het gekozen voorstel Lichtpuntjespost is doorgevoerd: persoonlijk bedankje
+  uit een papieren envelop, ondertekend met Erik, en een leesbare betaalhistorie.
+- Zonder bevestigde steun zie je het koffiekaartje met de hosting-knipoog,
+  een vrijblijvende uitleg en een keuze voor eenmalig of maandelijks steunen.
+- Wie al maandelijks steunt, krijgt dank en beheeropties zonder extra werving.
+- Openstaande betalingen worden niet als betaald geteld en leiden niet tot
+  een nieuwe donatievraag. Stoppen vraagt nog steeds expliciete bevestiging.
+- Het totaal gebruikt alle bevestigde betalingen van je eigen account, met
+  terugbetalingen en terugboekingen afgetrokken. De historie toont ook de
+  afzonderlijke maandelijkse betalingen, met tien regels per pagina.
+- Test- en livebetalingen blijven gescheiden. Testgegevens krijgen een
+  duidelijke testmelding en worden niet gepresenteerd als livebijdragen.
+- Anonieme bijdragen die niet aan je account gekoppeld zijn, staan niet in
+  dit persoonlijke overzicht. Er worden geen betalingen van anderen gekoppeld.
+- De steunkeuze opent het bestaande betaalformulier met de juiste frequentie.
+  Maandelijkse toestemming blijft uit totdat de bezoeker die zelf aanvinkt.
+- Deze update zet betalen niet aan en doet geen incasso op zichzelf. De
+  bestaande betaalcontrole en Mollie-webhooks blijven verantwoordelijk voor
+  bevestiging en stoppen. Testen gebruikten alleen nep-antwoorden van de provider.
+- Alle knoppen hebben de echte knipselvorm uit de header. Gewone tekst blijft
+  15px; bestaande menu- en paginabreedte blijven behouden. Nederlands en Engels.
+
+MIJN GEGEVENS
+Gebruikersnaam, profielfoto, wachtwoord, overal uitloggen en recente
+beveiligingsacties staan bij elkaar. Het aparte menu-item Accountbeveiliging
+is weg; oude links verwijzen door. Beheerders zien bij het behandelen van
+andermans privacyverzoeken geen persoonlijke beveiligingsformulieren.
+
+CONTROLES
+38 functionele tests, 281 controles: betaalstatus, echte totalen, terugbetalingen,
+privégegevens, profielinstellingen en bestaande betaal- en uitnodigingsregels.
+Vormgeving nagekeken op zes schermbreedtes in beide talen, plus wachtende
+betalingen en terugbetalingen. Geen echte betalingen of berichten verstuurd.
+
+Het eerdere 500-probleem is hiermee niet als opgelost aangemerkt. Daarvoor
+ontbreekt nog de foutmelding uit jouw installatie. Deze update verandert
+het puntenoverzicht niet.

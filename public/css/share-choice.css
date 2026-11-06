@@ -1,0 +1,45 @@
+/* A small editorial scrapbook. Keep every rule scoped to this choice page. */
+.share-choice-page{--choice-ink:#153e39;--choice-teal:#00786e;--choice-muted:#435d52;position:relative;isolation:isolate;color:var(--choice-ink);padding:12px 0 4px}
+.share-choice-page .choice-heading{position:relative;isolation:isolate;text-align:center;padding:8px 60px 30px;margin-bottom:8px;border:0;background:transparent}
+.share-choice-page .choice-heading h1{position:relative;display:inline-block;margin:0 0 17px;padding:0;font:600 clamp(34px,4vw,49px)/1.12 Georgia,serif;letter-spacing:-1.3px;overflow-wrap:anywhere}
+.share-choice-page .choice-heading h1::after{content:"";position:absolute;top:auto;left:4%;right:3%;bottom:-8px;width:auto;height:8px;background:#aab997;opacity:.8;z-index:-1;clip-path:polygon(0 22%,22% 5%,51% 29%,80% 0,100% 25%,98% 75%,73% 93%,43% 74%,16% 100%,0 72%)}
+.share-choice-page .choice-heading>p{font:400 16px/1.6 system-ui,sans-serif;max-width:650px;margin:0 auto;color:var(--choice-muted)}
+.share-choice-page .choice-sun{position:absolute;right:0;top:1px;width:63px;height:63px;background:url('/images/account-paper-sun.svg') center/contain no-repeat;transform:rotate(8deg);pointer-events:none}
+.share-choice-page .choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:stretch}
+.share-choice-page .choice-paper{position:relative;isolation:isolate;display:flex;flex-direction:column;min-width:0;margin:0;padding:33px 25px 25px;filter:drop-shadow(0 4px 3px #26453a18)}
+.share-choice-page .choice-paper::before{content:"";position:absolute;inset:0;z-index:-1;background-color:#dfe8ce;background-image:url('/images/scrap-paper-sage.webp');background-size:100% 100%;background-repeat:no-repeat;clip-path:polygon(1% 1%,7% 0,16% 1%,25% .4%,34% 1%,45% 0,56% .8%,65% .1%,76% .7%,86% 0,98% 1%,99% 11%,98.5% 24%,100% 39%,99% 50%,99.6% 65%,99% 78%,100% 91%,98.8% 99%,88% 99.5%,75% 98.8%,62% 100%,50% 99.2%,39% 100%,27% 99%,15% 100%,1% 99%,.7% 89%,1.5% 76%,.3% 63%,1% 50%,0 37%,1% 24%,0 12%)}
+.share-choice-page .choice-story::before{background-color:#fae895;background-image:url('/images/scrap-paper-yellow.webp')}
+.share-choice-page .choice-tape{position:absolute;top:-4px;width:43px;height:23px;z-index:1;background:#e7dbb8d9;box-shadow:0 1px 2px #483e2220;clip-path:polygon(2% 3%,19% 0,39% 5%,63% 0,83% 5%,99% 0,98% 100%,71% 94%,46% 100%,22% 96%,0 100%);pointer-events:none}
+.share-choice-page .choice-tape-left{left:24px;transform:rotate(-12deg)}
+.share-choice-page .choice-tape-right{right:22px;transform:rotate(12deg)}
+.share-choice-page .choice-paper h2{font:600 clamp(28px,3vw,35px)/1.15 Georgia,serif;letter-spacing:-.7px;margin:0 0 14px;color:var(--choice-ink)}
+.share-choice-page .choice-lead{display:grid;grid-template-columns:minmax(0,1fr) minmax(92px,33%);gap:8px;align-items:center;margin-bottom:20px}
+.share-choice-page .choice-lead p{font-size:15px;line-height:1.6;margin:0 0 17px;color:var(--choice-ink)}
+.share-choice-page .choice-illustration{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:contain;max-height:170px;filter:drop-shadow(0 3px 2px #26453a12)}
+.share-choice-page .choice-points{padding:0;margin:0;list-style:none}
+.share-choice-page .choice-points li{position:relative;padding-left:23px;margin:8px 0;font:400 13px/1.5 system-ui,sans-serif;color:var(--choice-ink);overflow-wrap:anywhere}
+.share-choice-page .choice-points li::before{content:"✓";position:absolute;top:0;left:0;font-weight:750;font-size:17px;color:#28664f}
+.share-choice-page .choice-example{position:relative;isolation:isolate;display:flex;flex-direction:column;justify-content:center;flex:1;margin:0 0 20px;padding:17px 19px 19px;min-height:145px}
+.share-choice-page .choice-example::before{content:"";position:absolute;inset:0;z-index:-1;background:#fffdf1 url('/images/scrap-paper-ivory.webp') center/100% 100% no-repeat;clip-path:polygon(1% 2%,13% 0,31% 2%,50% .2%,69% 1%,89% 0,99% 2%,98.5% 28%,100% 51%,99% 76%,100% 98%,78% 100%,57% 98%,38% 100%,20% 99%,.4% 100%,1% 75%,0 49%,1% 27%);box-shadow:0 3px 5px #26453a20}
+.share-choice-page .choice-example::after{content:"";position:absolute;right:21px;top:-5px;width:31px;height:14px;background:#d8c796cc;transform:rotate(10deg);pointer-events:none}
+.share-choice-page .choice-example figcaption{align-self:flex-start;font:600 13px/1.4 system-ui,sans-serif;color:#44604f;border-bottom:1px solid #819b83;margin:0 0 10px}
+.share-choice-page .choice-example blockquote{padding:0;margin:0}
+.share-choice-page .choice-example blockquote p{font:400 17px/1.6 "Segoe Print","Bradley Hand","Comic Sans MS",cursive;color:#23483c;margin:0;text-align:center;overflow-wrap:anywhere}
+.share-choice-page .choice-action{position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;gap:9px;flex:none;min-height:54px;width:100%;margin-top:auto;padding:12px 14px;text-align:center;color:white;font:650 15px/1.4 system-ui,sans-serif;text-decoration:none;border:0;border-radius:0;background:transparent;filter:drop-shadow(0 2px 2px #26453a24)}
+.share-choice-page .choice-action::before{content:"";position:absolute;inset:0;z-index:-1;background-color:var(--choice-teal);background-image:url('/images/button-paper-cutout-v2.png');background-blend-mode:multiply;background-position:center;background-size:100% 130%;-webkit-mask:url('/images/button-paper-cutout-v2.png') center/100% 130% no-repeat;mask:url('/images/button-paper-cutout-v2.png') center/100% 130% no-repeat}
+.share-choice-page .choice-action:hover::before{background-color:#006257}
+.share-choice-page .choice-action:focus-visible{outline:3px solid #153e39;outline-offset:5px}
+.share-choice-page .choice-action:active{transform:translateY(1px)}
+.share-choice-page .choice-reassurance{display:flex;justify-content:center;align-items:center;gap:13px;color:#4f6857;font:400 13px/1.6 system-ui,sans-serif;text-align:center;margin:25px auto 6px;max-width:650px}
+.share-choice-page .choice-reassurance span{color:#7d9c75;font-size:26px}
+@media(max-width:1000px){.share-choice-page .choice-grid{gap:18px}.share-choice-page .choice-paper{padding:29px 20px 22px}.share-choice-page .choice-lead{grid-template-columns:minmax(0,1fr) 92px}.share-choice-page .choice-heading{padding-left:20px;padding-right:20px}.share-choice-page .choice-sun{width:45px;height:45px;right:0;top:-8px}.share-choice-page .choice-example{padding-left:14px;padding-right:14px}}
+@media(max-width:760px){.share-choice-page .choice-grid{grid-template-columns:1fr;gap:30px}.share-choice-page .choice-paper{padding:30px 25px 25px}.share-choice-page .choice-lead{grid-template-columns:minmax(0,1fr) minmax(100px,30%)}.share-choice-page .choice-illustration{max-height:155px}.share-choice-page .choice-example{min-height:115px;flex:none}.share-choice-page .choice-paper h2{font-size:32px}.share-choice-page .choice-heading{padding:4px 0 27px}.share-choice-page .choice-heading h1{font-size:36px}.share-choice-page .choice-sun{display:none}}
+@media(max-width:420px){.share-choice-page .choice-paper{padding-left:19px;padding-right:19px}.share-choice-page .choice-lead{grid-template-columns:minmax(0,1fr) 84px;gap:3px}.share-choice-page .choice-lead p{font-size:14px}.share-choice-page .choice-points li{font-size:12px}.share-choice-page .choice-action{font-size:14px}.share-choice-page .choice-example blockquote p{font-size:16px}.share-choice-page .choice-reassurance{font-size:12px;gap:6px}}
+@media(prefers-reduced-motion:reduce){.share-choice-page .choice-action:active{transform:none}}
+@media(forced-colors:active){.share-choice-page .choice-paper,.share-choice-page .choice-example,.share-choice-page .choice-action{border:1px solid CanvasText;background:Canvas;color:CanvasText;filter:none}.share-choice-page .choice-paper::before,.share-choice-page .choice-example::before,.share-choice-page .choice-action::before,.share-choice-page .choice-tape{display:none}}
+
+/* Use the actual transparent paper edges, without a flat rectangle underneath. */
+.share-choice-page .choice-heading h1::after{transform:none}
+.share-choice-page .choice-paper::before{background-color:transparent;background-size:108% 116%;background-position:center}
+.share-choice-page .choice-example::before{background-color:transparent;background-size:106% 116%;background-position:center}
+@media(min-width:761px){.share-choice-page .choice-lead{min-height:190px}}

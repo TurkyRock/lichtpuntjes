@@ -1,0 +1,48 @@
+/* The approved sunny paper features keep the same three-story layout and live data. */
+.daily-highlights{gap:18px;margin:18px 0 22px;align-items:stretch;isolation:isolate}
+.daily-highlights .highlight-card{--feature-back:url('/images/scrap-paper-ivory.webp');position:relative;isolation:isolate;display:grid;grid-template-columns:44% minmax(0,1fr);padding:10px;border:0;border-radius:0;background:none;overflow:visible;filter:drop-shadow(0 3px 3px #6c52332b)}
+.daily-highlights .highlight-card::before,.daily-highlights .highlight-card::after{content:"";position:absolute;inset:0;z-index:-2;pointer-events:none;background:var(--feature-back) center/115% auto no-repeat;mask:url('/images/filter-card-shape.svg') center/100% 100% no-repeat;-webkit-mask:url('/images/filter-card-shape.svg') center/100% 100% no-repeat;transform:rotate(-.7deg)}
+.daily-highlights .highlight-card::after{inset:4px;z-index:-1;transform:rotate(.25deg);background:url('/images/scrap-paper-ivory.webp') center/115% auto no-repeat}
+.daily-highlights .highlight-main{--feature-back:url('/images/scrap-paper-yellow.webp');grid-column:1;grid-row:1/span 2;grid-template-columns:45% minmax(0,1fr);padding:13px}
+.daily-highlights .highlight-kind-discover::before,.daily-highlights .highlight-kind-reads::before{background:#da9a75 url('/images/button-paper-grain.svg')}
+.daily-highlights :is(.highlight-kind-likes,.highlight-kind-likes_total){--feature-back:url('/images/scrap-paper-sage.webp')}
+.daily-highlights .highlight-art{display:flex;min-width:0;min-height:150px;height:100%;background:none;border:0;padding:0;overflow:visible}
+.daily-highlights .highlight-main .highlight-art{min-height:310px}
+.daily-highlights .highlight-art>a,.daily-highlights .highlight-main .highlight-art>a{display:block;position:relative;flex:1;width:100%;height:100%;min-height:150px;max-height:none;aspect-ratio:auto;overflow:hidden;mask:url('/images/filter-card-shape.svg') center/100% 100% no-repeat;-webkit-mask:url('/images/filter-card-shape.svg') center/100% 100% no-repeat}
+.daily-highlights .highlight-main .highlight-art>a{min-height:310px}
+.daily-highlights .highlight-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+.daily-highlights .highlight-art .category{top:10px;left:8px;padding:4px 10px;background:#e8e9c9;color:#274c3d;font:700 13px/1.3 Georgia,serif;border:0;border-radius:3px;transform:rotate(-4deg);z-index:2}
+.daily-highlights .highlight-copy,.daily-highlights .highlight-main .highlight-copy,.daily-highlights .highlight-small .highlight-copy{position:relative;display:flex;flex-direction:column;justify-content:flex-start;min-width:0;padding:13px 12px 12px 16px;background:none}
+.daily-highlights .card-metadata{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px 8px;margin-bottom:10px}
+.daily-highlights .highlight-label{position:relative;isolation:isolate;display:inline-flex;align-items:center;gap:6px;min-height:25px;margin:0;padding:5px 8px;font:750 10px/1.3 system-ui,sans-serif;letter-spacing:.3px;color:#34513c;text-transform:uppercase}
+.daily-highlights .highlight-label::before{content:"";position:absolute;inset:0;z-index:-1;background:url('/images/scrap-paper-yellow.webp') center/115% auto;mask:url('/images/filter-button-shape.svg') center/100% 100% no-repeat;-webkit-mask:url('/images/filter-button-shape.svg') center/100% 100% no-repeat}
+.daily-highlights .highlight-kind-discover .highlight-label::before,.daily-highlights .highlight-kind-reads .highlight-label::before{background:#e9b18e url('/images/button-paper-grain.svg')}
+.daily-highlights :is(.highlight-kind-likes,.highlight-kind-likes_total) .highlight-label::before{background:url('/images/scrap-paper-sage.webp') center/115% auto}
+.daily-highlights .highlight-label>span{font-size:14px;color:#9a711f}
+.daily-highlights .ai-image-label{font-size:10px}
+.daily-highlights .highlight-copy h2,.daily-highlights .highlight-small .highlight-copy h2{display:block;overflow:visible;-webkit-line-clamp:unset;font:700 20px/1.16 Georgia,serif;letter-spacing:-.3px;margin:0 0 10px;overflow-wrap:anywhere}
+.daily-highlights .highlight-main .highlight-copy h2{font-size:25px;line-height:1.14}
+.daily-highlights :is(.highlight-body,.highlight-teaser){display:block;overflow:visible;-webkit-line-clamp:unset;font:400 13px/1.55 system-ui,sans-serif;color:#53645a;margin:0 0 10px;overflow-wrap:anywhere}
+.daily-highlights .highlight-body p{margin:0 0 12px}
+.daily-highlights .highlight-body p:last-child{margin-bottom:0}
+.daily-highlights .highlight-copy .meta{font-size:11px;line-height:1.4;margin:0 0 10px}
+.daily-highlights .highlight-read,.daily-highlights .highlight-main .highlight-copy .highlight-read{position:relative;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;align-self:flex-start;min-height:38px;max-width:100%;margin-top:auto;padding:9px 13px;color:#fffbed;font:650 13px/1.3 system-ui,sans-serif;text-decoration:none;text-align:center;filter:drop-shadow(0 2px 1px #34502e25)}
+.daily-highlights .highlight-read::before{content:"";position:absolute;inset:0;z-index:-1;background:#2f624c url('/images/button-paper-grain.svg');mask:url('/images/filter-button-shape.svg') center/100% 100% no-repeat;-webkit-mask:url('/images/filter-button-shape.svg') center/100% 100% no-repeat}
+.daily-highlights .highlight-read:hover::before{background-color:#3a7458}
+.daily-highlights .highlight-read:focus-visible{outline:3px solid #a56e23;outline-offset:3px}
+.highlight-sticker{position:absolute;top:-8px;left:5px;z-index:4;pointer-events:none;display:grid;place-items:center;width:38px;height:38px;color:#ce785d;filter:drop-shadow(0 2px 1px #785d3438)}
+.highlight-sticker svg{width:27px;height:27px;padding:5px;box-sizing:content-box;background:#fff5dc;transform:rotate(-8deg);border-radius:5px}
+.highlight-sticker img{display:block;width:100%;height:100%;object-fit:contain}
+.highlight-main .highlight-sticker{width:49px;height:49px;top:-12px;left:calc(45% - 24px)}
+.highlight-leaves{position:absolute;right:3px;bottom:4px;width:27px;height:40px;background:url('/images/account-paper-leaves.svg') center/contain no-repeat;opacity:.8;pointer-events:none;z-index:2;transform:rotate(22deg)}
+@media(min-width:701px) and (max-width:1000px){.daily-highlights{grid-template-columns:1.1fr 1fr;gap:12px}.daily-highlights .highlight-card{grid-template-columns:38% minmax(0,1fr)}.daily-highlights .highlight-main{grid-template-columns:1fr;grid-template-rows:180px auto}.daily-highlights .highlight-main .highlight-art,.daily-highlights .highlight-main .highlight-art>a{min-height:0;height:180px}.daily-highlights .highlight-main .highlight-copy h2{font-size:23px}.daily-highlights .highlight-main .highlight-sticker{left:auto;right:7px}.daily-highlights .highlight-copy,.daily-highlights .highlight-main .highlight-copy,.daily-highlights .highlight-small .highlight-copy{padding:12px 9px}.daily-highlights .highlight-small h2{font-size:18px}}
+@media(max-width:700px){.daily-highlights{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-top:15px}.daily-highlights .highlight-main{grid-column:auto;grid-row:auto;grid-template-columns:1fr;grid-template-rows:220px auto}.daily-highlights .highlight-main .highlight-art,.daily-highlights .highlight-main .highlight-art>a{height:220px;min-height:0}.daily-highlights .highlight-main .highlight-copy{padding:15px 10px 10px}.daily-highlights .highlight-main .highlight-copy h2{font-size:25px}.daily-highlights .highlight-main .highlight-sticker{left:auto;right:10px}.daily-highlights .highlight-small{grid-template-columns:38% minmax(0,1fr)}.daily-highlights .highlight-small .highlight-copy h2{font-size:19px}.daily-highlights .highlight-small .highlight-art>a{min-height:170px}.daily-highlights .highlight-small .highlight-copy{padding:12px 8px 8px 11px}.daily-highlights .highlight-read{padding-inline:9px}.highlight-leaves{display:none}}
+@media(forced-colors:active){.daily-highlights .highlight-card{border:1px solid CanvasText;filter:none}.daily-highlights .highlight-card::before,.daily-highlights .highlight-card::after,.daily-highlights .highlight-read::before,.daily-highlights .highlight-label::before{display:none}.daily-highlights .highlight-read{border:1px solid LinkText;background:Canvas;color:LinkText;filter:none}}
+/* Keep the secondary cards compact so the day feature does not acquire a tall empty caption. */
+.daily-highlights .highlight-small .highlight-copy h2{font-size:18px;line-height:1.18;margin-bottom:8px}
+.daily-highlights .highlight-small .highlight-label{font-size:9px;letter-spacing:.1px;padding-inline:6px}
+.daily-highlights .highlight-small .ai-image-label{font-size:9px}
+.daily-highlights .highlight-small .highlight-teaser{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.daily-highlights .highlight-small .highlight-copy{padding-top:9px;padding-bottom:9px}
+/* Paper must cover the complete card, including taller captions on small screens. */
+.daily-highlights .highlight-card::before,.daily-highlights .highlight-card::after{background-size:cover}

@@ -1,0 +1,26 @@
+JOUW LICHTPUNTJE — ACCOUNTINSTELLINGEN BIJ MIJN GEGEVENS
+23 oktober 2026
+
+Dit is een kleine update voor je bestaande website.
+
+1. Pak de bestanden uit in C:\Users\e_tur\Herd\lichtpunt-schoon.
+2. Overschrijf de gelijknamige bestanden.
+3. Voer uit: php artisan optimize:clear
+4. Ververs de browser met Ctrl+F5.
+
+Mijn gegevens bevat nu je gebruikersnaam, profielfoto, wachtwoord wijzigen,
+overal uitloggen, recente beveiligingsacties en je privégegevensverzoeken.
+Het aparte menu-item Accountbeveiliging is verwijderd. De oude pagina
+/beveiliging verwijst door naar het juiste onderdeel bij Mijn gegevens.
+De bestaande wachtwoordcontrole, sessiebeveiliging, snelheidslimieten en
+bevestiging bij overal uitloggen blijven actief. Beheer ziet op de pagina
+voor privacyverzoeken van anderen geen persoonlijke accountformulieren.
+Knoppen hebben dezelfde papieren knipselvorm als de header; gewone tekst
+blijft 15px en de gedeelde menu- en paginabreedte zijn behouden.
+
+Dit pakket bevat geen .env, database, uploads of vendor-bestanden.
+Er is voor deze verplaatsing geen nieuwe databasemigratie nodig.
+Mijn bijdragen volgt inmiddels het gekozen Lichtpuntjespost-ontwerp;
+zie LEESMIJ-LICHTPUNTJESPOST-23OKT.txt voor die wijzigingen.
+De eerder gemelde 500-fout wordt met dit pakket niet als opgelost beschouwd;
+voor gerichte diagnose ontbreekt nog de foutmelding uit jouw installatie.

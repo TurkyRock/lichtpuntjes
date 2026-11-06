@@ -1,34 +1,51 @@
-JOUW LICHTPUNTJE - KALENDER ALLEEN IN OVERZICHT EN NIEUWE MENUVOLGORDE
-17 oktober 2026
+Jouw Lichtpuntje - Compactere homepage en importherstel - 29 oktober 2026
 
-Kleine vervolgupdate op de laatste kalendercorrectie.
-Pak deze ZIP uit over je bestaande projectmap, naast artisan.
-Vervang gelijknamige bestanden met behoud van de mappenstructuur.
-Voer uit:
+Pak dit pakket uit over je projectmap lichtpunt-schoon en overschrijf de bestanden.
+Dit bevat de huidige voorbeeld-2-indeling en de categoriefix.
+Er is geen migratie nodig.
 
-php artisan view:clear
+Voer daarna uit:
+php artisan optimize:clear
 
-Ververs daarna met Ctrl+F5. Geen migratie of workerherstart nodig voor deze update.
-Je database, punten, likes en bezoekregistratie blijven behouden.
+Ververs de browser met Ctrl+F5.
 
-De kalender staat uitsluitend bij Overzicht. Mijn momentjes heeft nu de lijst
-met je eigen momentjes en het formulier. Je kunt er nog van maand wisselen;
-een daglink uit de kalender van Overzicht blijft de lijst op die dag filteren.
-Met Toon de hele maand kun je dat filter weer opheffen.
+De ruimte tussen bovenbanner en uitgelichte artikelen is ongeveer gehalveerd.
+De grote dagfoto is op desktop circa 23 procent hoger bij dezelfde breedte.
+De foto krijgt daardoor meer ruimte en de tekst blijft binnen de papierranden.
+De indeling op mobiel blijft aangepast aan de schermbreedte.
 
-De eerste accountmenu-items zijn nu:
-1. Overzicht
-2. Deel een lichtpuntje
-3. Mijn momentjes
-4. Mijn verhalen & feedback
-Daarna blijven de overige menu-items in hun eerdere volgorde staan.
-Ook de Engelse versie volgt deze indeling.
+De import-hersteloptie is ook meegeleverd. Zie hieronder wanneer die gebruikt mag worden.
 
-De bestaande dagelijkse bezoekregistratie blijft werken bij Mijn momentjes,
-ook zonder kalender op die pagina. Er worden daar geen kalendergegevens meer
-opgehaald. Geen extra API-aanvragen of afbeeldingskosten.
+Jouw Lichtpuntje - Importvergrendeling herstellen - 29 oktober 2026
 
-25 gerichte PHP-tests geslaagd voor de kalender, beide talen, momentjeslijsten,
-maand-/dagfilters, privacy en bestaande functies voor schrijven en aanpassen.
-Geen live wijzigingen in jouw Herd-project gedaan. Geen browser beschikbaar
-voor een visuele eindcontrole van jouw eigen site.
+Pak uit over je projectmap lichtpunt-schoon en overschrijf:
+app/Console/Commands/ImportNews.php
+
+Er is geen migratie nodig.
+
+HERSTELLEN
+Gebruik --reset-lock uitsluitend als er geen nieuwsopdracht meer draait.
+Je hebt dit al gecontroleerd met Get-CimInstance: er verscheen geen nieuwsproces.
+Controleer opnieuw als je sindsdien een import, scheduler of worker hebt gestart.
+
+Voer na installeren uit:
+php -d memory_limit=512M artisan news:import --pages=10 --limit=50 --reset-lock
+
+De opdracht geeft alleen de importvergrendeling vrij via de cacheopslag van de import zelf.
+Daarna wordt meteen gecontroleerd of een nieuwe vergrendeling kan worden verkregen.
+Bij succes verschijnt: Importvergrendeling hersteld; de import start.
+
+Als ook dit herstel niet lukt, verschijnt een foutmelding met de cacheopslag.
+De oorzaak is dan nog niet vastgesteld: het kan een opslagprobleem zijn of een taak die opnieuw de lock heeft verkregen.
+Stuur dan de volledige nieuwe foutmelding; herhaal de reset niet voortdurend.
+
+VOORTAAN NORMAAL TOEVOEGEN
+Laat de hersteloptie bij volgende imports weg:
+php -d memory_limit=512M artisan news:import --pages=10 --limit=50
+
+De bestaande artikelen worden behouden.
+Maximaal 50 kandidaten worden beoordeeld; alleen geschikte berichten worden gepubliceerd.
+
+Controle: 17 tests met 156 assertions, waaronder herstel op echte file- en databasecache,
+behoud van andere cache-items en vergrendelingen, normale blokkering en opslagfouten.
+Er zijn tijdens de controles geen echte nieuws- of AI-aanvragen uitgevoerd.

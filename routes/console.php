@@ -1,7 +1,10 @@
 <?php
 use Illuminate\Support\Facades\Schedule;
+if(config('news_hourly.enabled')) {
+ Schedule::exec(\Illuminate\Console\Application::phpBinary().' -d memory_limit=512M '.\Illuminate\Console\Application::artisanBinary().' news:hourly --per-category='.(int)config('news_hourly.per_category',3))->hourly()->timezone('Europe/Amsterdam')->withoutOverlapping(70)->appendOutputTo(storage_path('logs/news-hourly.log'));
+}
 if(config('news_cycle.enabled')) {
- Schedule::command('news:cycle')->cron('0 7,10,13,16,19 * * *')->timezone('Europe/Amsterdam')->withoutOverlapping(180);
+ if(!config('news_hourly.enabled')) Schedule::command('news:cycle')->cron('0 7,10,13,16,19 * * *')->timezone('Europe/Amsterdam')->withoutOverlapping(180);
  // Recover old failed/released illustration jobs shortly after the provider's UTC reset.
  Schedule::command('lichtpuntjes:hervat --limit=15')->dailyAt('00:05')->timezone('UTC')->withoutOverlapping(30);
 }
