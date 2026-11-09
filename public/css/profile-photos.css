@@ -113,7 +113,7 @@
 .moment-detail-dialog .moment-full-content::after{content:"";display:block;clear:both}
 @media(max-width:480px){.moment-small-image--home{width:78px;height:78px}.moment-small-image--polaroid{height:98px}.moment-detail-dialog .moment-small-image--detail{width:115px;height:115px;margin-left:12px}.moment-detail-dialog .moment-detail-text{font-size:18px}}
 
-/* Compact moments: text beside a paper postage stamp, with a shared footer. */
+/* Paper stamp frames shared by account cards and the public reader. */
 .moment-image-window{display:block;position:relative;width:100%;height:100%;overflow:hidden}
 .moment-small-image .moment-image-window img{width:100%;height:100%;object-fit:cover}
 .moment-small-image.is-sketch .moment-image-window img{object-fit:contain;transform-origin:0 0;transform:translate(var(--moment-image-x,0%),var(--moment-image-y,0%)) scale(var(--moment-image-scale,1));mix-blend-mode:multiply}
@@ -122,14 +122,38 @@
 .moment-small-image--home .moment-image-window,.moment-small-image--account .moment-image-window,.moment-small-image--detail .moment-image-window{background:#f5f2e7;border:1px solid #d9ddca}
 .moment-washing-line .moment-quotes{align-items:start}
 .moment-washing-line .moment-paper-note{min-height:0}
-.moment-washing-line .moment-paper-note:has(>.moment-small-image){display:grid;grid-template-columns:minmax(0,1fr) clamp(86px,32%,112px);gap:8px 12px;align-items:center;align-content:start;min-height:0}
-.moment-washing-line .moment-paper-note>.moment-small-image--home{grid-column:2;grid-row:1;width:100%;height:auto;aspect-ratio:1;margin:0;align-self:start}
-.moment-washing-line .moment-paper-note>.moment-note-copy{min-width:0}
-.moment-washing-line .moment-paper-note:has(>.moment-small-image)>.moment-note-copy{grid-column:1;grid-row:1}
-.moment-washing-line .moment-paper-note:has(>.moment-small-image)>.moment-note-footer{grid-column:1/-1;margin-top:5px}
-.moment-washing-line .moment-note-copy>.moment-quote{font:400 18px/1.5 Georgia,serif;margin:0 0 7px}
 .moment-washing-line .moment-note-more{margin-bottom:0}
 .moments-studio .moment-keepsake .moment-small-image--account{float:right;width:112px;height:112px;max-width:none;margin:3px 0 12px 16px}
 .moment-detail-dialog .moment-small-image--detail{width:160px;height:160px}
-@media(max-width:1100px){.moment-washing-line .moment-note-copy>.moment-quote{font-size:17px}.moment-washing-line .moment-paper-note:has(>.moment-small-image){column-gap:10px}}
-@media(max-width:480px){.moments-studio .moment-keepsake .moment-small-image--account{width:100px;height:100px;margin-left:12px}.moment-detail-dialog .moment-small-image--detail{width:120px;height:120px}.moment-washing-line .moment-paper-note:has(>.moment-small-image){grid-template-columns:minmax(0,1fr) 100px}}
+@media(max-width:480px){.moments-studio .moment-keepsake .moment-small-image--account{width:100px;height:100px;margin-left:12px}.moment-detail-dialog .moment-small-image--detail{width:120px;height:120px}}
+
+
+/* Fill the complete image opening; drawings are framed using their visible subject. */
+.moment-small-image .moment-image-window{position:relative;display:block;overflow:hidden}
+.moment-small-image .moment-image-window img,.moment-small-image.is-sketch .moment-image-window img{position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;transform:none;mix-blend-mode:normal}
+.moment-small-image.moment-small-image--home,.moments-studio .moment-keepsake .moment-small-image--account,.moment-detail-dialog .moment-small-image--detail{padding:6px}
+
+/* Approved homepage design: full-width message, portrait left and illustration before heart. */
+.moment-washing-line .moment-paper-note{display:flex;flex-direction:column;min-height:0;padding:26px 20px 17px}
+.moment-washing-line .moment-paper-note:has(>.moment-small-image){display:flex;min-height:0}
+.moment-washing-line .moment-note-copy{width:100%;min-width:0}
+.moment-washing-line .moment-note-copy>.moment-quote{font:400 17px/1.55 Georgia,serif;margin:0 0 13px;white-space:normal}
+.moment-washing-line .moment-note-more{margin:0 0 12px}
+.moment-washing-line .moment-note-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:0;margin-top:5px;padding-top:12px;border-top:1px dashed #cbd2bd}
+.moment-washing-line .moment-author{flex:1;min-width:0;gap:9px}
+.moment-washing-line .moment-author-copy{min-width:0}
+.moment-washing-line .moment-author strong{font:650 12px/1.45 system-ui,sans-serif}
+.moment-washing-line .moment-author small{font:400 11px/1.5 system-ui,sans-serif;margin-top:2px}
+.moment-washing-line .moment-note-reactions{display:flex;align-items:center;gap:7px;flex:0 0 auto}
+.moment-washing-line .moment-note-reactions>.moment-small-image--home{width:38px;height:38px;max-width:none;min-width:38px;aspect-ratio:1;margin:0;padding:4px;transform:rotate(5deg)}
+.moment-washing-line .moment-note-reactions .moment-image-window{border:0}
+.moment-washing-line .moment-note-reactions .moment-heart{margin:0;flex-shrink:0}
+.moment-washing-line .moment-note-reactions .moment-heart button{min-width:32px;min-height:38px;padding:7px 3px;font-size:14px}
+.moment-washing-line .moment-note-reactions .moment-heart-link{font-size:14px;white-space:nowrap}
+.moment-washing-line .moment-avatar-stamp{position:relative;isolation:isolate;display:block;box-sizing:border-box;flex:0 0 43px;width:43px;height:49px;padding:4px;filter:drop-shadow(1px 2px 1px #29453228);transform:rotate(-4deg)}
+.moment-washing-line .moment-avatar-stamp::before{content:"";position:absolute;inset:0;z-index:-1;background:#fffdf3 url('/images/button-paper-grain.svg');-webkit-mask:url('/images/moment-stamp-edge.svg') center/100% 100% no-repeat;mask:url('/images/moment-stamp-edge.svg') center/100% 100% no-repeat;pointer-events:none}
+.moment-washing-line .moment-avatar-window{display:block;position:relative;width:100%;height:100%;overflow:hidden;background:#e0e8d3}
+.moment-washing-line .moment-avatar-initial{display:grid;place-items:center;width:100%;height:100%;font:600 16px/1 system-ui,sans-serif;color:#385944}
+.moment-washing-line .moment-avatar-stamp .member-photo{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;object-fit:cover;border:0;border-radius:0}
+.moment-washing-line .moment-avatar-stamp .member-photo[hidden]{display:none}
+@media(max-width:400px){.moment-washing-line .moment-note-footer{gap:7px}.moment-washing-line .moment-author{gap:7px}.moment-washing-line .moment-note-reactions{gap:5px}}

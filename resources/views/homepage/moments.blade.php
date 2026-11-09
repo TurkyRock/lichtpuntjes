@@ -12,12 +12,17 @@
 @foreach($momentHighlights as $moment)
 <article class="moment-paper-note" id="moment-{{ $moment->id }}">
 <span class="moment-clothespin" aria-hidden="true"></span><span class="moment-clothespin second" aria-hidden="true"></span>
-@include('shared.moment-image',['momentImageContext'=>'home'])
 @php($momentSummary=preg_replace('/\s+/u',' ',trim($moment->bodyFor($locale))))
 @php($momentLong=mb_strlen($momentSummary)>120)
 <div class="moment-note-copy"><p class="moment-quote">{{ $momentLong?rtrim(mb_substr($momentSummary,0,119)).'…':$momentSummary }}</p>
 <details class="moment-note-more"><summary data-moment-open aria-controls="momentDetail">{{ $locale==='en'?'Read the whole moment':'Lees het hele momentje' }} →</summary><div class="moment-full-content">@include('shared.moment-image',['momentImageContext'=>'detail'])<p class="moment-detail-text">{{ $moment->bodyFor($locale) }}</p><p class="moment-detail-author">{{ $moment->user->name }} · {{ $moment->moment_date->format('d-m-Y') }}</p>@include('shared.moment-heart')@if($moment->hasMomentImage())<p class="small">{{ $locale==='en'?'AI-generated symbolic mood image.':'AI-gegenereerd symbolisch sfeerbeeld.' }}</p>@endif</div></details></div>
-<div class="moment-note-footer"><div class="moment-author">@if($moment->user->avatarUrl())<img class="member-photo" src="{{ $moment->user->avatarUrl() }}" width="32" height="32" loading="lazy" alt="">@endif<div><strong>{{ $moment->user->name }}</strong><small>{{ $moment->moment_date->format('d-m-Y') }}</small></div></div>@include('shared.moment-heart')</div>
+<div class="moment-note-footer">
+<div class="moment-author">
+<span class="moment-avatar-stamp" aria-hidden="true"><span class="moment-avatar-window"><span class="moment-avatar-initial">{{ mb_strtoupper(mb_substr($moment->user->name,0,1)) }}</span>@if($moment->user->avatarUrl())<img class="member-photo" data-moment-avatar src="{{ $moment->user->avatarUrl() }}" width="35" height="41" loading="lazy" alt="">@endif</span></span>
+<div class="moment-author-copy"><strong>{{ $moment->user->name }}</strong><small>{{ $moment->moment_date->format('d-m-Y') }}</small></div>
+</div>
+<div class="moment-note-reactions">@include('shared.moment-image',['momentImageContext'=>'home'])@include('shared.moment-heart')</div>
+</div>
 </article>
 @endforeach
 </div>

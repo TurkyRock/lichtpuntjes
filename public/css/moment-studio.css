@@ -84,3 +84,8 @@ body:has(.moment-gallery)>main{max-width:1380px;margin-top:26px}
 @media(min-width:761px){.moments-desk{padding:18px;gap:18px;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)}.moment-writing-paper{padding:18px 16px}.account-content .moments-desk h2{font-size:21px}.moment-keepsake-grid{grid-template-columns:1fr}.moment-keepsake:nth-child(n){grid-column:auto}.moment-keepsake .moment-small-image--account{float:right;width:78px;height:78px;margin:0 0 8px 10px}.moments-studio label.moment-consent{font-size:11px}.moment-keepsake-text{font-size:16px}}
 
 @media(min-width:761px) and (max-width:900px){.moments-desk{grid-template-columns:1fr}}
+
+/* The public moment board uses all of each polaroid's image opening. */
+.moment-gallery .moment-small-image--polaroid{position:relative;display:block;box-sizing:border-box;width:100%;max-width:none;height:auto;aspect-ratio:4/3;padding:0;margin:0;background:none;box-shadow:none;align-self:stretch}
+.moment-gallery .moment-small-image--polaroid .moment-image-window{position:absolute;inset:0;width:100%;height:100%}
+.moment-gallery .moment-small-image--polaroid .moment-image-window img{display:block;max-width:none;object-fit:cover}
