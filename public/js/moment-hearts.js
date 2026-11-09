@@ -27,3 +27,42 @@
   } finally {pending.delete(id); busy(id, false);}
  });
 })();
+
+/* Enlarge small central sketches without changing stored image files. */
+(() => {
+ 'use strict';
+ function focusImage(image) {
+  if (!image.naturalWidth || !image.naturalHeight) return;
+  const figure=image.closest('.moment-small-image.is-sketch');
+  if (!figure) return;
+  try {
+   const canvas=document.createElement('canvas');canvas.width=96;canvas.height=96;
+   const context=canvas.getContext('2d',{willReadFrequently:true});if(!context)return;
+   context.drawImage(image,0,0,96,96);
+   const pixels=context.getImageData(0,0,96,96).data;
+   const corners=[0,95,95*96,96*96-1].map(p=>Array.from(pixels.slice(p*4,p*4+3)));
+   const background=[0,1,2].map(c=>corners.reduce((sum,p)=>sum+p[c],0)/4);
+   // Photo-like or strongly varying backgrounds retain their complete image.
+   if(Math.min(...background)<205||corners.some(p=>p.some((v,c)=>Math.abs(v-background[c])>25)))return;
+   let left=96,top=96,right=-1,bottom=-1,count=0;
+   for(let y=0;y<96;y++)for(let x=0;x<96;x++){
+    const i=(y*96+x)*4;
+    if(pixels[i+3]<128)continue;
+    const difference=Math.max(...background.map((v,c)=>v-pixels[i+c]));
+    if(difference<55)continue;
+    left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);count++;
+   }
+   if(count<12||left<4||top<4||right>91||bottom>91)return;
+   const extent=Math.max(right-left+1,bottom-top+1)/96;
+   const scale=Math.min(3.2,1/(extent*1.35));if(scale<1.15)return;
+   const cx=(left+right+1)/192,cy=(top+bottom+1)/192;
+   figure.style.setProperty('--moment-image-scale',scale.toFixed(3));
+   figure.style.setProperty('--moment-image-x',((.5-cx*scale)*100).toFixed(2)+'%');
+   figure.style.setProperty('--moment-image-y',((.5-cy*scale)*100).toFixed(2)+'%');
+  } catch { /* Keep the complete source if canvas access is unavailable. */ }
+ }
+ for(const image of document.querySelectorAll('.moment-small-image.is-sketch img')){
+  image.addEventListener('load',()=>focusImage(image),{once:true});
+  if(image.complete)focusImage(image);
+ }
+})();

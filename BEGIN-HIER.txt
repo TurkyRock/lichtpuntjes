@@ -1,0 +1,62 @@
+LICHTPUNTJES - UITGEBREIDE TESTPAGINA - 9 NOVEMBER 2026
+
+WAAR STAAT DE TESTPAGINA?
+Tester: https://lichtpuntjes.ehcprojects.nl/testgroep
+Beheerder: https://lichtpuntjes.ehcprojects.nl/beheer/testgroep
+Een tester krijgt toegang via een persoonlijke link uit het beheer.
+Bij een verlopen link gebruik je Nieuwe toegangslink maken bij die testpersoon.
+De bestaande limiet van drie testpersonen blijft gelden.
+
+WAT IS TOEGEVOEGD?
+18 opdrachten voor de functies voor bezoekers en leden:
+Eerste indruk; nieuws ontdekken; aanmelden/inloggen/wachtwoordherstel;
+artikelen/bron/hartjes/delen; talen; reacties/gesprekken; openbare en prive-
+momentjes/beelden; eigen verhalen; feedback en opnieuw insturen;
+account/foto/gegevens; punten en badges; uitnodigen; doneren;
+Mijn bijdragen; privacy/cookies; mobiel/toegankelijkheid; tweede bezoek;
+en een uitgebreide eindbeoordeling.
+
+Per onderdeel: werkt het, gebruiksgemak, apparaat, toegevoegde waarde 1-5,
+zelf opnieuw gebruiken, fouten/ervaringen en verbeterpunten.
+Hoofdvraag: zou je uit jezelf dagelijks terugkomen, waarom en hoe vaak echt?
+Verder: leukste onderdelen (maximaal drie) met redenen; wat mag weg;
+gevoel bij donatieverzoek; eenmalig/maandelijks/misschien/niet;
+uitleg/bedragen/vertrouwen en belangrijkste verbeterprioriteit.
+
+Beheer en CSV-export tonen ook de nieuwe antwoorden en waardeoordelen.
+De verwachtingen over terugkeer worden niet voorgesteld als bewezen gedrag.
+Een tweede bezoek is een aparte, overslaanbare opdracht.
+Testers hoeven niets te betalen, niemand uit te nodigen, kwetsende inhoud te
+plaatsen of hun account te verwijderen. Niet testbaar kan worden overgeslagen.
+De uitgebreide ronde heeft een indicatieve duur van 45-75 minuten.
+
+INSTALLEREN
+1. Maak een kopie van de bestaande bestanden die deze ZIP vervangt.
+2. Pak de ZIP uit in httpdocs met behoud van de mappenstructuur.
+3. Voer uit in SSH:
+cd /var/www/vhosts/lichtpuntjes.ehcprojects.nl/httpdocs
+php artisan migrate --path=database/migrations/2026_11_09_170000_expand_beta_test_round.php --force
+php artisan view:clear
+4. Vernieuw de pagina met Ctrl+F5.
+
+De migratie opent eerder afgeronde testrondes opnieuw voor de extra vragen.
+Bestaande deelnemers, persoonlijke links en antwoorden blijven bewaard.
+Er worden geen nieuwe kolommen toegevoegd: de bestaande summary-kolom
+wordt ook gebruikt voor de waardeoordelen per onderdeel.
+Deze update bevat alleen de testportal; eerdere site-updates zitten hier niet bij.
+
+CONTROLEREN
+- Open een persoonlijke testlink en klik door de 18 opdrachten.
+- Vul gebruiksgemak, waarde en opnieuw gebruiken in; herlaad na opslaan.
+- Controleer dat de waarden behouden blijven en elke tester alleen eigen antwoorden ziet.
+- Sla een niet-testbaar onderdeel over en geef de reden bij toelichting.
+- Vul de eindbeoordeling in, inclusief dagelijkse terugkeer en doneren.
+- Controleer de antwoorden in beheer en de CSV-export.
+- Rond af; opgeslagen antwoorden moeten daarna alleen leesbaar zijn.
+
+Ontwikkeltest: php artisan test --filter=BetaTestPortalTest
+JavaScript-syntaxis, Blade-directiefbalans, diff en de navigatie van het
+interactieve voorbeeld zijn gecontroleerd. PHP/Laravel-tests konden hier
+niet worden uitgevoerd omdat PHP in de werkomgeving ontbreekt.
+Dit pakket bevat geen uitkomsten van echte gebruikerstests.
+Gebaseerd op GitHub-code 2241f77f7d2e310ad092e0014de73efec9946d4d.

@@ -66,7 +66,7 @@
 .home-unified .grid>.card{position:relative;isolation:isolate;min-width:0;display:flex;flex-direction:column;padding:9px 9px 5px;border:0;border-radius:0;background:none;box-shadow:none;overflow:visible;filter:drop-shadow(0 3px 2px #45533626)}
 .home-unified .grid>.card::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:var(--lp-cream) url('/images/scrap-paper-ivory.webp') center/cover no-repeat;mask:var(--lp-paper-mask) center/100% 100% no-repeat;-webkit-mask:var(--lp-paper-mask) center/100% 100% no-repeat}
 .home-unified .grid .card .picture{position:relative;isolation:isolate;min-height:0;aspect-ratio:16/10;height:auto;padding:5px;background:var(--lp-cream) var(--lp-grain);overflow:hidden;border-radius:0;mask:var(--lp-paper-mask) center/100% 100% no-repeat;-webkit-mask:var(--lp-paper-mask) center/100% 100% no-repeat}
-.home-unified .grid .card .picture img{inset:5px;width:calc(100% - 10px);height:calc(100% - 10px);object-fit:contain;object-position:center;background:#ecebdc}
+.home-unified .grid .card .picture img{inset:5px;width:calc(100% - 10px);height:calc(100% - 10px);object-fit:cover;object-position:center;background:#ecebdc}
 .home-unified .grid .card .category{left:12px;top:12px;border-radius:2px;padding:4px 9px;font-size:12px;background:#e3e9d5;transform:rotate(-2deg)}
 .home-unified .grid .card .cardbody{padding:13px 11px 15px}
 .home-unified .grid .card h3{font:700 22px/1.18 Georgia,serif;margin-bottom:10px}

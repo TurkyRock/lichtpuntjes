@@ -25,12 +25,16 @@ class BetaTestController extends Controller {
   $rules=['outcome'=>'required|in:not_yet,yes,difficult,no,skipped','ease'=>'nullable|integer|min:1|max:5','device'=>'nullable|in:desktop,mobile,tablet','comment'=>'nullable|string|max:3000','page_path'=>['nullable','string','max:400','regex:~^/(?!/)[^\r\n?#]*$~'],'version'=>'required|integer|min:0|max:1000000'];
   if($task==='summary'){
    $rules['outcome']='required|in:not_yet,yes,skipped';
-   $rules['summary']='required_if:outcome,yes|nullable|array:good,less_good,return_choice,return_reason,improvement';
-   foreach(['good','less_good','return_reason'] as $field)$rules['summary.'.$field]='required_if:outcome,yes|nullable|string|max:3000';
-   $rules['summary.return_choice']='required_if:outcome,yes|nullable|in:yes,maybe,no';
+   $rules=array_merge($rules,BetaTests::reflectionRules());
+  }
+  if($task!=='summary'){
+   $rules['summary']='nullable|array:value_score,use_again,improvement';
+   $rules['summary.value_score']='nullable|integer|min:1|max:5';
+   $rules['summary.use_again']='nullable|in:yes,maybe,no';
    $rules['summary.improvement']='nullable|string|max:3000';
   }
-  $v=$r->validate($rules,[],['summary.good'=>'wat je goed vond','summary.less_good'=>'wat je minder goed vond','summary.return_choice'=>'of je terug zou komen','summary.return_reason'=>'waarom je wel of niet terug zou komen','summary.improvement'=>'je verbeteridee']);
+  $labels=[];foreach(BetaTests::REFLECTION_FIELDS as $key=>$field)$labels['summary.'.$key]=$field['label'];
+  $v=$r->validate($rules,[],$labels);
   return DB::transaction(function()use($p,$task,$v){
    $locked=BetaParticipant::whereKey($p->id)->lockForUpdate()->firstOrFail();abort_if($locked->completed_at,409,'Je test is al afgerond.');
    $a=BetaAnswer::where('participant_id',$p->id)->where('task',$task)->first();
@@ -44,6 +48,8 @@ class BetaTestController extends Controller {
   $p=$this->person($r);abort_unless($r->input('participant_id')===$p->id,403,'Open je eigen testpagina opnieuw.');return DB::transaction(function()use($p){
    $p=BetaParticipant::whereKey($p->id)->lockForUpdate()->firstOrFail();
    abort_unless($p->answers()->whereIn('task',array_keys(BetaTests::TASKS))->whereIn('outcome',['yes','difficult','no','skipped'])->count()===count(BetaTests::TASKS),422,'Geef eerst bij iedere opdracht aan of je die hebt gedaan of overgeslagen.');
+   $summary=$p->answers()->where('task','summary')->first();
+   if($summary?->outcome==='yes')\Illuminate\Support\Facades\Validator::make(['outcome'=>'yes','summary'=>$summary->summary],BetaTests::reflectionRules())->validate();
    if(!$p->completed_at)$p->update(['completed_at'=>now()]);return response()->json(['message'=>'Dank je wel! Je antwoorden zijn opgeslagen.']);
   });
  }
@@ -58,6 +64,15 @@ class BetaTestController extends Controller {
  public function revoke(Request $r,BetaParticipant $person){$this->admin($r);$person->update(['revoked_at'=>now(),'access_version'=>$person->access_version+1]);return back()->with('status','Testtoegang ingetrokken.');}
  public function export(Request $r){
   $this->admin($r);$people=BetaParticipant::with('answers')->oldest()->get();
-  return response()->streamDownload(function()use($people){$out=fopen('php://output','w');fwrite($out,"\xEF\xBB\xBF");fputcsv($out,['Testpersoon','Opdracht','Uitkomst','Gemak 1-5','Apparaat','Toelichting','Paginapad','Opgeslagen','Test afgerond','Wat vond je goed?','Wat vond je minder goed?','Zou je terugkomen?','Waarom wel / misschien / niet?','Verbeteridee'],';');foreach($people as $p)foreach($p->answers as $a)fputcsv($out,array_map(BetaTests::csvCell(...),[$p->label,BetaTests::TASKS[$a->task]['title']??$a->task,$a->outcome,$a->ease,$a->device,$a->comment,$a->page_path,$a->updated_at?->toIso8601String(),$p->completed_at?->toIso8601String(),$a->summary['good']??'', $a->summary['less_good']??'', ['yes'=>'Ja','maybe'=>'Misschien','no'=>'Nee'][$a->summary['return_choice']??'']??'', $a->summary['return_reason']??'', $a->summary['improvement']??'']),';');fclose($out);},'testgroep-antwoorden.csv',['Content-Type'=>'text/csv; charset=UTF-8','Cache-Control'=>'private, no-store']);
+  return response()->streamDownload(function()use($people){
+   $out=fopen('php://output','w');fwrite($out,"\xEF\xBB\xBF");
+   $head=['Testpersoon','Opdracht','Uitkomst','Gemak 1-5','Apparaat','Toelichting','Paginapad','Opgeslagen','Test afgerond','Waarde 1-5','Opnieuw gebruiken?','Verbeterpunt onderdeel'];
+   foreach(BetaTests::REFLECTION_FIELDS as $field)$head[]=$field['label'];fputcsv($out,$head,';');
+   foreach($people as $p)foreach($p->answers as $a){
+    $row=[$p->label,BetaTests::TASKS[$a->task]['title']??$a->task,$a->outcome,$a->ease,$a->device,$a->comment,$a->page_path,$a->updated_at?->toIso8601String(),$p->completed_at?->toIso8601String(),$a->task!=='summary'?($a->summary['value_score']??''):'',$a->task!=='summary'?(['yes'=>'Ja','maybe'=>'Misschien','no'=>'Nee'][$a->summary['use_again']??'']??''):'',$a->task!=='summary'?($a->summary['improvement']??''):''];
+    foreach(BetaTests::REFLECTION_FIELDS as $key=>$field){$v=$a->task==='summary'?($a->summary[$key]??''):'';$row[]=$field['options'][$v]??$v;}
+    fputcsv($out,array_map(BetaTests::csvCell(...),$row),';');
+   }fclose($out);
+  },'testgroep-antwoorden.csv',['Content-Type'=>'text/csv; charset=UTF-8','Cache-Control'=>'private, no-store']);
  }
 }

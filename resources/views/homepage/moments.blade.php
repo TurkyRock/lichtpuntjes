@@ -15,8 +15,8 @@
 @include('shared.moment-image',['momentImageContext'=>'home'])
 @php($momentSummary=preg_replace('/\s+/u',' ',trim($moment->bodyFor($locale))))
 @php($momentLong=mb_strlen($momentSummary)>120)
-<p class="moment-quote">{{ $momentLong?rtrim(mb_substr($momentSummary,0,119)).'…':$momentSummary }}</p>
-<details class="moment-note-more"><summary data-moment-open aria-controls="momentDetail">{{ $locale==='en'?'Read the whole moment':'Lees het hele momentje' }} →</summary><div class="moment-full-content">@include('shared.moment-image',['momentImageContext'=>'detail'])<p class="moment-detail-text">{{ $moment->bodyFor($locale) }}</p><p class="moment-detail-author">{{ $moment->user->name }} · {{ $moment->moment_date->format('d-m-Y') }}</p>@include('shared.moment-heart')@if($moment->hasMomentImage())<p class="small">{{ $locale==='en'?'AI-generated symbolic mood image.':'AI-gegenereerd symbolisch sfeerbeeld.' }}</p>@endif</div></details>
+<div class="moment-note-copy"><p class="moment-quote">{{ $momentLong?rtrim(mb_substr($momentSummary,0,119)).'…':$momentSummary }}</p>
+<details class="moment-note-more"><summary data-moment-open aria-controls="momentDetail">{{ $locale==='en'?'Read the whole moment':'Lees het hele momentje' }} →</summary><div class="moment-full-content">@include('shared.moment-image',['momentImageContext'=>'detail'])<p class="moment-detail-text">{{ $moment->bodyFor($locale) }}</p><p class="moment-detail-author">{{ $moment->user->name }} · {{ $moment->moment_date->format('d-m-Y') }}</p>@include('shared.moment-heart')@if($moment->hasMomentImage())<p class="small">{{ $locale==='en'?'AI-generated symbolic mood image.':'AI-gegenereerd symbolisch sfeerbeeld.' }}</p>@endif</div></details></div>
 <div class="moment-note-footer"><div class="moment-author">@if($moment->user->avatarUrl())<img class="member-photo" src="{{ $moment->user->avatarUrl() }}" width="32" height="32" loading="lazy" alt="">@endif<div><strong>{{ $moment->user->name }}</strong><small>{{ $moment->moment_date->format('d-m-Y') }}</small></div></div>@include('shared.moment-heart')</div>
 </article>
 @endforeach

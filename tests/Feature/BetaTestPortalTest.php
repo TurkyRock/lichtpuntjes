@@ -15,7 +15,7 @@ class BetaTestPortalTest extends TestCase {
  private function answer(array $extra=[]):array{return $extra+['participant_id'=>$this->activeParticipant,'outcome'=>'yes','ease'=>4,'device'=>'desktop','comment'=>'Dit ging prettig.','page_path'=>'/momentjes','version'=>0];}
  public function test_disabled_beta_preserves_public_site_and_hides_test_pages():void{config(['beta.enabled'=>false]);$this->get('/')->assertOk();$this->get('/testgroep')->assertNotFound();$this->get('/testgroep/toegang')->assertNotFound();}
  public function test_closed_site_requires_test_access_and_blocks_indexing():void{$this->get('/')->assertRedirect('/testgroep/toegang')->assertHeader('X-Robots-Tag','noindex, nofollow');$this->get('/robots.txt')->assertSee('Disallow: /');$this->getJson('/news/feed')->assertForbidden();}
- public function test_hashed_code_grants_cookie_and_session_without_echoing_secret():void{[$p,$code]=$this->person();$this->assertNotSame($code,$p->token_hash);$this->post('/testgroep/toegang',['code'=>$code])->assertRedirect('/testgroep')->assertCookie('beta_access')->assertSessionHas('beta.participant',$p->id);$this->get('/testgroep')->assertOk()->assertDontSee($code)->assertSee('Jouw rondje zonneschijn');$this->get('/')->assertOk();}
+ public function test_hashed_code_grants_cookie_and_session_without_echoing_secret():void{[$p,$code]=$this->person();$this->assertNotSame($code,$p->token_hash);$this->post('/testgroep/toegang',['code'=>$code])->assertRedirect('/testgroep')->assertCookie('beta_access')->assertSessionHas('beta.participant',$p->id);$this->get('/testgroep')->assertOk()->assertDontSee($code)->assertSee('Jouw testronde');$this->get('/')->assertOk();}
  public function test_invalid_expired_and_revoked_codes_cannot_enter():void{[$p,$code]=$this->person();$this->post('/testgroep/toegang',['code'=>str_repeat('a',48)])->assertSessionHasErrors();$p->update(['expires_at'=>now()->subMinute()]);$this->post('/testgroep/toegang',['code'=>$code])->assertSessionHasErrors();$p->update(['expires_at'=>now()->addDay(),'revoked_at'=>now()]);$this->post('/testgroep/toegang',['code'=>$code])->assertSessionHasErrors();}
  public function test_only_three_admin_created_invites():void{$this->post('/beheer/testgroep/uitnodigen',['label'=>'one'])->assertRedirect('/inloggen');$this->actingAs($this->admin())->withSession(['auth.password_confirmed_at'=>now()->timestamp]);foreach([1,2,3] as $n)$this->post('/beheer/testgroep/uitnodigen',['label'=>'Tester '.$n])->assertRedirect()->assertSessionHas('beta_invite');$this->post('/beheer/testgroep/uitnodigen',['label'=>'Fourth'])->assertUnprocessable();$this->assertSame(3,BetaParticipant::count());$this->get('/beheer/testgroep')->assertOk()->assertSee('3/3 testpersonen');}
  public function test_autosave_is_versioned_and_does_not_overwrite_other_tab():void{[$p]=$this->person();$this->asPerson($p)->putJson('/testgroep/antwoord/first',$this->answer())->assertOk()->assertJsonPath('version',1);$this->putJson('/testgroep/antwoord/first',$this->answer(['comment'=>'Stale']))->assertConflict();$this->putJson('/testgroep/antwoord/first',$this->answer(['version'=>1,'comment'=>'Nieuwe toelichting']))->assertOk()->assertJsonPath('version',2);$this->get('/testgroep')->assertSee('Nieuwe toelichting');}
@@ -32,11 +32,11 @@ class BetaTestPortalTest extends TestCase {
 
  public function test_standalone_portal_does_not_close_or_noindex_the_main_website():void{config(['beta.closed_site'=>false]);$r=$this->get('/')->assertOk();$this->assertNotSame('noindex, nofollow',$r->headers->get('X-Robots-Tag'));$this->get('/testgroep')->assertRedirect('/testgroep/toegang');$this->get('/testgroep/toegang')->assertOk()->assertHeader('X-Robots-Tag','noindex, nofollow');}
 
- private function reflection(array $extra=[]):array{return $extra+['good'=>'De vrolijke knipselstijl.','less_good'=>'De weg naar mijn profiel was onduidelijk.','return_choice'=>'yes','return_reason'=>'Om mijn dag positief af te sluiten.','improvement'=>'Een duidelijkere profielknop.'];}
+ private function reflection(array $extra=[]):array{return $extra+['good'=>'De vrolijke knipselstijl.','less_good'=>'De weg naar mijn profiel was onduidelijk.','return_choice'=>'yes','return_reason'=>'Om mijn dag positief af te sluiten.','improvement'=>'Een duidelijkere profielknop.','daily_choice'=>'maybe','daily_reason'=>'Als er dagelijks nieuwe verhalen zijn.','return_frequency'=>'weekly','favorites'=>'Nieuws en momentjes, omdat ze me blij maken.','less_useful'=>'De badges zou ik zelf niet gebruiken.','donation_view'=>'positive','donation_choice'=>'maybe','donation_reason'=>'Eerst wil ik het langer gebruiken.'];}
  public function test_final_summary_keeps_drafts_and_requires_a_reason_before_marking_done():void{
   [$p]=$this->person();$this->asPerson($p);
   $this->putJson('/testgroep/antwoord/summary',$this->answer(['outcome'=>'not_yet','summary'=>['good'=>'Een eerste gedachte']]))->assertOk()->assertJsonPath('version',1);
-  $this->get('/testgroep')->assertOk()->assertSee('Een eerste gedachte')->assertSee('Zou je terugkomen op de website?');
+  $this->get('/testgroep')->assertOk()->assertSee('Een eerste gedachte')->assertSee('Zou je hier dagelijks willen terugkomen?');
   $this->putJson('/testgroep/antwoord/summary',$this->answer(['version'=>1,'summary'=>$this->reflection(['return_reason'=>''])]))->assertUnprocessable()->assertJsonValidationErrors('summary.return_reason');
   $this->assertSame(1,$p->answers()->where('task','summary')->first()->version);
   foreach(['yes','maybe','no'] as $i=>$choice)$this->putJson('/testgroep/antwoord/summary',$this->answer(['version'=>$i+1,'summary'=>$this->reflection(['return_choice'=>$choice])]))->assertOk();
@@ -59,6 +59,25 @@ class BetaTestPortalTest extends TestCase {
   $migration=require database_path('migrations/2026_10_23_160000_add_summary_to_beta_answers.php');$migration->down();$migration->up();
   $this->assertNull($p->fresh()->completed_at);$this->assertDatabaseHas('beta_answers',['participant_id'=>$p->id,'comment'=>'Bestaand antwoord behouden']);
   $this->putJson('/testgroep/antwoord/summary',$this->answer(['summary'=>$this->reflection()]))->assertOk();
+ }
+
+ public function test_feature_value_ratings_are_saved_and_exported_with_daily_return_questions():void {
+  [$p]=$this->person();$this->asPerson($p);
+  $this->putJson('/testgroep/antwoord/support',$this->answer(['summary'=>['value_score'=>2,'use_again'=>'no','improvement'=>'Leg het doel van een donatie uit.']]))->assertOk();
+  $this->assertSame(2,$p->answers()->where('task','support')->first()->summary['value_score']);
+  $this->putJson('/testgroep/antwoord/summary',$this->answer(['summary'=>$this->reflection(['daily_choice'=>'no'])]))->assertOk();
+  $this->get('/testgroep')->assertOk()->assertSee('Hoe waardevol vind je dit onderdeel?')->assertSee('Welke maximaal drie onderdelen vind je het leukst, en waarom?')->assertSee('Hoe voelt de vraag om een donatie voor jou?');
+  $this->actingAs($this->admin())->withSession(['auth.password_confirmed_at'=>now()->timestamp]);
+  $this->get('/beheer/testgroep')->assertOk()->assertSee('Willen mensen dagelijks terugkomen?')->assertSee('Leg het doel van een donatie uit.');
+  $csv=$this->get('/beheer/testgroep/export')->assertOk()->streamedContent();
+  $this->assertStringContainsString('Zou je hier dagelijks willen terugkomen?',$csv);
+  $this->assertStringContainsString('Leg het doel van een donatie uit.',$csv);
+ }
+ public function test_invalid_feature_ratings_and_missing_daily_reflection_are_not_saved():void {
+  [$p]=$this->person();$this->asPerson($p);
+  $this->putJson('/testgroep/antwoord/support',$this->answer(['summary'=>['value_score'=>6]]))->assertUnprocessable()->assertJsonValidationErrors('summary.value_score');
+  $reflection=$this->reflection();unset($reflection['daily_choice']);
+  $this->putJson('/testgroep/antwoord/summary',$this->answer(['summary'=>$reflection]))->assertUnprocessable()->assertJsonValidationErrors('summary.daily_choice');
  }
 
 }

@@ -16,3 +16,10 @@
 .account-scrapbook .publication-needs-revision .moment-edit>summary{background:#355b49;color:#fff;padding:12px 14px;border-radius:5px;font:650 13px/1.5 system-ui,sans-serif;cursor:pointer;list-style-position:inside}
 .publication-needs-revision .moment-edit[open]>summary{margin-bottom:14px}
 @media(max-width:600px){.account-scrapbook .publication-revision-notice{padding:17px 15px;gap:10px}.publication-revision-icon{flex-basis:26px;width:26px;height:26px;font-size:19px}.publication-revision-actions{flex-direction:column}.publication-revision-actions a{text-align:center}}
+
+/* Paper notices and cut-paper actions, consistent with the account scrapbook. */
+.account-scrapbook .publication-revision-notice{position:relative;isolation:isolate;background:none;border:0;border-radius:0;box-shadow:none;filter:drop-shadow(0 3px 2px #40331c20)}
+.account-scrapbook .publication-revision-notice::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border:19px solid transparent;border-image:url('/images/scrap-paper-yellow.webp') 80 fill / 21px / 2px stretch}
+.account-scrapbook .publication-revision-actions a,.account-scrapbook .publication-needs-revision .story-revision-actions>a,.account-scrapbook .publication-needs-revision .moment-edit>summary{border:0;border-radius:0;background:#355b49 url('/images/button-paper-grain.svg');clip-path:polygon(1% 5%,9% 1%,17% 4%,25% 0,34% 4%,43% 1%,52% 4%,61% 0,70% 4%,79% 1%,89% 4%,98% 1%,100% 16%,98% 34%,100% 51%,98% 69%,100% 85%,98% 98%,88% 96%,78% 100%,68% 96%,58% 100%,48% 96%,38% 100%,28% 96%,18% 100%,8% 96%,1% 99%,0 82%,2% 64%,0 46%,2% 28%)}
+.publication-needs-revision .publication-revision-feedback{border:0;position:relative;isolation:isolate;background:none;padding:17px}
+.publication-needs-revision .publication-revision-feedback::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border:12px solid transparent;border-image:url('/images/scrap-paper-yellow.webp') 80 fill / 14px / 0 stretch}
