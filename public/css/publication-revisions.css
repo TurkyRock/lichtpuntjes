@@ -1,0 +1,18 @@
+/* Clear revision notices, shared by the account and both writing desks. */
+.account-scrapbook .publication-revision-notice{display:flex;align-items:flex-start;gap:16px;margin:0 0 28px;padding:22px 24px;background:#fff0c2 url('/images/button-paper-grain.svg');border:2px solid #9b681f;border-left-width:7px;border-radius:10px;color:#40331c;box-shadow:0 3px 7px #40331c12;overflow-wrap:anywhere}
+.publication-revision-icon{display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;background:#86551b;color:#fff;font:700 23px/1 system-ui;border-radius:50%}
+.account-scrapbook .publication-revision-copy h2{font:600 clamp(21px,2vw,27px)/1.25 Georgia,serif;margin:0 0 8px;padding:0;color:#40331c;letter-spacing:0}
+.account-scrapbook .publication-revision-copy h2::after{display:none}
+.publication-revision-copy p{font:400 14px/1.65 system-ui,sans-serif;margin:0 0 15px;max-width:760px}
+.publication-revision-actions{display:flex;flex-wrap:wrap;gap:10px}
+.account-scrapbook .publication-revision-actions a,.account-scrapbook .publication-needs-revision .story-revision-actions>a{display:inline-block;padding:11px 16px;background:#355b49;color:#fff;border:2px solid #355b49;border-radius:5px;text-decoration:none;font:650 14px/1.4 system-ui,sans-serif;box-shadow:none}
+.publication-revision-actions a:hover{filter:brightness(.9)}
+.publication-revision-actions a:focus-visible,.publication-needs-revision summary:focus-visible{outline:3px solid #86551b;outline-offset:4px}
+.publication-needs-revision .publication-revision-feedback{clear:both;border-left:4px solid #9b681f;background:#fff0c2;padding:13px 14px;margin:15px 0;color:#40331c;font:400 13px/1.65 system-ui,sans-serif}
+.publication-revision-feedback>strong{display:block;font-size:16px;line-height:1.4;margin-bottom:7px}
+.publication-revision-feedback p{margin:7px 0 0}
+.publication-revision-feedback .publication-revision-reason{border-top:1px solid #9b681f55;padding-top:9px}
+.publication-needs-revision .moment-label-pending,.publication-needs-revision .story-state{background:#86551b;color:white;font-weight:700}
+.account-scrapbook .publication-needs-revision .moment-edit>summary{background:#355b49;color:#fff;padding:12px 14px;border-radius:5px;font:650 13px/1.5 system-ui,sans-serif;cursor:pointer;list-style-position:inside}
+.publication-needs-revision .moment-edit[open]>summary{margin-bottom:14px}
+@media(max-width:600px){.account-scrapbook .publication-revision-notice{padding:17px 15px;gap:10px}.publication-revision-icon{flex-basis:26px;width:26px;height:26px;font-size:19px}.publication-revision-actions{flex-direction:column}.publication-revision-actions a{text-align:center}}

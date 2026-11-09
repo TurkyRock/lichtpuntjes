@@ -12,6 +12,7 @@ $sectionTitles = [
 <h1>{{ $sectionTitles[$accountSection] }}</h1>
 @if($accountSection === 'overview')
 <p class="account-intro">{{ $profileEn ? 'Good to see you, '.$user->name.'. Here are your little joys and kind contributions.' : 'Fijn dat je er bent, '.$user->name.'. Hier vind je jouw kleine gelukjes en vriendelijke bijdragen.' }}</p>
+@include('community.publication-revisions')
 @include('community.profile-photo')
 @if(!$user->hasVerifiedEmail())
 <div class="panel sunny"><h2>{{ $profileEn ? 'Confirm your email address' : 'Bevestig je e-mailadres' }}</h2><p>{{ $profileEn ? 'Then you can comment and collect bright points.' : 'Daarna kun je reageren en lichtpunten verzamelen.' }}</p><form method="post" action="{{ route('verification.send') }}">@csrf<button>{{ $profileEn ? 'Send a confirmation link' : 'Stuur een bevestigingslink' }}</button></form></div>

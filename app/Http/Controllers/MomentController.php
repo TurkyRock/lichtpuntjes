@@ -9,11 +9,12 @@ class MomentController extends Controller {
  public function feed(Request $r){$moments=PositiveMoment::publicVisible()->with('user.profilePhoto')->withCount(['hearts'=>fn($q)=>$q->where('is_suspended',false)])->latest('id')->paginate(15)->withQueryString();$likedMomentIds=$r->user()?DB::table('moment_hearts')->where('user_id',$r->user()->id)->whereIn('moment_id',$moments->getCollection()->pluck('id'))->pluck('moment_id')->all():[];return view('community.public-moments',compact('moments','likedMomentIds'));}
  public function choose(){return view('community.share-choice');}
  public function index(Request $r){
-  $v=$r->validate(['month'=>'nullable|date_format:Y-m','day'=>'nullable|date_format:Y-m-d']);
+  $v=$r->validate(['month'=>'nullable|date_format:Y-m','day'=>'nullable|date_format:Y-m-d','needs_attention'=>'sometimes|boolean']);
   $month=isset($v['month'])?CarbonImmutable::createFromFormat('!Y-m',$v['month'],'Europe/Amsterdam'):CarbonImmutable::now('Europe/Amsterdam')->startOfMonth();$u=$r->user();
+  $needsAttention=$r->boolean('needs_attention');
   $today=now('Europe/Amsterdam')->toDateString();$day=$v['day']??($month->format('Y-m')===substr($today,0,7)?$today:$month->toDateString());
   abort_unless(substr($day,0,7)===$month->format('Y-m'),422);
-  return view('community.moments',['moments'=>PositiveMoment::where('user_id',$u->id)->when(isset($v['day']),fn($q)=>$q->whereDate('moment_date',$v['day']))->whereBetween('moment_date',[$month->toDateString(),$month->endOfMonth()->toDateString()])->latest('id')->paginate(15)->withQueryString(),'selectedDay'=>$v['day']??null,'month'=>$month]);
+  return view('community.moments',['moments'=>PositiveMoment::where('user_id',$u->id)->when($needsAttention,fn($q)=>$q->where('visibility','public')->where('status','rejected'),fn($q)=>$q->when(isset($v['day']),fn($q)=>$q->whereDate('moment_date',$v['day']))->whereBetween('moment_date',[$month->toDateString(),$month->endOfMonth()->toDateString()]))->latest('id')->paginate(15)->withQueryString(),'selectedDay'=>$needsAttention?null:($v['day']??null),'month'=>$month,'needsAttention'=>$needsAttention]);
  }
  public function store(Request $r){
   $v=$this->validateMoment($r);$image=$r->boolean('image_processing');
@@ -47,5 +48,5 @@ class MomentController extends Controller {
   if($r->expectsJson())return response()->json($stats)->header('Cache-Control','private, no-store');
   return back()->withFragment('moment-'.$moment->id);
  }
- public function moderate(Request $r,PositiveMoment $moment){abort_unless($r->user()?->is_admin,403);abort_unless($moment->visibility==='public',404);$v=$r->validate(['decision'=>'required|in:approved,rejected','note'=>'required|string|min:3|max:1000']);DB::transaction(function()use($moment,$v,$r){$m=PositiveMoment::whereKey($moment->id)->lockForUpdate()->firstOrFail();abort_unless($m->visibility==='public'&&!$m->user->is_suspended,422);$m->update(['status'=>$v['decision'],'reason'=>['nl'=>$v['note'],'en'=>$v['note']],'moderated_by'=>$r->user()->id]);app(\App\Services\MomentModerator::class)->syncPoints($m);});\App\Services\ContributionTranslator::queue('moment',$moment->id);\App\Services\MomentIllustrator::queue($moment->fresh());return back()->with('status','Beslissing opgeslagen.');}
+ public function moderate(Request $r,PositiveMoment $moment){abort_unless($r->user()?->is_admin,403);abort_unless($moment->visibility==='public',404);$v=$r->validate(['decision'=>'required|in:approved,rejected','note'=>'nullable|required_if:decision,rejected|string|min:3|max:1000']);DB::transaction(function()use($moment,$v,$r){$m=PositiveMoment::whereKey($moment->id)->lockForUpdate()->firstOrFail();abort_unless($m->visibility==='public'&&!$m->user->is_suspended,422);$m->update(['status'=>$v['decision'],'reason'=>filled($v['note']??null)?['nl'=>$v['note'],'en'=>$v['note']]:null,'moderated_by'=>$r->user()->id]);app(\App\Services\MomentModerator::class)->syncPoints($m);});\App\Services\ContributionTranslator::queue('moment',$moment->id);\App\Services\MomentIllustrator::queue($moment->fresh());return back()->with('status','Beslissing opgeslagen.');}
 }

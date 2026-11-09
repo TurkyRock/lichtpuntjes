@@ -15,7 +15,7 @@ class LightspotController extends Controller {
   return array_intersect_key($v,array_flip(['title','body','language','category']));
  }
  public function create(Request $r){return redirect('/mijn-lichtpuntjes?lang='.app()->getLocale().'#new-story');}
- public function index(Request $r){return view('community.lightspot-list',['submissions'=>LightspotSubmission::where('user_id',$r->user()->id)->with('article')->latest()->paginate(6)->withQueryString()]);}
+ public function index(Request $r){$r->validate(['needs_attention'=>'sometimes|boolean']);$needsAttention=$r->boolean('needs_attention');return view('community.lightspot-list',['needsAttention'=>$needsAttention,'submissions'=>LightspotSubmission::where('user_id',$r->user()->id)->when($needsAttention,fn($q)=>$q->where('status','rejected'))->with('article')->latest()->paginate(6)->withQueryString()]);}
  public function store(Request $r){
   $this->author($r);$v=$this->fields($r);
   $s=DB::transaction(function()use($r,$v){$user=User::whereKey($r->user()->id)->lockForUpdate()->firstOrFail();abort_if($user->is_suspended,403);

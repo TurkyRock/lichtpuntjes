@@ -45,6 +45,33 @@ class PositiveMomentsTest extends TestCase {
  public function test_public_moderation_and_suspension_hide_moment():void {
   $u=$this->user();$m=$this->moment($u,['visibility'=>'public','status'=>'doubt']);$admin=$this->user(['is_admin'=>true]);$this->actingAs($admin)->post('/beheer/momentjes/'.$m->id,['decision'=>'approved','note'=>'Vriendelijke bijdrage.'])->assertRedirect();$this->get('/momentjes')->assertSee('De buurvrouw bracht koffie.');$this->post('/beheer/users/'.$u->id,['suspended'=>1,'note'=>'Herhaaldelijk onvriendelijk.'])->assertRedirect();$this->get('/momentjes')->assertDontSee('De buurvrouw bracht koffie.');
  }
+ public function test_admin_can_approve_without_reason_and_must_give_reason_for_rejection():void {
+  Queue::fake();$owner=$this->user();$admin=$this->user(['is_admin'=>true]);
+  $moment=$this->moment($owner,['visibility'=>'public','status'=>'doubt','reason'=>['nl'=>'Eerdere twijfel.']]);
+  $this->actingAs($admin)->post('/beheer/momentjes/'.$moment->id,['decision'=>'approved'])->assertSessionHasNoErrors()->assertRedirect();
+  $this->assertSame('approved',$moment->fresh()->status);$this->assertNull($moment->fresh()->reason);
+  foreach(['','  ','ab'] as $note){
+   $this->post('/beheer/momentjes/'.$moment->id,['decision'=>'rejected','note'=>$note])->assertSessionHasErrors('note');
+   $this->assertSame('approved',$moment->fresh()->status);
+  }
+  $this->post('/beheer/momentjes/'.$moment->id,['decision'=>'rejected','note'=>'Dit past niet bij de communityregels.'])->assertSessionHasNoErrors()->assertRedirect();
+  $this->assertSame('rejected',$moment->fresh()->status);$this->assertSame('Dit past niet bij de communityregels.',$moment->fresh()->reason['nl']);
+ }
+ public function test_revision_notice_and_filters_only_show_own_rejected_public_contributions():void {
+  $me=$this->user();$other=$this->user();
+  $rejected=$this->moment($me,['body'=>'OWN_OLD_REJECTED','visibility'=>'public','status'=>'rejected','moment_date'=>'2020-01-01']);
+  $this->moment($me,['body'=>'PRIVATE_REJECTED','status'=>'rejected']);
+  $this->moment($me,['body'=>'PENDING_REVIEW','visibility'=>'public','status'=>'pending']);
+  $this->moment($other,['body'=>'OTHER_REJECTED','visibility'=>'public','status'=>'rejected']);
+  $story=\App\Models\LightspotSubmission::create(['user_id'=>$me->id,'title'=>'OWN_REJECTED_STORY','body'=>str_repeat('Een fijn verhaal. ',10),'language'=>'nl','category'=>'other','status'=>'rejected']);
+  \App\Models\LightspotSubmission::create(['user_id'=>$other->id,'title'=>'OTHER_REJECTED_STORY','body'=>'Ander verhaal.','language'=>'nl','category'=>'other','status'=>'rejected']);
+  $this->assertSame(['moments'=>1,'stories'=>1],app(\App\Services\PublicationRevisions::class)->forUser($me));
+  $this->actingAs($me)->get('/profiel')->assertOk()->assertSee('Nog aanpassen voor publicatie')->assertSee('Momentjes aanpassen')->assertSee('Verhalen aanpassen');
+  $this->get('/mijn-momentjes?needs_attention=1')->assertOk()->assertSee('OWN_OLD_REJECTED')->assertSee('Momentje aanpassen en opnieuw insturen')->assertDontSee('PRIVATE_REJECTED')->assertDontSee('PENDING_REVIEW')->assertDontSee('OTHER_REJECTED');
+  $this->get('/mijn-lichtpuntjes?needs_attention=1')->assertOk()->assertSee('OWN_REJECTED_STORY')->assertDontSee('OTHER_REJECTED_STORY');
+  $rejected->update(['status'=>'pending']);$story->update(['status'=>'doubt']);
+  $this->get('/profiel')->assertOk()->assertDontSee('Nog aanpassen voor publicatie');
+ }
  public function test_removing_last_approved_moment_revokes_its_point():void {
   $u=$this->user();$m=$this->moment($u);$this->ai();app(MomentModerator::class)->review($m,1);$this->actingAs($u)->delete('/momentjes/'.$m->id)->assertRedirect();$this->assertDatabaseMissing('positive_moments',['id'=>$m->id]);$this->assertSame(0,DB::table('lightpoint_events')->where('user_id',$u->id)->where('active',true)->sum('points'));
  }
