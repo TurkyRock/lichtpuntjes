@@ -13,6 +13,7 @@ function setup(isCompact) {
     let change;
     const compact = { matches: isCompact, addEventListener(type, handler) { change = handler; } };
     const navigation = {
+        closest() { return null; },
         classList: { add(name) { classes.add(name); }, toggle(name, active) { active ? classes.add(name) : classes.delete(name); } },
         addEventListener(type, handler) { navigationEvents[type] = handler; },
     };
@@ -25,8 +26,8 @@ function setup(isCompact) {
     };
     const links = { addEventListener(type, handler) { linkEvents[type] = handler; } };
     vm.runInNewContext(source, {
-        document: { querySelector: () => navigation, getElementById: id => id === 'siteMenu' ? links : toggle },
-        window: { matchMedia: () => compact },
+        document: { querySelector: selector => selector === '.site-nav' ? navigation : null, getElementById: id => id === 'siteMenu' ? links : toggle },
+        window: { matchMedia: () => compact, addEventListener() {} },
     });
     return { classes, attributes, toggle, toggleEvents, navigationEvents, linkEvents, resize(matches) { compact.matches = matches; change(); } };
 }

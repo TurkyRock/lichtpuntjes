@@ -40,4 +40,9 @@
  .paper-welcome .welcome-paper::before{background-size:cover}
 }
 @media(min-width:951px){.paper-welcome .welcome-paper{min-height:190px}}
+/* Four matching paper actions: three yellow, sharing stays green. */
+.paper-welcome .daily-welcome-actions{grid-template-columns:repeat(4,minmax(0,1fr));max-width:850px;gap:12px}
+.daily-welcome-actions :nth-child(4)::before{transform:scaleX(-1)}
+@media(min-width:701px){.paper-welcome .daily-welcome-actions :is(button,.daily-account){font-size:12px;padding-inline:9px;white-space:nowrap}}
+@media(max-width:700px){.paper-welcome .daily-welcome-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:480px}.paper-welcome .daily-welcome-actions :is(button,.daily-account){font-size:12px;min-height:44px}}
 </style>

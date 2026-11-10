@@ -73,23 +73,25 @@
 <link rel="stylesheet" href="/css/home-filters.css?v={{ filemtime(public_path('css/home-filters.css')) }}">
 <link rel="stylesheet" href="/css/home-highlight-paper.css?v={{ filemtime(public_path('css/home-highlight-paper.css')) }}">
 <link rel="stylesheet" href="/css/paper-theme.css?v={{ filemtime(public_path('css/paper-theme.css')) }}"><link rel="stylesheet" href="/css/home-green-board.css?v={{ filemtime(public_path('css/home-green-board.css')) }}">
-</head><body class="{{ isset($seoArticle)?'seo-detail':'home-unified' }}">
+<link rel="stylesheet" href="/css/site-frame.css?v={{ filemtime(public_path('css/site-frame.css')) }}"></head><body class="{{ isset($seoArticle)?'seo-detail':'home-unified' }}">
 @include('shared.header', ['home' => !isset($seoArticle)])
 
 <main class="shell">@isset($seoArticle)<section class="article-page"><div class="article-content" id="article">@include('seo.article')</div></section>@endisset @if(!isset($seoArticle))<div class="home-paper-board">@endif<section class="daily-welcome hero paper-welcome" data-welcome-version="compact-20261017"><div class="welcome-paper">
 <h1 id="headline">@if($locale==='en')Make life a little <span class="lp-title-word">l<span class="lp-title-i">i<span class="lp-title-rays" aria-hidden="true"></span></span>ghter</span>@elseMaak het leven een stukje <span class="lp-title-word">l<span class="lp-title-i">i<span class="lp-title-rays" aria-hidden="true"></span></span>chter</span>@endif</h1>
 <p class="welcome-subtitle" data-i="intro">{{ $locale==='en'?'Here you’ll find only good news and positivity.':'Hier vind je alleen maar goed nieuws en positiviteit.' }}</p>
 <div class="daily-welcome-actions"><button type="button" class="daily-yellow" id="openSiteShare" aria-haspopup="dialog" aria-controls="siteShareDialog"><img src="/images/share/paper-share.svg" width="18" height="18" alt=""><span data-i="siteShare">{{ $locale==='en'?'Share':'Delen' }}</span></button><button type="button" class="daily-yellow" id="openStart" aria-haspopup="dialog" aria-controls="startDialog"><img src="/images/share/home.svg" width="18" height="18" alt=""><span data-i="startLink">{{ $locale==='en'?'Set as homepage':'Als startpagina' }}</span></button>
+<button type="button" class="daily-yellow" id="openFollowUs" aria-haspopup="dialog" aria-controls="followUsDialog"><span aria-hidden="true">♡</span><span data-nav-nl="Volg ons" data-nav-en="Follow us">{{ $locale==='en'?'Follow us':'Volg ons' }}</span></button>
 <a class="daily-account" href="/lichtpuntje/delen?lang={{ $locale }}" data-account-link><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5-12 12-6 1 1-6Z"/><path d="m14 5 5 5"/></svg><span data-i="shareLightspot">{{ $locale==='en'?'Share a bright spot':'Deel een lichtpuntje' }}</span></a>
 </div></div></section>
 @include('homepage.highlights')
 <section id="stories">@include('homepage.category-line')<p id="actionNotice" class="action-notice" role="status" aria-live="polite"></p><div class="grid" id="grid">@include('seo.cards')</div><p class="count" id="count" aria-live="polite"></p><nav class="pagination" id="pagination" aria-label="{{ $locale==='en'?'News pages':'Nieuwspagina’s' }}" @if($feed['pagination']['last_page']<=1) hidden @endif>@if($feed['pagination']['current_page']>1)<a href="{{ \App\Support\StorySeo::home($locale,$category,$feed['pagination']['current_page']-1) }}">{{ $locale==='en'?'Previous':'Vorige' }}</a>@endif @if($feed['pagination']['current_page']<$feed['pagination']['last_page'])<a href="{{ \App\Support\StorySeo::home($locale,$category,$feed['pagination']['current_page']+1) }}">{{ $locale==='en'?'Next':'Volgende' }}</a>@endif</nav></section>
 @include('shared.support-note')@include('homepage.our-story')@if(!isset($seoArticle))</div>@endif
 </main><template id="momentHomeTemplate">@include('homepage.moments')</template>
-<footer><div class="shell footerrow"><span class="mini-brand">Jouw Lichtpuntje.</span><span data-i="footer">{!! $locale==='en'?'Good news, clearly told. • Nederlands & English':'Goed nieuws, helder verteld. • Nederlands & English' !!}</span><span><a data-account-link href="/privacy" data-nav-nl="Privacy" data-nav-en="Privacy">Privacy</a> · <a data-account-link href="/huisregels" data-nav-nl="Huisregels" data-nav-en="Community rules">Huisregels</a></span><button type="button" class="lp-cookie-link" data-cookie-settings>Cookie-instellingen</button> · <a data-account-link href="/steun?lang={{ app()->getLocale() }}" data-nav-nl="Steun Lichtpuntjes" data-nav-en="Support Lichtpuntjes">{{ app()->getLocale()==='en'?'Support Lichtpuntjes':'Steun Lichtpuntjes' }}</a></div></footer>
+@include('shared.footer')
 <dialog id="momentDetail" class="moment-detail-dialog" aria-labelledby="momentDetailTitle"><div class="moment-detail-heading"><h2 id="momentDetailTitle">{{ $locale==='en'?'A little joy to share':'Een klein gelukje om te delen' }}</h2><button type="button" class="close" data-close-moment aria-label="{{ $locale==='en'?'Close moment':'Momentje sluiten' }}">×</button></div><div id="momentDetailBody"></div></dialog>
 <dialog id="reader" class="newspaper-reader" aria-labelledby="articleTitle"><div class="dialog-head"><span class="eyebrow">Jouw Lichtpuntje · <span id="readerCat"></span></span><button class="close" id="close" aria-label="Sluiten">×</button></div><div class="article-content" id="{{ isset($seoArticle)?'articleModalUnused':'article' }}"></div></dialog>
 <dialog id="startDialog" aria-labelledby="startTitle"><div class="dialog-head"><span class="eyebrow">Jouw Lichtpuntje ☀</span><button class="close" id="closeStart" aria-label="Sluiten">×</button></div><div class="start-content" id="startContent"></div></dialog>
+@include('shared.follow-us')
 <dialog id="siteShareDialog" aria-labelledby="siteShareTitle"><div class="dialog-head"><span class="eyebrow">Jouw Lichtpuntje</span><button type="button" class="close" id="closeSiteShare" aria-label="Sluiten">×</button></div><div class="site-share-content"><h2 id="siteShareTitle">Deel een beetje positiviteit</h2><div id="siteShareBody"></div></div></dialog>
 
 <script nonce="{{ request()->attributes->get('csp_nonce') }}">
@@ -287,7 +289,7 @@ function renderStart(){
  $('copyStart').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(url);$('copyStatus').textContent=nl?'Adres gekopieerd. Plak het in je browserinstellingen.':'Address copied. Paste it into your browser settings.';}catch(e){$('startAddress').focus();$('startAddress').select();$('copyStatus').textContent=nl?'Kopieer het geselecteerde adres met Ctrl+C of ⌘C.':'Copy the selected address using Ctrl+C or ⌘C.';}});
 }
 function showStart(manual=false){
- if($('reader').open||$('startDialog').open||$('siteShareDialog').open||$('momentDetail')?.open)return;
+ if($('reader').open||$('startDialog').open||$('siteShareDialog').open||$('followUsDialog')?.open||$('momentDetail')?.open)return;
  if(!manual){if(startShown||!startVisitEligible)return;try{if(localStorage.getItem(startSeenKey))return;}catch(e){return;}}
  $('startDialog').showModal();startShown=true;try{localStorage.setItem(startSeenKey,'1');}catch(e){}
 }
@@ -297,6 +299,7 @@ setTimeout(()=>{startVisitEligible=true;showStart();},startVisitEligible?0:5*60*
 function showPendingStart(){if(!startShown&&startVisitEligible)setTimeout(()=>showStart(),0);}
 $('reader').addEventListener('close',showPendingStart);
 $('siteShareDialog').addEventListener('close',showPendingStart);
+$('followUsDialog').addEventListener('close',showPendingStart);
 $('momentDetail')?.addEventListener('close',showPendingStart);
 
 

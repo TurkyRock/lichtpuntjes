@@ -1,5 +1,6 @@
 <?php
 require __DIR__.'/beta.php';
+require __DIR__.'/weather.php';
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;

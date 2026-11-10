@@ -4,7 +4,25 @@
     const links = document.getElementById('siteMenu');
     if (!navigation || !toggle || !links) return;
 
-    const compact = window.matchMedia('(max-width: 1100px)');
+    // Follow the actual content width, including locally customized homepage widths.
+    const header = navigation.closest('.site-header');
+    const content = document.querySelector('.home-paper-board, #weatherPage');
+    const alignToContent = () => {
+        if (!header || !content) return;
+        const bounds = content.getBoundingClientRect();
+        const headerBounds = header.getBoundingClientRect();
+        if (bounds.width <= 0) return;
+        header.style.setProperty('--site-nav-width', bounds.width + 'px');
+        header.style.setProperty('--site-nav-left', (bounds.left - headerBounds.left) + 'px');
+        header.classList.add('site-content-aligned');
+    };
+    alignToContent();
+    if (content && typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(alignToContent).observe(content);
+    }
+    window.addEventListener('resize', alignToContent);
+
+    const compact = window.matchMedia('(max-width: 767px)');
     const setExpanded = expanded => {
         toggle.setAttribute('aria-expanded', String(expanded));
         navigation.classList.toggle('is-open', expanded);

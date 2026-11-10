@@ -1,0 +1,14 @@
+/* Homepage and weather share the same outer frame and footer. */
+.site-footer{box-sizing:border-box;width:100%;max-width:none;margin:0;border:0;padding:25px 0;color:#536862;background:#faf9f3;font:12px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}
+.site-footer .shell{box-sizing:border-box;max-width:1180px;margin:auto;padding:0 32px}
+.site-footer .footerrow{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.site-footer .mini-brand{font-weight:750;color:#153e39;font-size:18px;white-space:nowrap}
+.site-footer a{color:#00786e}.site-footer .lp-cookie-link{font:inherit}
+@media(max-width:600px){.site-footer .shell{padding:0 20px}.site-footer .footerrow{flex-direction:column;align-items:flex-start;gap:4px}}
+
+/* A small, keyboard-accessible image explanation in moment readers. */
+.moment-image-info{display:table;max-width:100%;margin:12px 0 0;color:#536862;font:13px/1.5 system-ui,sans-serif}
+.moment-image-info>summary{display:inline-flex;align-items:center;justify-content:center;list-style:none;width:30px;min-height:30px;padding:0;cursor:pointer;font-size:20px;color:#426b5b}
+.moment-image-info>summary::-webkit-details-marker{display:none}
+.moment-image-info>summary:focus-visible{outline:2px solid #00786e;outline-offset:3px}
+.moment-image-info>p{max-width:300px;margin:4px 0 0;padding:8px 12px;background:#edf3e5;border-radius:4px;font:13px/1.5 system-ui,sans-serif}
