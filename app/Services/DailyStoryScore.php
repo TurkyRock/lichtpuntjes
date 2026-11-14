@@ -15,11 +15,14 @@ class DailyStoryScore {
  }
  public function assess(Article $article):void {
   if(!Article::visible()->whereKey($article->id)->exists())return;
+  app(AiAvailability::class)->check();
   $article->increment('daily_score_attempts');
+  try {
   $data=app(GeminiJson::class)->ask('Score this already approved story for daily-feature suitability. '.self::POLICY,
    ['title'=>$article->nl['title']??$article->source_title,'paragraphs'=>$article->nl['body']??[]],
    ['type'=>'OBJECT','properties'=>self::schema(),'required'=>array_keys(self::schema())]);
   $fields=self::fields($data);if($fields['daily_score']===null)throw new NewsServiceException('AI-dagverhaalscore ontbreekt.');
   $article->update($fields);
+  }catch(AiWaitException $e){$article->decrement('daily_score_attempts');throw $e;}
  }
 }

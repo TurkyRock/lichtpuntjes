@@ -24,3 +24,16 @@ Schedule::command('laptop:tick --limit=5')->everyMinute()->withoutOverlapping(10
 
 // Resume an explicitly started one-off news batch; never start a new round here.
 Schedule::command('news:laptop-batch --resume')->everyMinute()->withoutOverlapping(5);
+
+// Repair missing feature scores before the 07:00 edition and throughout the day.
+Schedule::command('news:spotlight-score --limit=5')->hourlyAt(40)->timezone('Europe/Amsterdam')
+ ->withoutOverlapping(120)->runInBackground()->appendOutputTo(storage_path('logs/spotlight-recovery.log'));
+
+// Retry service failures only; genuine moderation doubts stay with the editor.
+Schedule::command('comments:review --limit=10 --retry-errors')->everyTenMinutes()
+ ->withoutOverlapping(30)->runInBackground()->appendOutputTo(storage_path('logs/comments-recovery.log'));
+
+// Recover missed payment webhooks only when payments are configured and enabled.
+Schedule::command('support:sync --limit=25')->everyFifteenMinutes()
+ ->when(fn()=>app(\App\Services\SupportPayments::class)->ready())
+ ->withoutOverlapping(30)->runInBackground()->appendOutputTo(storage_path('logs/support-recovery.log'));

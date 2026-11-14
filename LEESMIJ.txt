@@ -1,51 +1,25 @@
-Jouw Lichtpuntje - Compactere homepage en importherstel - 29 oktober 2026
+LICHTPUNTJES – AUTOMATISCHE HERSTELACTIES
 
-Pak dit pakket uit over je projectmap lichtpunt-schoon en overschrijf de bestanden.
-Dit bevat de huidige voorbeeld-2-indeling en de categoriefix.
-Er is geen migratie nodig.
+Installatie op de bestaande website
+1. Maak een kopie van routes/console.php en app/Services/DailyStoryScore.php.
+2. Upload de mappen routes en app uit deze ZIP naar httpdocs en vervang de twee bestanden.
+3. Voer vanuit httpdocs uit:
+   php artisan optimize:clear
+   php artisan schedule:list
+4. De bestaande cronregels blijven staan. Geen databasewijziging of laptopupdate nodig.
 
-Voer daarna uit:
-php artisan optimize:clear
+Nieuwe taken (Nederlandse tijd)
+- Elk uur om :40: news:spotlight-score --limit=5. Beoordeelt alleen recente zichtbare verhalen zonder eerdere dagverhaalscore, maximaal drie echte pogingen. Dus ook om 06:40, voor de selectie om 07:00.
+- Elke 10 minuten: comments:review --limit=10 --retry-errors. Controleert wachtende reacties en herstelt AI-storingen. Echte twijfelgevallen en handmatige beslissingen blijven onaangeraakt.
+- Elke 15 minuten: support:sync --limit=25. Herstelt gemiste betaalwebhooks; alleen actief als SupportPayments::ready() bevestigt dat betalingen volledig geconfigureerd en ingeschakeld zijn. Bestaande betaalherstelprocedure kan een ontbrekend maandabonnement aanmaken na een reeds betaalde eerste bijdrage.
 
-Ververs de browser met Ctrl+F5.
+Alle drie draaien op de achtergrond, met bescherming tegen overlap. Logbestanden:
+- storage/logs/spotlight-recovery.log
+- storage/logs/comments-recovery.log
+- storage/logs/support-recovery.log
+Een bestand wordt pas aangemaakt zodra de bijbehorende taak werkelijk start.
 
-De ruimte tussen bovenbanner en uitgelichte artikelen is ongeveer gehalveerd.
-De grote dagfoto is op desktop circa 23 procent hoger bij dezelfde breedte.
-De foto krijgt daardoor meer ruimte en de tekst blijft binnen de papierranden.
-De indeling op mobiel blijft aangepast aan de schermbreedte.
+De AI-beschikbaarheid wordt gecontroleerd voordat een scorepoging wordt geteld. Een nieuw gemelde AI-pauze draait de poging terug, zodat quota-uitputting de drie pogingen niet verbruikt.
+De huidige dagselectie wordt niet geforceerd vervangen. De dagelijkse selectietaak blijft 07:00 Europe/Amsterdam. Geen geschikte nieuwe kandidaat betekent dat het vorige uitgelichte verhaal kan blijven staan.
 
-De import-hersteloptie is ook meegeleverd. Zie hieronder wanneer die gebruikt mag worden.
-
-Jouw Lichtpuntje - Importvergrendeling herstellen - 29 oktober 2026
-
-Pak uit over je projectmap lichtpunt-schoon en overschrijf:
-app/Console/Commands/ImportNews.php
-
-Er is geen migratie nodig.
-
-HERSTELLEN
-Gebruik --reset-lock uitsluitend als er geen nieuwsopdracht meer draait.
-Je hebt dit al gecontroleerd met Get-CimInstance: er verscheen geen nieuwsproces.
-Controleer opnieuw als je sindsdien een import, scheduler of worker hebt gestart.
-
-Voer na installeren uit:
-php -d memory_limit=512M artisan news:import --pages=10 --limit=50 --reset-lock
-
-De opdracht geeft alleen de importvergrendeling vrij via de cacheopslag van de import zelf.
-Daarna wordt meteen gecontroleerd of een nieuwe vergrendeling kan worden verkregen.
-Bij succes verschijnt: Importvergrendeling hersteld; de import start.
-
-Als ook dit herstel niet lukt, verschijnt een foutmelding met de cacheopslag.
-De oorzaak is dan nog niet vastgesteld: het kan een opslagprobleem zijn of een taak die opnieuw de lock heeft verkregen.
-Stuur dan de volledige nieuwe foutmelding; herhaal de reset niet voortdurend.
-
-VOORTAAN NORMAAL TOEVOEGEN
-Laat de hersteloptie bij volgende imports weg:
-php -d memory_limit=512M artisan news:import --pages=10 --limit=50
-
-De bestaande artikelen worden behouden.
-Maximaal 50 kandidaten worden beoordeeld; alleen geschikte berichten worden gepubliceerd.
-
-Controle: 17 tests met 156 assertions, waaronder herstel op echte file- en databasecache,
-behoud van andere cache-items en vergrendelingen, normale blokkering en opslagfouten.
-Er zijn tijdens de controles geen echte nieuws- of AI-aanvragen uitgevoerd.
+Validatie: 23 gerichte PHPUnit-tests geslaagd, 138 assertions, voor herstelplanning, AI-pauzes, reacties en betalingen. De uitgebreidere DailySpotlightTest bevat drie bestaande weergavefouten; dezelfde drie treden ook op met de oorspronkelijke DailyStoryScore op HEAD. Deze zijn niet gewijzigd in deze update.
