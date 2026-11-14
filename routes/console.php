@@ -21,3 +21,6 @@ Schedule::command('news:daily')->dailyAt('07:00')->timezone('Europe/Amsterdam')-
 
 // Also resumes quota-paused text checks, even when the laptop is offline.
 Schedule::command('laptop:tick --limit=5')->everyMinute()->withoutOverlapping(10);
+
+// Resume an explicitly started one-off news batch; never start a new round here.
+Schedule::command('news:laptop-batch --resume')->everyMinute()->withoutOverlapping(5);

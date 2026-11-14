@@ -61,6 +61,7 @@ class NewsImporter {
         if (!config('news.gemini_key')) throw new RuntimeException('GEMINI_API_KEY ontbreekt.');
         $model=config('news.gemini_model');
         if (!preg_match('/^[a-zA-Z0-9._-]+$/',$model)) throw new RuntimeException('Ongeldige modelnaam.');
+        if(app(LaptopImages::class)->enabled())app(AiAvailability::class)->check();
         $a->increment('attempts');
         $translation=['type'=>'OBJECT','properties'=>[
             'title'=>['type'=>'STRING'], 'teaser'=>['type'=>'STRING'],
@@ -101,7 +102,10 @@ PROMPT;
             $a->decrement('attempts');
             throw new GeminiTemporaryException('Gemini HTTP '.$response->status().'.');
         }
-        if ($response->status()===429) $a->decrement('attempts'); // Quota is geen inhoudelijke mislukking.
+        if ($response->status()===429) {
+            $a->decrement('attempts');
+            if(app(LaptopImages::class)->enabled())throw app(AiAvailability::class)->pause(429,is_array($response->json())?$response->json():[],$response->header('Retry-After'));
+        } // Quota is geen inhoudelijke mislukking.
         if (!$response->successful()) throw new RuntimeException('Gemini HTTP '.$response->status().'.');
         if ($response->json('candidates.0.finishReason')!=='STOP') throw new RuntimeException('Gemini gaf geen complete samenvatting.');
         $parts=$response->json('candidates.0.content.parts',[]);
