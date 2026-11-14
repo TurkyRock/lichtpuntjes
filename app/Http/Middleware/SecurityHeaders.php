@@ -11,7 +11,7 @@ class SecurityHeaders {
   $response->headers->set('X-Content-Type-Options','nosniff');
   $response->headers->set('X-Frame-Options','DENY');
   $response->headers->set('Referrer-Policy',config('beta.closed_site')||$request->is('testgroep','testgroep/*')?'no-referrer':'strict-origin-when-cross-origin');
-  $response->headers->set('Permissions-Policy','camera=(), microphone=(), geolocation=()');
+  $response->headers->set('Permissions-Policy','camera=(), microphone=(), geolocation='.($request->is('weer')?'(self)':'()'));
   $analytics=\App\Support\Analytics::eligible($request)?' https://www.googletagmanager.com https://*.google-analytics.com https://www.google.com':'';
   $supportForm=$request->is('steun','steun/*')?' https://www.mollie.com https://mollie.com https://checkout.mollie.com':'';
   if($request->is('steun/bedankt/*'))$response->headers->set('Referrer-Policy','no-referrer');

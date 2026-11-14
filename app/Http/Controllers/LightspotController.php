@@ -33,7 +33,7 @@ class LightspotController extends Controller {
    $submission->refresh();abort_unless($submission->status==='rejected',422);abort_if($submission->title===$v['title']&&$submission->body===$v['body'],422,'Pas eerst je verhaal aan.');
    abort_if(DB::table('lightspot_reviews')->where('submission_id',$submission->id)->where('decision','revision')->where('created_at','>=',now()->subDay())->count()>=3,429,'Maximaal drie aanpassingen per 24 uur.');
    DB::table('lightspot_reviews')->insert(['submission_id'=>$submission->id,'decision'=>'revision','note'=>json_encode(['title'=>$submission->title,'body'=>$submission->body,'reason'=>$submission->reason],JSON_UNESCAPED_UNICODE),'created_at'=>now(),'updated_at'=>now()]);
-   $submission->update($v+['status'=>'pending','translations'=>null,'confidence'=>null,'reason'=>null,'ai_error'=>false,'moderated_by'=>null,'moderator_note'=>null,'appealed_at'=>null,'revision'=>$submission->revision+1]);
+   $submission->update($v+['status'=>'pending','ai_retry_at'=>null,'ai_wait_reason'=>null,'translations'=>null,'confidence'=>null,'reason'=>null,'ai_error'=>false,'moderated_by'=>null,'moderator_note'=>null,'appealed_at'=>null,'revision'=>$submission->revision+1]);
   });}finally{$lock->release();}ProcessLightspot::dispatch($submission->id);return redirect('/mijn-lichtpuntjes')->with('status','Je aangepaste verhaal wordt opnieuw gekeurd.');
  }
  public function appeal(Request $r,LightspotSubmission $submission){

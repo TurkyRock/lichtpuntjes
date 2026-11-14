@@ -11,10 +11,11 @@ class ArticleImageGenerator {
  }
  public function acceptedModels():array {return [CloudflareIllustrator::MODEL,'black-forest-labs/flux.1-schnell',(string)config('news_images.checkpoint')];}
  public function recordCompleted(array $photo):void {}
- public function model():string {$this->generator();return config('news_images.provider','cloudflare')==='cloudflare'?CloudflareIllustrator::MODEL:(string)config('news_images.checkpoint');}
- public function check():void {$this->generator()->check();}
- public function summary():string {return config('news_images.provider','cloudflare')==='cloudflare'?'Cloudflare: account, token en FLUX.1 Schnell beschikbaar. Geen afbeelding gemaakt. Gebruik Workers Free; dagelijkse limieten worden door Cloudflare bewaakt.':'Lokale ComfyUI en checkpoint zijn beschikbaar. Er is niets gegenereerd.';}
+ public function model():string {if(config('news_images.provider')!=='laptop')$this->generator();return config('news_images.provider','cloudflare')==='cloudflare'?CloudflareIllustrator::MODEL:(string)config('news_images.checkpoint');}
+ public function check():void {if(config('news_images.provider')==='laptop'){if(!app(LaptopImages::class)->enabled())throw new NewsServiceException('Zet LAPTOP_IMAGES_ENABLED aan.');return;}$this->generator()->check();}
+ public function summary():string {if(config('news_images.provider')==='laptop')return 'Laptopwachtrij ingesteld. De worker maakt beelden via zijn lokale ComfyUI en uploadt ze. Er is niets gegenereerd.';return config('news_images.provider','cloudflare')==='cloudflare'?'Cloudflare: account, token en FLUX.1 Schnell beschikbaar. Geen afbeelding gemaakt. Gebruik Workers Free; dagelijkse limieten worden door Cloudflare bewaakt.':'Lokale ComfyUI en checkpoint zijn beschikbaar. Er is niets gegenereerd.';}
  public function generate(Article $a):array {
+  if(config('news_images.provider')==='laptop'){if(!app(LaptopImages::class)->enabled())throw new NewsServiceException('Laptopbeelden staan uit.');return app(LaptopArticleImages::class)->generate($a);}
   $style=app(LichtpuntIllustrationPrompt::class)->style($a);
   if(!in_array($style,[LichtpuntIllustrationPrompt::COLLAGE_STYLE,LichtpuntIllustrationPrompt::PHOTO_STYLE],true))return $this->generator()->generate($a);
   $editor=app(ArticleVisualBrief::class);$brief=$editor->plan($a);

@@ -14,6 +14,7 @@ class ArticleVisualBrief
         for ($attempt = 0; ; $attempt++) {
             try { return $this->ai->ask($system, $data, $schema, $image); }
             catch (NewsServiceException $e) {
+                if($e instanceof AiWaitException) throw $e;
                 $temporary = preg_match('/Gemini HTTP (408|429|500|502|503|504)\\b/', $e->getMessage()) || str_contains($e->getMessage(), 'Gemini-verbinding');
                 if (!$temporary || $attempt >= 2 || !app()->runningInConsole()) throw $e;
                 $seconds = $attempt === 0 ? 60 : 300;

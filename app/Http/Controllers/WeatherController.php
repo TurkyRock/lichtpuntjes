@@ -22,8 +22,15 @@ class WeatherController extends Controller
 
     public function data(Request $request, WeatherForecast $weather)
     {
-        $input = $request->validate(['city' => ['sometimes', 'string', Rule::in(array_keys(config('weather.cities')))]]);
-        $forecast = $weather->get($input['city'] ?? config('weather.default_city'));
+        $input = $request->validate([
+            'city' => ['sometimes', 'string', 'prohibits:latitude,longitude', Rule::in(array_keys(config('weather.cities')))],
+            'latitude' => ['required_with:longitude', 'numeric', 'between:-90,90'],
+            'longitude' => ['required_with:latitude', 'numeric', 'between:-180,180'],
+        ]);
+        $forecast = isset($input['latitude'], $input['longitude'])
+            ? $weather->getForCoordinates((float)$input['latitude'], (float)$input['longitude'])
+            : $weather->get($input['city'] ?? config('weather.default_city'));
+        if ($forecast && isset($input['latitude'])) $forecast['name'] = app()->getLocale() === 'en' ? 'Your area' : 'Jouw omgeving';
         return response()->json($forecast ?? ['unavailable' => true], $forecast ? 200 : 503)
             ->header('Cache-Control', 'no-store');
     }

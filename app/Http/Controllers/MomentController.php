@@ -26,7 +26,7 @@ class MomentController extends Controller {
   $m=DB::transaction(function()use($moment,$v,$r,&$oldPath){
    $m=PositiveMoment::whereKey($moment->id)->lockForUpdate()->firstOrFail();$oldPath=$m->image_path;
    DB::table('moment_hearts')->where('moment_id',$m->id)->delete();
-   $m->update(['body'=>$v['body'],'visibility'=>$v['visibility'],'status'=>'pending','reason'=>null,'translations'=>null,'translation_hash'=>null,'translation_state'=>'pending','source_language'=>null,'revision'=>$m->revision+1,'moderated_by'=>null,'ai_accepted_at'=>now(),'image_accepted_at'=>$r->boolean('image_processing')?now():null,'image_state'=>$r->boolean('image_processing')?'queued':null,'image_path'=>null,'image_style'=>null,'image_subject'=>null,'image_revision'=>null]);return $m;
+   $m->update(['body'=>$v['body'],'visibility'=>$v['visibility'],'status'=>'pending','ai_retry_at'=>null,'ai_wait_reason'=>null,'reason'=>null,'translations'=>null,'translation_hash'=>null,'translation_state'=>'pending','source_language'=>null,'revision'=>$m->revision+1,'moderated_by'=>null,'ai_accepted_at'=>now(),'image_accepted_at'=>$r->boolean('image_processing')?now():null,'image_state'=>$r->boolean('image_processing')?'queued':null,'image_path'=>null,'image_style'=>null,'image_subject'=>null,'image_revision'=>null]);return $m;
   });
   \App\Services\MomentImageFiles::remove($oldPath);app(\App\Services\MomentModerator::class)->syncPoints($m);$this->dispatch($m);
   return back()->with('status',app()->getLocale()==='en'?'Changes saved for a new review.':'Aanpassing opgeslagen voor een nieuwe controle.');

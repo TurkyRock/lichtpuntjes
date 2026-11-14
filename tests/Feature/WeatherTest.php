@@ -136,4 +136,29 @@ class WeatherTest extends TestCase
         $this->assertStringNotContainsString('href="https://www.facebook.com', $html);
     }
 
+    public function test_device_location_is_rounded_cached_and_translated(): void
+    {
+        Http::fake(['api.open-meteo.com/*'=>Http::response($this->payload())]);
+        $this->getJson('/weer/data?latitude=51.9854321&longitude=5.9123456')->assertOk()->assertJsonPath('name', 'Jouw omgeving')->assertJsonCount(7, 'days');
+        $this->getJson('/weer/data?latitude=51.986&longitude=5.914&lang=en')->assertOk()->assertJsonPath('name', 'Your area');
+        Http::assertSentCount(1);
+        Http::assertSent(fn($r)=>(float)$r['latitude']===51.99 && (float)$r['longitude']===5.91);
+        $this->getJson('/weer/data?city=arnhem')->assertOk()->assertJsonPath('name', 'Arnhem');
+        Http::assertSentCount(2);
+    }
+
+    public function test_device_location_rejects_invalid_or_mixed_coordinates(): void
+    {
+        foreach (['latitude=91&longitude=5','latitude=52&longitude=-181','latitude[]=52&longitude=5','latitude=NaN&longitude=5','latitude=52','longitude=5','city=arnhem&latitude=52&longitude=5'] as $query) {
+            $this->getJson('/weer/data?'.$query)->assertUnprocessable();
+        }
+        Http::assertNothingSent();
+    }
+
+    public function test_location_permission_is_available_only_on_weather_page(): void
+    {
+        $this->get('/weer')->assertOk()->assertHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self)')->assertSee('Gebruik mijn locatie');
+        $this->get('/huisregels')->assertOk()->assertHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    }
+
 }

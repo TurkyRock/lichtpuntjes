@@ -23,7 +23,7 @@ class ArticlePhotoFinder {
    $article->refresh();if(!$force&&$this->current($article))return true;
    $photo=app(ArticleImageGenerator::class)->generate($article);
    if($article->photo){File::ensureDirectoryExists(storage_path('app/illustration-backups'));$backup=['article_id'=>$article->id,'photo'=>$article->photo,'saved_at'=>now()->toIso8601String()];if(File::put(storage_path('app/illustration-backups/'.$article->id.'-'.\Illuminate\Support\Str::uuid().'.json'),json_encode($backup,JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT))===false)throw new NewsServiceException('Vorige fotogegevens bewaren mislukt; afbeelding nog niet vervangen.');}
-   \Illuminate\Support\Facades\DB::transaction(function()use($article,$photo){$article->update(['photo'=>$photo,'photo_next_attempt_at'=>null]);app(ArticleImageGenerator::class)->recordCompleted($photo);});return true;
+   \Illuminate\Support\Facades\DB::transaction(function()use($article,$photo){$article->update(['photo'=>$photo,'photo_next_attempt_at'=>null]);app(ArticleImageGenerator::class)->recordCompleted($photo);if(app(LaptopImages::class)->enabled())\App\Models\LaptopImageJob::where('target_type','article')->where('target_id',$article->id)->where('content_hash',app(LaptopImages::class)->hashArticle($article))->where('status','completed')->update(['status'=>'applied']);});return true;
   }finally{$lock->release();}
  }
 }

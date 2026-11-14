@@ -1,6 +1,7 @@
 @extends('community.layout')
 @section('title',app()->getLocale()==='en'?'My stories — Jouw Lichtpuntje':'Mijn verhalen — Jouw Lichtpuntje')
 @push('page-styles')<link rel="stylesheet" href="/css/story-studio.css?v={{ filemtime(public_path('css/story-studio.css')) }}"><script src="/js/story-studio.js?v={{ filemtime(public_path('js/story-studio.js')) }}" defer></script>@endpush
+@push('page-styles')@include('shared.processing-styles')@endpush
 @section('content')
 @php
 $en=app()->getLocale()==='en';
@@ -15,7 +16,7 @@ $en=app()->getLocale()==='en';
 <h2 id="story-write-heading" class="story-yellow-label">{{ $en?'Your next bright spot':'Jouw volgende lichtpuntje' }}</h2>
 <p class="story-write-intro">{{ $en?'Tell us about something that stayed with you. What made it special? Which smile would you like to pass on?':'Vertel over iets dat je bijbleef. Wat maakte het bijzonder? Welke glimlach wil je doorgeven?' }}</p>
 @if(auth()->user()->hasVerifiedEmail()&&auth()->user()->community_accepted_at)
-@include('community.story-form')
+@include('community.story-form')@include('community.processing-explanation')
 @else
 <p>{{ $en?'Confirm your email address and accept the community rules in your account before submitting.':'Bevestig je e-mailadres en accepteer de huisregels in je account voordat je een verhaal instuurt.' }}</p><a class="story-cut-button" href="/profiel?lang={{ app()->getLocale() }}">{{ $en?'Go to my account':'Naar mijn account' }}</a>
 @endif
@@ -30,11 +31,12 @@ $en=app()->getLocale()==='en';
 @php
 $imageUrl=$s->status==='published'&&$s->article?->status==='published'?($s->article->photo['url']??null):null;
 $imageUrl=is_string($imageUrl)&&preg_match('~^/news-images/[a-f0-9]{64}\.(?:jpg|png)$~D',$imageUrl)?$imageUrl:null;
-$statusLabel=['pending'=>$en?'Awaiting review':'Wacht op controle','doubt'=>$en?'Administrator review':'Beheerder kijkt mee','rejected'=>$en?'Changes needed':'Aanpassen nodig','image_wait'=>$en?'AI image in progress':'AI maakt een afbeelding','published'=>$en?'Published':'Gepubliceerd'][$s->status]??($en?'In progress':'In behandeling');
+$statusLabel=['pending'=>$en?'Awaiting review':'Wacht op controle','doubt'=>$en?'Administrator review':'Beheerder kijkt mee','rejected'=>$en?'Changes needed':'Aanpassen nodig','image_wait'=>$en?'Waiting for image':'Wacht op afbeelding','published'=>$en?'Published':'Gepubliceerd'][$s->status]??($en?'In progress':'In behandeling');
 @endphp
 <article class="story-keepsake{{ $s->status==='rejected'?' publication-needs-revision':'' }}">
 @if($imageUrl)<figure class="story-polaroid"><img src="{{ $imageUrl }}" alt="{{ $en?'AI illustration for your story':'AI-illustratie bij je verhaal' }}" loading="lazy" width="96" height="108"><figcaption>{{ $en?'AI illustration':'AI-illustratie' }}</figcaption></figure>@endif
 <div class="story-keepsake-body"><div class="story-keepsake-meta"><span class="story-state story-state--{{ $s->status==='published'?'published':($s->status==='rejected'?'revise':'waiting') }}">{{ $statusLabel }}</span><time datetime="{{ $s->created_at->toDateString() }}">{{ $s->created_at->format('d-m-Y') }}</time></div><h3>{{ $s->title }}</h3><p class="story-excerpt">{{ \Illuminate\Support\Str::limit($s->body,150) }}</p>
+@include('community.processing-card',['progressRecord'=>$s])
 <details class="story-full-text"><summary>{{ $en?'Read my submitted story':'Lees mijn ingestuurde verhaal' }}</summary><p class="comments">{{ $s->body }}</p></details>
 @if($s->status==='rejected')<div class="publication-revision-feedback"><strong>{{ $en?'Please revise your story':'Pas je verhaal aan voor publicatie' }}</strong><p>{{ $en?'This story has not been published. Use the feedback to edit your text and submit it for review again.':'Dit verhaal is nog niet gepubliceerd. Gebruik de feedback om je tekst aan te passen en stuur het opnieuw in voor controle.' }}</p>@if($s->moderator_note||$s->reason)<p class="publication-revision-reason"><b>Feedback:</b> {{ $s->moderator_note?:($s->reason[$en?'en':'nl']??$s->reason['nl']??'') }}</p>@endif</div>
 @elseif($s->moderator_note||$s->reason)<p class="story-review-note">{{ $s->moderator_note?:($s->reason[$en?'en':'nl']??'') }}</p>@endif

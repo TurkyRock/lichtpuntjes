@@ -18,3 +18,6 @@ Schedule::command('news:daily')->dailyAt('07:00')->timezone('Europe/Amsterdam')-
  $this->info($count.' oude privéfotobestanden opgeruimd.');
 })->purpose('Ruim verlopen niet-openbare profielfoto’s op');
 \Illuminate\Support\Facades\Schedule::command('profiles:cleanup')->dailyAt('03:15')->withoutOverlapping();
+
+// Also resumes quota-paused text checks, even when the laptop is offline.
+Schedule::command('laptop:tick --limit=5')->everyMinute()->withoutOverlapping(10);

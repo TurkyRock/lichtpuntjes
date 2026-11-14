@@ -7,9 +7,9 @@
 @foreach(config('social.profiles', []) as $platform => $profile)
 @php($followUrl = $profile['url'] ?? null)
 @if(is_string($followUrl) && filter_var($followUrl, FILTER_VALIDATE_URL) && str_starts_with($followUrl, 'https://'))
-<a href="{{ $followUrl }}" target="_blank" rel="noopener noreferrer" class="follow-us-channel"><strong>{{ $profile['name'] }}</strong><span aria-hidden="true">↗</span></a>
+<a href="{{ $followUrl }}" target="_blank" rel="noopener noreferrer" class="follow-us-channel follow-us-{{ $platform }}">@include('shared.follow-icon')<span class="follow-us-label"><strong>{{ $profile['name'] }}</strong><span class="follow-us-status" aria-hidden="true">↗</span></span></a>
 @else
-<div class="follow-us-channel follow-us-soon"><strong>{{ $profile['name'] }}</strong><span data-follow-nl="Binnenkort" data-follow-en="Coming soon">{{ $followEn ? 'Coming soon' : 'Binnenkort' }}</span></div>
+<div class="follow-us-channel follow-us-soon follow-us-{{ $platform }}">@include('shared.follow-icon')<span class="follow-us-label"><strong>{{ $profile['name'] }}</strong><span class="follow-us-status" data-follow-nl="Binnenkort" data-follow-en="Coming soon">{{ $followEn ? 'Coming soon' : 'Binnenkort' }}</span></span></div>
 @endif
 @endforeach
 </div>

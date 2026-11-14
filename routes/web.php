@@ -111,3 +111,5 @@ require __DIR__.'/account-security.php';
 require __DIR__.'/moment-images.php';
 require __DIR__.'/article-collage.php';
 require __DIR__.'/comment-conversations.php';
+
+Route::get('/mijn-verwerking/{kind}/{id}',[\App\Http\Controllers\ContributionProgressController::class,'show'])->whereIn('kind',['story','moment'])->whereNumber('id')->middleware(['auth',\App\Http\Middleware\CommunityLocale::class,'throttle:120,1']);

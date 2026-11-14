@@ -40,9 +40,11 @@
  .paper-welcome .welcome-paper::before{background-size:cover}
 }
 @media(min-width:951px){.paper-welcome .welcome-paper{min-height:190px}}
-/* Four matching paper actions: three yellow, sharing stays green. */
-.paper-welcome .daily-welcome-actions{grid-template-columns:repeat(4,minmax(0,1fr));max-width:850px;gap:12px}
+/* Compact actions stay in the blank paper between the flower cutouts. */
+.paper-welcome .daily-welcome-actions{grid-template-columns:1fr 1.15fr 1fr 1.4fr;width:74%;max-width:600px;gap:9px}
 .daily-welcome-actions :nth-child(4)::before{transform:scaleX(-1)}
-@media(min-width:701px){.paper-welcome .daily-welcome-actions :is(button,.daily-account){font-size:12px;padding-inline:9px;white-space:nowrap}}
-@media(max-width:700px){.paper-welcome .daily-welcome-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:480px}.paper-welcome .daily-welcome-actions :is(button,.daily-account){font-size:12px;min-height:44px}}
+@media(min-width:701px){.paper-welcome .daily-welcome-actions :is(button,.daily-account){font-size:11px;padding:8px 5px;gap:5px;min-height:40px;white-space:nowrap}}
+@media(min-width:701px){.daily-welcome-actions svg,.daily-welcome-actions img{width:15px;height:15px}}
+@media(min-width:701px) and (max-width:950px){.paper-welcome .daily-welcome-actions{width:62%;grid-template-columns:repeat(2,minmax(0,1fr));max-width:360px}}
+@media(max-width:700px){.paper-welcome .daily-welcome-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%;max-width:480px}.paper-welcome .daily-welcome-actions :is(button,.daily-account){font-size:12px;min-height:44px}}
 </style>

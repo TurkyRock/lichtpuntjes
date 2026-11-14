@@ -14,6 +14,21 @@ class WeatherForecast
     {
         $place = config("weather.cities.{$city}");
         if (!$place) return null;
+        return $this->fetch($place, $city);
+    }
+
+    public function getForCoordinates(float $latitude, float $longitude): ?array
+    {
+        if (!is_finite($latitude) || !is_finite($longitude) || abs($latitude) > 90 || abs($longitude) > 180) return null;
+        // Approximately one kilometre is sufficient; never forward exact device coordinates.
+        $latitude = round($latitude, 2);
+        $longitude = round($longitude, 2);
+        return $this->fetch(['name' => 'Jouw omgeving', 'latitude' => $latitude, 'longitude' => $longitude],
+            'location:'.hash('sha256', sprintf('%.2F,%.2F', $latitude, $longitude)));
+    }
+
+    private function fetch(array $place, string $city): ?array
+    {
         $key = 'weather:v1:'.$city;
         $cached = Cache::get($key);
         $now = now()->timestamp;

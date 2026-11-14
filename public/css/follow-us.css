@@ -8,3 +8,24 @@
 .follow-us-channel span{font-size:12px}.follow-us-soon{background-color:#e6eddc}
 .follow-us-dialog :is(a,button):focus-visible{outline:3px solid #a5802b;outline-offset:3px}
 @media(max-width:420px){.follow-us-dialog{padding:23px}.follow-us-platforms{grid-template-columns:1fr}.follow-us-dialog h2{font-size:27px}}
+/* Little layered paper badges keep each familiar logo recognizable. */
+.follow-us-platforms{gap:20px 17px;padding:7px 3px 8px}
+.follow-us-dialog .follow-us-channel{position:relative;isolation:isolate;justify-content:flex-start;min-height:100px;padding:16px 13px;overflow:visible;clip-path:none;background:none;transform:rotate(-1.5deg);filter:drop-shadow(1px 4px 2px #294c3920)}
+.follow-us-channel::before{content:'';position:absolute;inset:0;z-index:-1;background:#ffe6b4 url('/images/button-paper-grain.svg');clip-path:polygon(1% 3%,9% 0,19% 3%,31% 1%,42% 4%,54% 0,66% 3%,78% 1%,89% 4%,99% 1%,100% 18%,98% 40%,100% 62%,98% 83%,100% 97%,89% 100%,77% 97%,65% 100%,53% 97%,41% 100%,29% 97%,17% 100%,5% 98%,0 100%,2% 78%,0 57%,2% 36%,0 15%)}
+.follow-us-channel::after{content:'';position:absolute;top:-7px;left:42%;width:48px;height:18px;transform:rotate(6deg);background:#e4c884a8 url('/images/button-paper-grain.svg');clip-path:polygon(1% 9%,98% 0,100% 93%,3% 100%);pointer-events:none}
+.follow-us-channel:nth-child(2){transform:rotate(1.7deg)}.follow-us-channel:nth-child(3){transform:rotate(1deg)}.follow-us-channel:nth-child(4){transform:rotate(-1deg)}
+.follow-us-facebook::before{background-color:#dbe9f2}.follow-us-tiktok::before{background-color:#f4d9dd}.follow-us-linkedin::before{background-color:#e2edcf}
+.follow-us-dialog .follow-us-icon{position:relative;isolation:isolate;flex:none;display:grid;place-items:center;width:53px;height:57px;margin-right:4px;color:#fffaf0;transform:rotate(-8deg);filter:drop-shadow(2px 3px 1px #1f3f3733)}
+.follow-us-icon::before,.follow-us-icon::after{content:'';position:absolute;inset:0;z-index:-1;clip-path:polygon(3% 6%,18% 1%,35% 4%,53% 0,72% 4%,95% 1%,100% 20%,97% 43%,100% 63%,96% 83%,99% 98%,77% 95%,57% 100%,37% 97%,16% 100%,1% 94%,4% 73%,0 52%,3% 30%)}
+.follow-us-icon::before{background:#fff9e7;transform:rotate(9deg) translate(-2px,1px)}
+.follow-us-icon::after{background:#ba507a url('/images/button-paper-grain.svg');inset:3px}
+.follow-us-icon-instagram::after{background-color:#c45280;background-image:url('/images/button-paper-grain.svg'),linear-gradient(25deg,#efba55,#d25c80 55%,#8966b6)}
+.follow-us-icon-facebook::after{background-color:#3c6eae}.follow-us-icon-tiktok::after{background-color:#254448}.follow-us-icon-linkedin::after{background-color:#357a9b}
+.follow-us-icon-tiktok svg{filter:drop-shadow(-1px -1px 0 #6bd7cd) drop-shadow(1px 1px 0 #ec8d9d)}
+.follow-us-icon-facebook{transform:rotate(6deg)!important}.follow-us-icon-linkedin{transform:rotate(5deg)!important}
+.follow-us-icon svg{width:35px;height:35px;overflow:visible}
+.follow-us-label{display:flex;flex-direction:column;gap:5px;min-width:0}.follow-us-label strong{font:700 16px/1.2 Georgia,serif;overflow-wrap:anywhere}.follow-us-label .follow-us-status{font:12px/1.3 system-ui,sans-serif;color:#4f6657}
+.follow-us-dialog a.follow-us-channel:hover{transform:rotate(0deg) translateY(-2px)}
+.follow-us-dialog a.follow-us-channel:focus-visible{outline:3px solid #88600a;outline-offset:5px}
+@media(max-width:420px){.follow-us-platforms{gap:18px}.follow-us-dialog .follow-us-channel{min-height:88px;padding:13px 19px}.follow-us-dialog .follow-us-icon{margin-right:13px}.follow-us-label strong{font-size:18px}}
+@media(prefers-reduced-motion:reduce){.follow-us-dialog a.follow-us-channel:hover{transform:none}}

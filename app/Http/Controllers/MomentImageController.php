@@ -25,6 +25,7 @@ class MomentImageController extends Controller
             $m->update(['image_accepted_at'=>now(), 'image_state'=>'queued']);
             return $m;
         });
+        if(app(\App\Services\LaptopImages::class)->enabled())\App\Models\LaptopImageJob::where('target_type','moment')->where('target_id',$current->id)->where('content_hash',app(\App\Services\LaptopImages::class)->hashMoment($current))->where('status','failed')->update(['status'=>'queued','claims'=>0,'available_at'=>now()]);
         MomentIllustrator::queue($current);
         return back()->with('status', app()->getLocale() === 'en' ? 'Your little image is on its way.' : 'Je kleine afbeelding komt eraan.');
     }

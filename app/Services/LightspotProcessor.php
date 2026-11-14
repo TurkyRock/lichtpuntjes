@@ -7,7 +7,7 @@ class LightspotProcessor {
  public function process(LightspotSubmission $s):void {
   $lock=Cache::lock('lichtpunt-submission-'.$s->id,2100);if(!$lock->get())return;
   try{
-   $s->refresh();if(!in_array($s->status,['pending','image_wait'])||!$s->user||$s->user->is_suspended||!$s->user->hasVerifiedEmail()||!$s->user->community_accepted_at)return;
+   $s->refresh();if($s->ai_retry_at&&\Carbon\CarbonImmutable::parse($s->ai_retry_at)->isFuture())return;if(!in_array($s->status,['pending','image_wait'])||!$s->user||$s->user->is_suspended||!$s->user->hasVerifiedEmail()||!$s->user->community_accepted_at)return;
    if($s->status==='pending'){
     try{
      $result=$this->ai->ask(<<<'POLICY'
@@ -20,9 +20,9 @@ POLICY.'\n'.DailyStoryScore::POLICY,['name'=>$s->user->name,'title'=>$s->title,'
      Validator::make($result,['decision'=>'required|in:approve,reject,doubt','confidence'=>'required|numeric|between:0,1','reason_nl'=>'required|string|max:1500','reason_en'=>'required|string|max:1500'])->validate();
      $decision=$result['decision']==='approve'&&$result['confidence']>=.92?'image_wait':($result['decision']==='reject'&&$result['confidence']>=.85?'rejected':'doubt');
      $translations=null;if($decision==='image_wait')$translations=$this->translations($s,$result);
-     $s->update(['status'=>$decision,'reason'=>['nl'=>$result['reason_nl'],'en'=>$result['reason_en']],'confidence'=>$result['confidence'],'translations'=>$translations,'ai_error'=>false]);
+     $s->update(['status'=>$decision,'reason'=>['nl'=>$result['reason_nl'],'en'=>$result['reason_en']],'confidence'=>$result['confidence'],'translations'=>$translations,'ai_error'=>false,'ai_retry_at'=>null,'ai_wait_reason'=>null]);
      DB::table('lightspot_reviews')->insert(['submission_id'=>$s->id,'decision'=>$decision,'note'=>'AI: '.$result['reason_nl'],'created_at'=>now(),'updated_at'=>now()]);
-    }catch(\Throwable $e){$s->update(['status'=>'doubt','ai_error'=>true,'reason'=>['nl'=>'AI-keuring of vertaling niet beschikbaar. Je verhaal wacht veilig op een menselijke blik.','en'=>'AI review or translation unavailable. Your story awaits a human review.']]);return;}
+    }catch(AiWaitException $e){app(AiAvailability::class)->defer($s,$e);return;}catch(\Throwable $e){$s->update(['status'=>'doubt','ai_error'=>true,'reason'=>['nl'=>'AI-keuring of vertaling niet beschikbaar. Je verhaal wacht veilig op een menselijke blik.','en'=>'AI review or translation unavailable. Your story awaits a human review.']]);return;}
    }
    if($s->status!=='image_wait')return;
    try{
@@ -39,10 +39,10 @@ POLICY.'\n'.DailyStoryScore::POLICY,['name'=>$s->user->name,'title'=>$s->title,'
      $row=LightspotSubmission::whereKey($s->id)->lockForUpdate()->firstOrFail();$user=User::whereKey($row->user_id)->lockForUpdate()->firstOrFail();
      if($row->status!=='image_wait'||$user->is_suspended||!$user->hasVerifiedEmail()||!$user->community_accepted_at)return;
      $a->refresh();if(!$this->photos->current($a))throw new NewsServiceException('Illustratie ontbreekt.');
-     $a->update(['status'=>'published','published_at'=>$a->published_at??now()]);$row->update(['status'=>'published','ai_error'=>false,'processing_error'=>null]);
+     $a->update(['status'=>'published','published_at'=>$a->published_at??now()]);$row->update(['status'=>'published','ai_error'=>false,'processing_error'=>null,'ai_retry_at'=>null,'ai_wait_reason'=>null]);
      app(Lightpoints::class)->award($user,'story:'.$a->id,'story',5,'Een eigen verhaal gepubliceerd');
     });
-   }catch(\Throwable $e){$s->refresh();if($s->status==='image_wait')$s->update(['ai_error'=>true,'processing_error'=>$e instanceof NewsServiceException?mb_substr($e->getMessage(),0,1500):'Vertaling, illustratie of opslag tijdelijk mislukt. Controleer verbinding en schrijfrechten.']);}
+   }catch(AiWaitException $e){app(AiAvailability::class)->defer($s,$e);}catch(ImagePendingException $e){$s->update(['ai_error'=>false,'processing_error'=>null,'ai_retry_at'=>null,'ai_wait_reason'=>null]);}catch(\Throwable $e){$s->refresh();if($s->status==='image_wait')$s->update(['ai_error'=>true,'processing_error'=>$e instanceof NewsServiceException?mb_substr($e->getMessage(),0,1500):'Vertaling, illustratie of opslag tijdelijk mislukt. Controleer verbinding en schrijfrechten.']);}
   }finally{$lock->release();}
  }
  private function schema():array {

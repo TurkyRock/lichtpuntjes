@@ -35,3 +35,13 @@ main:has(.weather-page){padding-left:32px;padding-right:32px}
 @media(min-width:1260px){.weather-season-tag{left:50px}}
 @media(min-width:851px) and (max-width:1259px){.weather-season-tag{left:25px}}
 .weather-fineprint .weather-source{background:#cee9cced;padding:6px 8px;border-radius:3px}
+
+/* Device location stays a small paper control beside the place selector. */
+.weather-location{width:205px;flex-wrap:wrap;justify-content:flex-end;gap:3px}
+.weather-page .weather-location .weather-geolocate{font:600 11px/1.3 system-ui,sans-serif;font-size:11px;min-height:28px;padding:5px 9px;background:#ffdf7d url('/images/button-paper-grain.svg');color:#244e38;border-radius:2px}
+.weather-location .weather-geolocate::before{content:none}
+.weather-location .weather-geolocate:disabled{opacity:.65;cursor:wait}
+.weather-location-hint{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.weather-location-feedback:empty{display:none}.weather-location-feedback{font:12px/1.4 system-ui,sans-serif;position:absolute;top:100%;right:0;z-index:9;width:260px;background:#fff5cf;padding:8px 10px;box-shadow:0 2px 6px #264d3426}
+@media(max-width:850px){.weather-location{width:180px;top:-10px}.weather-heading{margin-top:70px}.weather-nature-photo{top:105px}}
+@media(min-width:851px) and (max-width:1000px){.weather-location{top:55px;right:-45px}}

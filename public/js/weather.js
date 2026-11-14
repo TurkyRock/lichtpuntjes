@@ -50,6 +50,9 @@
     const savedCity = () => { try { return localStorage.getItem('lichtpunt_weather_city'); } catch { return null; } };
     const requested = new URLSearchParams(location.search).get('city');
     let city = [requested, savedCity(), page?.dataset.defaultCity, 'arnhem'].find(value => allowed.includes(value));
+    let locationPoint = null;
+    let locationAttempt = 0;
+    const locateButton = page?.querySelector('#weatherLocate');
     let generation = 0;
     let forecast;
     let activeDay = 0;
@@ -58,7 +61,8 @@
     function updateLinks(data) {
         for (const link of links) {
             const url = new URL(link.href, location.origin);
-            url.searchParams.set('city', city);
+            if (locationPoint) url.searchParams.delete('city');
+            else url.searchParams.set('city', city);
             link.href = url.pathname + url.search;
             link.querySelector('[data-weather-temperature]').textContent = temperature(data?.current?.temperature);
             link.querySelector('[data-weather-icon]').textContent = data ? symbol(data.current?.code, data.current?.is_day !== 0) : '☁';
@@ -174,7 +178,7 @@
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), 25000);
         try {
-            const response = await fetch('/weer/data?city=' + encodeURIComponent(city), { headers: { Accept: 'application/json' }, signal: controller.signal, credentials: 'same-origin' });
+            const response = await fetch('/weer/data?' + (locationPoint ? new URLSearchParams(locationPoint).toString() : 'city=' + encodeURIComponent(city)), { headers: { Accept: 'application/json' }, signal: controller.signal, credentials: 'same-origin' });
             if (!response.ok) throw new Error('Weather unavailable');
             const data = await response.json();
             if (!Array.isArray(data.days) || !data.days.length) throw new Error('Invalid weather response');
@@ -190,12 +194,52 @@
     }
     page?.querySelector('.weather-location').addEventListener('submit', event => {
         event.preventDefault();
+        if (select.value === 'device') { load(); return; }
+        locationAttempt++;
+        if (locateButton) locateButton.disabled = false;
+        write('weatherLocationFeedback', '');
+        locationPoint = null;
         city = select.value;
         try { localStorage.setItem('lichtpunt_weather_city', city); } catch { /* browsing without storage still works */ }
         const url = new URL(location.href);
         url.searchParams.set('city', city);
         history.replaceState(null, '', url.pathname + url.search + url.hash);
         load();
+    });
+    locateButton?.addEventListener('click', () => {
+        const attempt = ++locationAttempt;
+        const feedback = message => write('weatherLocationFeedback', message);
+        if (!navigator.geolocation || !window.isSecureContext) {
+            feedback(text('Locatie bepalen is hier niet beschikbaar. Kies zelf een plaats.', 'Location is unavailable here. Please choose a place.'));
+            return;
+        }
+        locateButton.disabled = true;
+        feedback(text('Je locatie wordt bepaald…', 'Finding your location…'));
+        navigator.geolocation.getCurrentPosition(position => {
+            if (attempt !== locationAttempt) return;
+            locateButton.disabled = false;
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            if (!numeric(latitude) || !numeric(longitude) || Math.abs(latitude) > 90 || Math.abs(longitude) > 180) {
+                feedback(text('Je locatie kon niet worden bepaald. Kies zelf een plaats.', 'Your location could not be found. Please choose a place.'));
+                return;
+            }
+            locationPoint = {latitude: latitude.toFixed(2), longitude: longitude.toFixed(2)};
+            let option = select.querySelector('option[value="device"]');
+            if (!option) { option = node('option', text('Jouw omgeving', 'Your area')); option.value = 'device'; select.append(option); }
+            select.value = 'device';
+            feedback('');
+            // Coordinates stay out of the page URL and browser storage.
+            const url = new URL(location.href); url.searchParams.delete('city');
+            history.replaceState(null, '', url.pathname + url.search + url.hash);
+            load();
+        }, error => {
+            if (attempt !== locationAttempt) return;
+            locateButton.disabled = false;
+            feedback(error.code === 1
+                ? text('Geen locatietoegang. Je kunt zelf een plaats kiezen.', 'Location permission was not granted. You can choose a place yourself.')
+                : text('Je locatie kon niet worden bepaald. Probeer opnieuw of kies een plaats.', 'Your location could not be found. Try again or choose a place.'));
+        }, {enableHighAccuracy:false, timeout:12000, maximumAge:300000});
     });
     select?.addEventListener('change', () => page.querySelector('.weather-location').requestSubmit());
     page?.addEventListener('weather:seasonchange', () => { if (forecast) renderDay(activeDay); });
