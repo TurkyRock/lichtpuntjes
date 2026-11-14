@@ -54,22 +54,35 @@ class BetaTestController extends Controller {
   });
  }
  private function admin(Request $r):void {abort_unless($r->user()?->is_admin&&!$r->user()->is_suspended&&$r->user()->hasVerifiedEmail(),403);}
- public function overview(Request $r){$this->admin($r);app()->setLocale('nl');return view('beta.admin',['people'=>BetaParticipant::with('answers')->oldest()->get(),'tasks'=>BetaTests::TASKS]);}
- public function invite(Request $r){$this->admin($r);$v=$r->validate(['label'=>'required|string|max:80']);[$p,$code]=app(BetaTests::class)->invite($v['label']);return back()->with('beta_invite',url('/testgroep/toegang').'#'.$code);}
+ private function participants(Request $r){
+  $r->validate(['age_group'=>'nullable|in:'.implode(',',array_keys(BetaTests::AGE_GROUPS)).',unknown']);
+  return BetaParticipant::with('answers')->when($r->filled('age_group'),function($q)use($r){if($r->query('age_group')==='unknown')$q->whereNull('age_group');else $q->where('age_group',$r->query('age_group'));})->oldest();
+ }
+ public function overview(Request $r){$this->admin($r);app()->setLocale('nl');return view('beta.admin',['people'=>$this->participants($r)->get(),'totalPeople'=>BetaParticipant::count(),'ageGroups'=>BetaTests::AGE_GROUPS,'ageFilter'=>(string)$r->query('age_group',''),'tasks'=>BetaTests::TASKS]);}
+ public function invite(Request $r){$this->admin($r);$v=$r->validate(['label'=>'required|string|max:80','age_group'=>'nullable|in:'.implode(',',array_keys(BetaTests::AGE_GROUPS))]);[$p,$code]=app(BetaTests::class)->invite($v['label'],$v['age_group']??null);return back()->with('beta_invite',url('/testgroep/toegang').'#'.$code);}
+ public function ageGroup(Request $r,BetaParticipant $person){
+  $this->admin($r);$v=$r->validate(['age_group'=>'nullable|in:'.implode(',',array_keys(BetaTests::AGE_GROUPS))]);
+  $person->update(['age_group'=>$v['age_group']??null]);return back()->with('status','Leeftijdsgroep opgeslagen.');
+ }
  public function reissue(Request $r,BetaParticipant $person){
   $this->admin($r);$code=bin2hex(random_bytes(24));
   DB::transaction(function()use($person,$code){$p=BetaParticipant::whereKey($person->id)->lockForUpdate()->firstOrFail();$p->update(['token_hash'=>hash('sha256',$code),'access_version'=>$p->access_version+1,'expires_at'=>now()->addDays(14),'revoked_at'=>null]);});
   return back()->with('beta_invite',url('/testgroep/toegang').'#'.$code);
  }
  public function revoke(Request $r,BetaParticipant $person){$this->admin($r);$person->update(['revoked_at'=>now(),'access_version'=>$person->access_version+1]);return back()->with('status','Testtoegang ingetrokken.');}
+ public function destroy(Request $r,BetaParticipant $person){
+  $this->admin($r);$v=$r->validate(['confirmation'=>'required|string']);abort_unless(hash_equals($person->id,$v['confirmation']),422);
+  DB::transaction(function()use($person){$p=BetaParticipant::whereKey($person->id)->lockForUpdate()->firstOrFail();$p->answers()->delete();$p->delete();});
+  return redirect('/beheer/testgroep')->with('status','Testpersoon verwijderd. De toegangslink en testsessies zijn ongeldig; testantwoorden zijn verwijderd. Gewone gebruikersaccounts en bijdragen zijn behouden.');
+ }
  public function export(Request $r){
-  $this->admin($r);$people=BetaParticipant::with('answers')->oldest()->get();
+  $this->admin($r);$people=$this->participants($r)->get();
   return response()->streamDownload(function()use($people){
    $out=fopen('php://output','w');fwrite($out,"\xEF\xBB\xBF");
-   $head=['Testpersoon','Opdracht','Uitkomst','Gemak 1-5','Apparaat','Toelichting','Paginapad','Opgeslagen','Test afgerond','Waarde 1-5','Opnieuw gebruiken?','Verbeterpunt onderdeel'];
+   $head=['Testpersoon','Leeftijdsgroep','Opdracht','Uitkomst','Gemak 1-5','Apparaat','Toelichting','Paginapad','Opgeslagen','Test afgerond','Waarde 1-5','Opnieuw gebruiken?','Verbeterpunt onderdeel'];
    foreach(BetaTests::REFLECTION_FIELDS as $field)$head[]=$field['label'];fputcsv($out,$head,';');
    foreach($people as $p)foreach($p->answers as $a){
-    $row=[$p->label,BetaTests::TASKS[$a->task]['title']??$a->task,$a->outcome,$a->ease,$a->device,$a->comment,$a->page_path,$a->updated_at?->toIso8601String(),$p->completed_at?->toIso8601String(),$a->task!=='summary'?($a->summary['value_score']??''):'',$a->task!=='summary'?(['yes'=>'Ja','maybe'=>'Misschien','no'=>'Nee'][$a->summary['use_again']??'']??''):'',$a->task!=='summary'?($a->summary['improvement']??''):''];
+    $row=[$p->label,BetaTests::AGE_GROUPS[$p->age_group]??'Niet opgegeven',BetaTests::TASKS[$a->task]['title']??$a->task,$a->outcome,$a->ease,$a->device,$a->comment,$a->page_path,$a->updated_at?->toIso8601String(),$p->completed_at?->toIso8601String(),$a->task!=='summary'?($a->summary['value_score']??''):'',$a->task!=='summary'?(['yes'=>'Ja','maybe'=>'Misschien','no'=>'Nee'][$a->summary['use_again']??'']??''):'',$a->task!=='summary'?($a->summary['improvement']??''):''];
     foreach(BetaTests::REFLECTION_FIELDS as $key=>$field){$v=$a->task==='summary'?($a->summary[$key]??''):'';$row[]=$field['options'][$v]??$v;}
     fputcsv($out,array_map(BetaTests::csvCell(...),$row),';');
    }fclose($out);

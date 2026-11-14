@@ -53,6 +53,8 @@ class HourlyNewsCollection extends Command
         }
     }
     public function handle(NewsImporter $importer,ArticlePhotoFinder $photos):int {
+        if(!app(\App\Services\Maintenance\StorageUsage::class)->importsAllowed()){$this->warn('Nieuwsimport gepauzeerd: opslag bijna vol. Zie /beheer/opslag.');return self::SUCCESS;}
+
         $raw=(string)($this->option('per-category')??config('news_hourly.per_category',3));
         if(!ctype_digit($raw)||(int)$raw<1||(int)$raw>20){$this->error('--per-category moet tussen 1 en 20 liggen.');return self::INVALID;}
         $this->target=(int)$raw;$this->path=(string)config('news_hourly.state_file');

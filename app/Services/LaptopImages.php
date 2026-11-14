@@ -46,7 +46,8 @@ class LaptopImages {
  public function complete(int $id,string $lease,string $bytes):array {
   $info=@getimagesizefromstring($bytes);
   abort_unless(strlen($bytes)<=(int)config('laptop-images.max_upload_bytes')&&in_array($info['mime']??'',['image/png','image/jpeg'],true)&&min($info[0]??0,$info[1]??0)>=128&&max($info[0]??0,$info[1]??0)<=2048,422,'Geen bruikbare PNG/JPEG.');
-  return DB::transaction(function()use($id,$lease,$bytes,$info){
+  $media=\Illuminate\Support\Facades\Cache::lock('site-media-maintenance',180);abort_unless($media->get(),503,'Opslagonderhoud actief; upload later opnieuw.');
+  try{return DB::transaction(function()use($id,$lease,$bytes,$info){
    $j=LaptopImageJob::whereKey($id)->lockForUpdate()->firstOrFail();
    // A lost HTTP reply can safely be replayed without saving a second image.
    if(in_array($j->status,['generated','completed','applied'])&&$j->completion_hash&&hash_equals($j->completion_hash,hash('sha256',$lease)))return ['saved'=>true];
@@ -62,14 +63,14 @@ class LaptopImages {
     abort_unless($info[0]>=512&&$info[1]>=288,422);
     $a=Article::whereKey($j->target_id)->lockForUpdate()->firstOrFail();abort_unless($this->active($j),409);
     // Re-encode to remove workflow metadata and keep private prompts out of public files.
-    $src=@imagecreatefromstring($bytes);abort_unless($src,422);ob_start();try{imagejpeg($src,null,92);$clean=ob_get_contents();}finally{ob_end_clean();imagedestroy($src);}
+    $src=@imagecreatefromstring($bytes);abort_unless($src,422);$scaled=null;ob_start();try{if(imagesx($src)>1280||imagesy($src)>1280){$factor=min(1280/imagesx($src),1280/imagesy($src));$scaled=imagescale($src,max(1,(int)(imagesx($src)*$factor)),max(1,(int)(imagesy($src)*$factor)));if(!$scaled)throw new NewsServiceException('Afbeelding verkleinen mislukt.');}if(!imagejpeg($scaled?:$src,null,82))throw new NewsServiceException('Afbeelding comprimeren mislukt.');$clean=ob_get_contents();}finally{ob_end_clean();if($scaled)imagedestroy($scaled);imagedestroy($src);}
     $hash=hash('sha256',$clean);abort_if(Article::where('id','!=',$a->id)->where('photo->sha256',$hash)->exists(),422,'Dit beeld wordt al gebruikt.');$name=$hash.'.jpg';File::ensureDirectoryExists(public_path('news-images'));$path=public_path('news-images/'.$name);
     $tmp=$path.'.'.bin2hex(random_bytes(8)).'.tmp';try{if(!File::exists($path)&&(File::put($tmp,$clean)===false||!rename($tmp,$path)))throw new NewsServiceException('Afbeelding opslaan mislukt.');}finally{if(is_file($tmp))File::delete($tmp);}
     $p=$j->payload;$photo=['url'=>'/news-images/'.$name,'sha256'=>$hash,'generated'=>true,'illustrative'=>true,'creator'=>'AI / ComfyUI laptop','provider'=>'laptop','model'=>$p['model'],'style'=>$p['style'],'seed'=>$p['seed'],'subject_hash'=>$p['subject_hash'],'description'=>'AI-beeld bij: '.mb_substr($a->nl['title']??$a->source_title,0,200),'created_at'=>now()->toIso8601String()];
     $j->update(['status'=>'generated','result'=>$photo,'completion_hash'=>hash('sha256',$lease),'lease_hash'=>null,'lease_until'=>null]);
    }
    return ['saved'=>true];
-  },3);
+  },3);}finally{$media->release();}
  }
  public function position(LaptopImageJob $j):?int {
   if(!in_array($j->status,['queued','processing']))return null;

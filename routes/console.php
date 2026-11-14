@@ -37,3 +37,7 @@ Schedule::command('comments:review --limit=10 --retry-errors')->everyTenMinutes(
 Schedule::command('support:sync --limit=25')->everyFifteenMinutes()
  ->when(fn()=>app(\App\Services\SupportPayments::class)->ready())
  ->withoutOverlapping(30)->runInBackground()->appendOutputTo(storage_path('logs/support-recovery.log'));
+
+Schedule::command('site:storage')->everyFifteenMinutes()->withoutOverlapping(15)->runInBackground()->appendOutputTo(storage_path('logs/storage-monitor.log'));
+Schedule::command('site:cleanup --apply')->dailyAt('03:30')->timezone('Europe/Amsterdam')->withoutOverlapping(60)->runInBackground()->appendOutputTo(storage_path('logs/retention.log'));
+Schedule::command('site:backup')->dailyAt('04:30')->timezone('Europe/Amsterdam')->withoutOverlapping(120)->runInBackground()->appendOutputTo(storage_path('logs/backup.log'));

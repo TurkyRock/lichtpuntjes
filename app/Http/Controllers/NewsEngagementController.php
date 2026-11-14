@@ -21,10 +21,12 @@ class NewsEngagementController extends Controller {
             'page'=>'sometimes|integer|min:1|max:1000000',
             'category'=>'sometimes|in:all,community,media,sport,energy,nature,science,people',
             'q'=>'sometimes|nullable|string|max:200','lang'=>'sometimes|in:nl,en',
-            'sort'=>'sometimes|in:newest,reads,likes',
+            'sort'=>'sometimes|in:newest,reads,likes','archive'=>'sometimes|boolean',
         ]);
         $language=$input['lang']??'nl';
         $query=Article::visible();
+        if($request->boolean('archive'))$query->where('origin','news')->where('published_at','<',now()->subDays(config('retention.archive_days',90)));
+        else $query->where(fn($q)=>$q->where('origin','community')->orWhere('published_at','>=',now()->subDays(config('retention.archive_days',90))));
         $category=$input['category']??'all';
         if ($category==='community') $query->where('origin','community');
         elseif ($category!=='all') $query->where('origin','news')->where('category',$category);

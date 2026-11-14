@@ -113,3 +113,12 @@ require __DIR__.'/article-collage.php';
 require __DIR__.'/comment-conversations.php';
 
 Route::get('/mijn-verwerking/{kind}/{id}',[\App\Http\Controllers\ContributionProgressController::class,'show'])->whereIn('kind',['story','moment'])->whereNumber('id')->middleware(['auth',\App\Http\Middleware\CommunityLocale::class,'throttle:120,1,contribution-progress:']);
+
+// Retention views use the same account and administrator protections as the rest of the site.
+Route::get('/archief',function(\Illuminate\Http\Request $r){app()->setLocale($r->query('lang')==='en'?'en':'nl');return view('community.news-archive',['articles'=>\App\Models\Article::visible()->where('origin','news')->where('published_at','<',now()->subDays(config('retention.archive_days',90)))->latest('published_at')->paginate(20)->withQueryString()]);});
+Route::middleware(['auth','verified',\App\Http\Middleware\CommunityActive::class,\App\Http\Middleware\CommunityLocale::class,\App\Http\Middleware\CookiePrivacy::class])->group(function(){
+ Route::get('/beheer/opslag',[\App\Http\Controllers\StorageMaintenanceController::class,'index']);
+ Route::post('/beheer/opslag',[\App\Http\Controllers\StorageMaintenanceController::class,'run'])->middleware('throttle:6,1,storage-maintenance:');
+ Route::get('/mijn-momentjes/prullenbak',[\App\Http\Controllers\MomentTrashController::class,'index']);
+ Route::post('/mijn-momentjes/prullenbak/{id}/herstellen',[\App\Http\Controllers\MomentTrashController::class,'restore'])->whereNumber('id')->middleware('throttle:10,1,moment-restore:');
+});

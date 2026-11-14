@@ -10,7 +10,9 @@ Route::post('/testgroep/afronden',[Beta::class,'complete'])->middleware('throttl
 Route::middleware('auth')->group(function(){
  Route::get('/beheer/testgroep',[Beta::class,'overview']);
  Route::get('/beheer/testgroep/export',[Beta::class,'export']);
- Route::post('/beheer/testgroep/uitnodigen',[Beta::class,'invite'])->middleware('throttle:6,1');
+ Route::post('/beheer/testgroep/uitnodigen',[Beta::class,'invite'])->middleware('throttle:30,1,beta-invite:');
+ Route::post('/beheer/testgroep/{person}/leeftijdsgroep',[Beta::class,'ageGroup'])->whereUuid('person')->middleware('throttle:30,1');
  Route::post('/beheer/testgroep/{person}/nieuwe-link',[Beta::class,'reissue'])->whereUuid('person')->middleware('throttle:10,1');
+ Route::delete('/beheer/testgroep/{person}',[Beta::class,'destroy'])->whereUuid('person')->middleware('throttle:30,1,beta-delete:');
  Route::post('/beheer/testgroep/{person}/intrekken',[Beta::class,'revoke'])->whereUuid('person')->middleware('throttle:10,1');
 });

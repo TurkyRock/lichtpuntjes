@@ -8,6 +8,7 @@
  ['/profiel', 'overview', $accountEn ? 'Overview' : 'Overzicht', request()->is('profiel') && $sidebarSection === 'overview'],
  ['/lichtpuntje/delen', null, $accountEn ? 'Share a bright spot' : 'Deel een lichtpuntje', request()->is('lichtpuntje/delen','lichtpuntje/schrijven')],
  ['/mijn-momentjes', null, $accountEn ? 'My moments' : 'Mijn momentjes', request()->is('mijn-momentjes')],
+ ['/mijn-momentjes/prullenbak', null, $accountEn ? 'Trash' : 'Prullenbak', request()->is('mijn-momentjes/prullenbak')],
  ['/mijn-lichtpuntjes', null, $accountEn ? 'My stories' : 'Mijn verhalen', request()->is('mijn-lichtpuntjes','mijn-lichtpuntjes/*')],
  ['/profiel', 'badges', $accountEn ? 'Bright points & badges' : 'Lichtpunten & badges', request()->is('profiel') && $sidebarSection === 'badges'],
  ['/profiel', 'comments', $accountEn ? 'My comments' : 'Mijn reacties', request()->is('profiel') && $sidebarSection === 'comments'],

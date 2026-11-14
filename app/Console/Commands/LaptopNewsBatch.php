@@ -36,6 +36,8 @@ class LaptopNewsBatch extends Command {
   catch(ArticleImageRejected $e){$a->update(['status'=>'draft','reason'=>'Twee beeldkandidaten onvoldoende passend; handmatige controle nodig.']);unset($this->state['selected'][$a->id]);$this->save();$this->warn('#'.$a->id.' wacht op handmatige beeldcontrole; een andere kandidaat vult de ronde.');}
  }
  public function handle(NewsImporter $importer,ArticlePhotoFinder $photos):int {
+        if(!app(\App\Services\Maintenance\StorageUsage::class)->importsAllowed()){$this->warn('Nieuwsimport gepauzeerd: opslag bijna vol. Zie /beheer/opslag.');return self::SUCCESS;}
+
   $this->path=(string)config('laptop-images.news_batch_file',storage_path('app/laptop-news-batch.json'));
   if(!app(LaptopImages::class)->enabled()){$this->error('Deze opdracht vereist NEWS_IMAGE_PROVIDER=laptop en LAPTOP_IMAGES_ENABLED=true.');return self::FAILURE;}
   $raw=(string)$this->option('per-category');if(!ctype_digit($raw)||(int)$raw<1||(int)$raw>20){$this->error('--per-category moet tussen 1 en 20 liggen.');return self::INVALID;}

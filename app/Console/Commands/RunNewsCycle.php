@@ -14,6 +14,8 @@ class RunNewsCycle extends Command
 
     public function handle(NewsImporter $importer,ArticlePhotoFinder $photos): int
     {
+        if(!app(\App\Services\Maintenance\StorageUsage::class)->importsAllowed()){$this->warn('Nieuwsimport gepauzeerd: opslag bijna vol. Zie /beheer/opslag.');return self::SUCCESS;}
+
         $lock=Cache::lock('lichtpunt-import',10800);
         if(!$lock->get()){$this->warn('Er loopt al een import.');return self::SUCCESS;}
         try {

@@ -5,6 +5,7 @@
 @foreach([
  ['/beheer', $adminEn?'Overview':'Overzicht','home'],
  ['/beheer/reacties', $adminEn?'Comments':'Reacties','comments'],
+ ['/beheer/opslag',$adminEn?'Storage & maintenance':'Opslag & onderhoud','articles'],
  ['/beheer/artikelen',$adminEn?'Articles':'Artikelen','articles'],
  ['/beheer/lichtpuntjes',$adminEn?'Community stories':'Eigen lichtpuntjes','stories'],
  ['/beheer/momentjes',$adminEn?'Public moments':'Momentjes','stories'],
@@ -27,3 +28,6 @@
 </svg><span>{{ $adminLabel }}</span></a>
 @endforeach
 </nav></aside>
+
+@php($storageAlert=\Illuminate\Support\Facades\Cache::get('site-storage-report'))
+@if($storageAlert && ($storageAlert['warning'] || $storageAlert['paused']))<p class="errors" role="alert"><a href="/beheer/opslag">Opslag: {{ $storageAlert['percent'] }}% gebruikt{{ $storageAlert['paused']?' · nieuwsimport gepauzeerd':'' }}</a></p>@endif
