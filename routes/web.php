@@ -45,13 +45,13 @@ Route::middleware('guest')->group(function(){
  Route::get('/aanmelden/afronden', [\App\Http\Controllers\SocialAuthController::class,'form']);
  Route::post('/aanmelden/afronden', [\App\Http\Controllers\SocialAuthController::class,'complete'])->middleware('throttle:6,1,social-complete:');
  Route::get('/inloggen',fn()=>view(\App\Support\CommunityViews::name('auth'),['mode'=>'login']))->name('login');
- Route::post('/inloggen',[Accounts::class,'login'])->middleware('throttle:6,1');
+ Route::post('/inloggen',[Accounts::class,'login'])->middleware('throttle:6,1,login:');
  Route::get('/aanmelden',fn(Request $r)=>view(\App\Support\CommunityViews::name('auth'),['mode'=>'register','invite'=>preg_match('/^[a-f0-9]{32}$/',(string)$r->query('invite'))?$r->query('invite'):null]));
- Route::post('/aanmelden',[Accounts::class,'register'])->middleware('throttle:5,1');
+ Route::post('/aanmelden',[Accounts::class,'register'])->middleware('throttle:5,1,register:');
  Route::get('/wachtwoord-vergeten',fn()=>view(\App\Support\CommunityViews::name('auth'),['mode'=>'forgot']))->name('password.request');
- Route::post('/wachtwoord-vergeten',[Accounts::class,'forgot'])->middleware('throttle:3,1')->name('password.email');
+ Route::post('/wachtwoord-vergeten',[Accounts::class,'forgot'])->middleware('throttle:3,1,password-forgot:')->name('password.email');
  Route::get('/reset-password/{token}',fn(Request $r,string $token)=>view(\App\Support\CommunityViews::name('auth'),['mode'=>'reset','token'=>$token,'email'=>$r->query('email')]))->name('password.reset');
- Route::post('/reset-password',[Accounts::class,'reset'])->middleware('throttle:6,1')->name('password.update');
+ Route::post('/reset-password',[Accounts::class,'reset'])->middleware('throttle:6,1,password-reset:')->name('password.update');
 });
 Route::post('/uitloggen',[Accounts::class,'logout'])->middleware('auth');
 Route::middleware(['auth',CommunityActive::class])->group(function(){
@@ -112,4 +112,4 @@ require __DIR__.'/moment-images.php';
 require __DIR__.'/article-collage.php';
 require __DIR__.'/comment-conversations.php';
 
-Route::get('/mijn-verwerking/{kind}/{id}',[\App\Http\Controllers\ContributionProgressController::class,'show'])->whereIn('kind',['story','moment'])->whereNumber('id')->middleware(['auth',\App\Http\Middleware\CommunityLocale::class,'throttle:120,1']);
+Route::get('/mijn-verwerking/{kind}/{id}',[\App\Http\Controllers\ContributionProgressController::class,'show'])->whereIn('kind',['story','moment'])->whereNumber('id')->middleware(['auth',\App\Http\Middleware\CommunityLocale::class,'throttle:120,1,contribution-progress:']);
