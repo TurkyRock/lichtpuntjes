@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="/css/our-story.css?v={{ filemtime(public_path('css/our-story.css')) }}">
 <section class="mission story-scrapbook" id="about" aria-labelledby="ourStoryTitle">
-<div class="story-book-title"><div><div class="eyebrow" data-i="missiontag">{{ $locale === 'en' ? 'Why Jouw Lichtpuntje?' : 'Waarom Jouw Lichtpuntje?' }}</div><h2 id="ourStoryTitle" data-i="missiontitle">@if($locale === 'en')A different perspective.<br>The same world.@elseEen andere blik.<br>Dezelfde wereld.@endif</h2></div><span class="story-paper story-paper-tag">{{ $locale === 'en' ? 'Good news worth keeping' : 'Goed nieuws om te bewaren' }}</span></div>
+<div class="story-book-title"><div><div class="eyebrow" data-i="missiontag">{{ $locale === 'en' ? 'Why Jouw Lichtpuntjes?' : 'Waarom Jouw Lichtpuntjes?' }}</div><h2 id="ourStoryTitle" data-i="missiontitle">@if($locale === 'en')A different perspective.<br>The same world.@elseEen andere blik.<br>Dezelfde wereld.@endif</h2></div><span class="story-paper story-paper-tag">{{ $locale === 'en' ? 'Good news worth keeping' : 'Goed nieuws om te bewaren' }}</span></div>
 <div class="story-book-grid">
 <article class="story-paper story-intro"><span class="story-tape" aria-hidden="true"></span>
 @if($locale === 'en')

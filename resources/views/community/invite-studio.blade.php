@@ -1,7 +1,7 @@
 @php
  $en=$profileEn;
  $inviteLink=url('/aanmelden').'?'.http_build_query(['lang'=>app()->getLocale(),'invite'=>$user->invite_code]);
- $inviteText=$en?'Here is something that makes me smile: positive news and little joys. Maybe Jouw Lichtpuntje is a place for you too. ☀':'Hier word ik blij van: positief nieuws en kleine gelukjes. Misschien is Jouw Lichtpuntje ook iets voor jou. ☀';
+ $inviteText=$en?'Here is something that makes me smile: positive news and little joys. Maybe Jouw Lichtpuntjes is a place for you too. ☀':'Hier word ik blij van: positief nieuws en kleine gelukjes. Misschien is Jouw Lichtpuntjes ook iets voor jou. ☀';
  $fullInvite=$inviteText."\n\n".$inviteLink;
  $platforms=[
  ['whatsapp','WhatsApp','https://wa.me/?text='.rawurlencode($fullInvite)],
@@ -27,7 +27,7 @@
  </div></div>
  <div class="invite-middle">
   <div class="invite-message invite-paper"><h3>{{ $en?'Here is something you can send':'Dit kun je erbij sturen' }}</h3><label for="inviteMessage">{{ $en?'Make this message your own':'Maak dit berichtje gerust persoonlijk' }}</label><textarea id="inviteMessage" maxlength="600" rows="3">{{ $inviteText }}</textarea><button class="quiet" type="button" data-invite-copy="message">{{ $en?'Copy message + link':'Kopieer bericht + link' }}</button></div>
-  <div class="invite-card-wrap"><div class="invite-share-card" aria-label="{{ $en?'Preview of the downloadable card':'Voorbeeld van het deelkaartje' }}"><strong>{{ $en?'A little good news does you good':'Een beetje goed nieuws doet goed' }}</strong><img src="/images/invite-sun-envelope-v1.png" width="160" height="160" alt=""><span>Jouw Lichtpuntje</span></div><button type="button" data-invite-download>{{ $en?'Download share card':'Download deelkaartje' }}</button></div>
+  <div class="invite-card-wrap"><div class="invite-share-card" aria-label="{{ $en?'Preview of the downloadable card':'Voorbeeld van het deelkaartje' }}"><strong>{{ $en?'A little good news does you good':'Een beetje goed nieuws doet goed' }}</strong><img src="/images/invite-sun-envelope-v1.png" width="160" height="160" alt=""><span>Jouw Lichtpuntjes</span></div><button type="button" data-invite-download>{{ $en?'Download share card':'Download deelkaartje' }}</button></div>
  </div>
  <div class="invite-options invite-paper"><h3>{{ $en?'Share it your way':'Deel op jouw manier' }}</h3><div class="invite-social-grid">
  @foreach($platforms as [$key,$label,$href])

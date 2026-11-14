@@ -1,5 +1,5 @@
 @extends('community.layout')
-@section('title','Gebruiker beheren | Jouw Lichtpuntje')
+@section('title','Gebruiker beheren | Jouw Lichtpuntjes')
 @section('content')
 @php($en=app()->getLocale()==='en')
 <p><a href="/beheer/gebruikers?lang={{ app()->getLocale() }}">← {{ $en?'All members':'Alle gebruikers' }}</a></p>

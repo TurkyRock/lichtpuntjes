@@ -1,5 +1,5 @@
 @extends('community.layout')
-@section('title',app()->getLocale()==='en'?'My stories — Jouw Lichtpuntje':'Mijn verhalen — Jouw Lichtpuntje')
+@section('title',app()->getLocale()==='en'?'My stories — Jouw Lichtpuntjes':'Mijn verhalen — Jouw Lichtpuntjes')
 @push('page-styles')<link rel="stylesheet" href="/css/story-studio.css?v={{ filemtime(public_path('css/story-studio.css')) }}"><script src="/js/story-studio.js?v={{ filemtime(public_path('js/story-studio.js')) }}" defer></script>@endpush
 @push('page-styles')@include('shared.processing-styles')@endpush
 @section('content')

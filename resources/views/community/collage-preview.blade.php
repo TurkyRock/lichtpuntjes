@@ -1,5 +1,5 @@
 @extends('community.layout')
-@section('title','Knipselproef — Jouw Lichtpuntje')
+@section('title','Knipselproef — Jouw Lichtpuntjes')
 @section('content')
 <h1>{{ app()->getLocale()==='en'?'A little paper, a new perspective':'Een beetje papier, een frisse blik' }}</h1><p>{{ app()->getLocale()==='en'?'Three symbolic examples of the new cut-paper image style. These are mood images, not news photographs.':'Drie symbolische voorbeelden van de nieuwe knipselstijl voor artikelbeelden. Dit zijn sfeerbeelden, geen nieuwsfoto’s.' }}</p>
 @foreach([

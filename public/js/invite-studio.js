@@ -52,7 +52,7 @@
   if(nativePending)return;
   if(typeof navigator.share!=='function'){showHelp(null,source);return;}
   nativePending=true;source.disabled=true;
-  try{await navigator.share({title:'Jouw Lichtpuntje',text:text(),url});notify(label('Je bent terug uit het deelmenu. Dank je wel voor het doorgeven!','You are back from the sharing menu. Thanks for spreading a little sunshine!'));}
+  try{await navigator.share({title:'Jouw Lichtpuntjes',text:text(),url});notify(label('Je bent terug uit het deelmenu. Dank je wel voor het doorgeven!','You are back from the sharing menu. Thanks for spreading a little sunshine!'));}
   catch(error){if(error.name==='AbortError')notify(label('Delen geannuleerd. Je kunt het later nog eens proberen.','Sharing cancelled. You can try again later.'));else showHelp(null,source);}
   finally{nativePending=false;source.disabled=false;}
  }
@@ -66,7 +66,7 @@
   ctx.fillStyle='#dfe8d3';ctx.fillRect(52,52,976,1816);ctx.fillStyle='#fff9ec';ctx.fillRect(83,82,914,1756);
   // Small deterministic paper flecks; no personal data or external service involved.
   ctx.fillStyle='#71634c0a';for(let i=0;i<6500;i++)ctx.fillRect((i*149)%1080,(i*283)%1920,1+(i%2),1);
-  ctx.textAlign='center';ctx.fillStyle='#25493b';ctx.font='46px Georgia,serif';ctx.fillText('Jouw Lichtpuntje',540,180);
+  ctx.textAlign='center';ctx.fillStyle='#25493b';ctx.font='46px Georgia,serif';ctx.fillText('Jouw Lichtpuntjes',540,180);
   ctx.fillStyle='#e6c854';ctx.fillRect(330,207,420,9);
   ctx.fillStyle='#25493b';ctx.font='74px Georgia,serif';const title=en?['A little good news','does you good']:['Een beetje','goed nieuws','doet goed'];title.forEach((line,i)=>ctx.fillText(line,540,330+i*91));
   ctx.font='35px system-ui,sans-serif';ctx.fillStyle='#4e6654';
@@ -79,7 +79,7 @@
  }
  async function download(source){
   if(downloading)return;downloading=true;source.disabled=true;
-  try{const blob=await cardBlob(),blobUrl=URL.createObjectURL(blob),a=document.createElement('a');a.href=blobUrl;a.download='jouw-lichtpuntje-'+(en?'share-card':'deelkaartje')+'.png';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(blobUrl),30000);notify(label('Je deelkaartje is klaar. Voeg bij het delen ook je uitnodigingslink toe.','Your share card is ready. Add your invitation link when sharing.'));}
+  try{const blob=await cardBlob(),blobUrl=URL.createObjectURL(blob),a=document.createElement('a');a.href=blobUrl;a.download='jouw-lichtpuntjes-'+(en?'share-card':'deelkaartje')+'.png';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(blobUrl),30000);notify(label('Je deelkaartje is klaar. Voeg bij het delen ook je uitnodigingslink toe.','Your share card is ready. Add your invitation link when sharing.'));}
   catch{notify(label('Het kaartje kon niet worden gemaakt. Je kunt je bericht en link wel kopiëren.','The card could not be created. You can still copy your message and link.'));}
   finally{downloading=false;source.disabled=false;}
  }

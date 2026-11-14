@@ -1,6 +1,6 @@
 @php($followEn = app()->getLocale() === 'en')
 <dialog id="followUsDialog" class="follow-us-dialog" aria-labelledby="followUsTitle">
-<div class="follow-us-head"><p>Jouw Lichtpuntje</p><button type="button" data-follow-close aria-label="{{ $followEn ? 'Close' : 'Sluiten' }}">×</button></div>
+<div class="follow-us-head"><p>Jouw Lichtpuntjes</p><button type="button" data-follow-close aria-label="{{ $followEn ? 'Close' : 'Sluiten' }}">×</button></div>
 <h2 id="followUsTitle" data-follow-nl="Volg een beetje positiviteit" data-follow-en="Follow a little positivity">{{ $followEn ? 'Follow a little positivity' : 'Volg een beetje positiviteit' }}</h2>
 <p data-follow-nl="Ook tussen je dagelijkse berichten door een lichtpuntje vinden? Hier vind je onze kanalen." data-follow-en="A little bright spot in your daily feed? Find our channels here.">{{ $followEn ? 'A little bright spot in your daily feed? Find our channels here.' : 'Ook tussen je dagelijkse berichten door een lichtpuntje vinden? Hier vind je onze kanalen.' }}</p>
 <div class="follow-us-platforms">

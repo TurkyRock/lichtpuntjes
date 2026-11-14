@@ -27,13 +27,13 @@ class StorySeo {
   $description=$article?(string)($article->{$lang}['teaser']??''):($en?'Your daily dose of positivity. Discover good news from around the world and uplifting stories shared by our community.':'Jouw dagelijkse portie positiviteit. Ontdek positief nieuws uit de hele wereld en mooie lichtpuntjes die mensen zelf delen.');
   $alternates=$article?self::urls($article):['nl'=>self::home('nl',$category,$page),'en'=>self::home('en',$category,$page)];
   $image=self::safeUrl($article?($article->photo['url']??null):'/images/lichtpunt-hero-papier-v2.png');
-  $schema=['@context'=>'https://schema.org','@type'=>'WebSite','name'=>'Jouw Lichtpuntje','url'=>self::absolute('/'),'inLanguage'=>['nl','en']];
+  $schema=['@context'=>'https://schema.org','@type'=>'WebSite','name'=>'Jouw Lichtpuntjes','url'=>self::absolute('/'),'inLanguage'=>['nl','en']];
   if($article){
-   $schema=['@context'=>'https://schema.org','@type'=>$article->origin==='community'?'BlogPosting':'Article','headline'=>$title,'description'=>Str::limit(strip_tags($description),160,''),'inLanguage'=>$lang,'mainEntityOfPage'=>self::absolute($alternates[$lang]),'publisher'=>['@type'=>'Organization','name'=>'Jouw Lichtpuntje','url'=>self::absolute('/')],'author'=>['@type'=>$article->origin==='community'?'Person':'Organization','name'=>$article->origin==='community'?$article->source_name:'Jouw Lichtpuntje']];
+   $schema=['@context'=>'https://schema.org','@type'=>$article->origin==='community'?'BlogPosting':'Article','headline'=>$title,'description'=>Str::limit(strip_tags($description),160,''),'inLanguage'=>$lang,'mainEntityOfPage'=>self::absolute($alternates[$lang]),'publisher'=>['@type'=>'Organization','name'=>'Jouw Lichtpuntjes','url'=>self::absolute('/')],'author'=>['@type'=>$article->origin==='community'?'Person':'Organization','name'=>$article->origin==='community'?$article->source_name:'Jouw Lichtpuntjes']];
    if($image)$schema['image']=[$image];
    if($article->published_at)$schema['datePublished']=$article->published_at->toIso8601String();
    if($article->origin!=='community'&&self::safeUrl($article->source_url))$schema['citation']=self::safeUrl($article->source_url);
   }
-  return ['title'=>$title.($page>1?' · '.($en?'Page':'Pagina').' '.$page:'').' | Jouw Lichtpuntje','description'=>Str::limit(strip_tags($description),160,''),'canonical'=>self::absolute($alternates[$lang]),'alternates'=>array_map(fn($p)=>self::absolute($p),$alternates),'languagePaths'=>$alternates,'image'=>$image,'schema'=>$schema,'type'=>$article?'article':'website'];
+  return ['title'=>$title.($page>1?' · '.($en?'Page':'Pagina').' '.$page:'').' | Jouw Lichtpuntjes','description'=>Str::limit(strip_tags($description),160,''),'canonical'=>self::absolute($alternates[$lang]),'alternates'=>array_map(fn($p)=>self::absolute($p),$alternates),'languagePaths'=>$alternates,'image'=>$image,'schema'=>$schema,'type'=>$article?'article':'website'];
  }
 }

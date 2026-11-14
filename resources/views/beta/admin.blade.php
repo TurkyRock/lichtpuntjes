@@ -1,5 +1,5 @@
 @extends('community.layout')
-@section('title','Testgroep | Jouw Lichtpuntje')
+@section('title','Testgroep | Jouw Lichtpuntjes')
 @push('page-styles')<link rel="stylesheet" href="/css/beta-tests.css?v={{ filemtime(public_path('css/beta-tests.css')) }}">@endpush
 @section('content')
 <p class="admin-eyebrow">Samen testen</p><h1>Het testprikbord</h1><p>Bekijk hoe de eerste proefronde verloopt. Antwoorden blijven in de database van deze website en zijn alleen hier toegankelijk voor beheerders.</p><div class="row"><a class="button" href="/beheer/testgroep/export{{ $ageFilter!==''?'?'.http_build_query(['age_group'=>$ageFilter]):'' }}">{{ $ageFilter!==''?'Download deze selectie als CSV':'Download alle antwoorden als CSV' }}</a><span>{{ $totalPeople }} testpersonen · {{ $people->whereNotNull('completed_at')->count() }} afgerond{{ $ageFilter!==''?' binnen deze selectie':'' }}</span></div>

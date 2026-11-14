@@ -1,5 +1,5 @@
 @extends('community.layout')
-@section('title','Artikelen beheren | Jouw Lichtpuntje')
+@section('title','Artikelen beheren | Jouw Lichtpuntjes')
 @section('content')
 @php($en=app()->getLocale()==='en')
 <section class="panel"><p class="small"><a href="/beheer?lang={{ app()->getLocale() }}">← {{ $en?'Back to administration':'Terug naar beheer' }}</a></p><h1>{{ $en?'All articles':'Alle artikelen' }}</h1><p class="intro">{{ $en?'News and community stories, with up to 30 articles per page. Hide a published story to remove it from the site; you can restore it later.':'Nieuws en eigen lichtpuntjes, maximaal 30 per pagina. Verwijder een geplaatst bericht om het van de site te halen. Je kunt het later terugplaatsen.' }}</p>

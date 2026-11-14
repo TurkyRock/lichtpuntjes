@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Jouw Lichtpuntje'),
+    'name' => preg_replace('/^(?:Jouw )?Lichtpunt(?:je|jes)?$/u', 'Jouw Lichtpuntjes', env('APP_NAME', 'Jouw Lichtpuntjes')),
 
     /*
     |--------------------------------------------------------------------------

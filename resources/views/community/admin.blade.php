@@ -1,6 +1,6 @@
 @extends('community.layout')
 @section('content')
-<h1>De zonneschijncentrale ☀</h1><p class="admin-intro">Hier houd je Jouw Lichtpuntje gezellig. Reacties in de twijfelbak zijn nog niet zichtbaar op de site.</p><div class="admin-status-tabs">
+<h1>De zonneschijncentrale ☀</h1><p class="admin-intro">Hier houd je Jouw Lichtpuntjes gezellig. Reacties in de twijfelbak zijn nog niet zichtbaar op de site.</p><div class="admin-status-tabs">
 @foreach(['doubt'=>'Twijfelbak','pending'=>'Wachtend','rejected'=>'Afgewezen','approved'=>'Geplaatst'] as $key=>$label)<a class="button {{ $filter===$key?'':'quiet' }}" href="/beheer/reacties?status={{ $key }}">{{ $label }} ({{ $counts[$key]??0 }})</a>
 @endforeach</div>
 <form method="get" action="/beheer/reacties" class="admin-search"><input type="hidden" name="lang" value="{{ app()->getLocale() }}"><input type="hidden" name="status" value="{{ $filter }}"><input name="q" value="{{ request('q') }}" placeholder="Zoek in reacties" maxlength="100" aria-label="Zoek reacties"><button>Zoeken</button></form>

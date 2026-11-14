@@ -31,7 +31,7 @@ class SupportPayments {
    }
    $base=rtrim(config('app.url'),'/');
    $data=['amount'=>['currency'=>'EUR','value'=>number_format($p->cents/100,2,'.','')],
-    'description'=>'Steun Lichtpuntjes '.substr($p->id,0,8),'redirectUrl'=>$base.'/steun/bedankt/'.$p->id,
+    'description'=>'Steun Jouw Lichtpuntjes '.substr($p->id,0,8),'redirectUrl'=>$base.'/steun/bedankt/'.$p->id,
     'webhookUrl'=>$base.'/steun/mollie/webhook','metadata'=>['support_pledge'=>$p->id],
     'sequenceType'=>$p->frequency==='monthly'?'first':'oneoff','method'=>'ideal'];
    if($p->customer_id)$data['customerId']=$p->customer_id;
@@ -68,7 +68,7 @@ class SupportPayments {
     $start=Carbon::parse($payment['paidAt'])->timezone('Europe/Amsterdam')->addMonthNoOverflow()->format('Y-m-d');
     $sub=$this->call('POST','customers/'.$p->customer_id.'/subscriptions',[
      'amount'=>$payment['amount'],'interval'=>'1 month','startDate'=>$start,'method'=>'directdebit','mandateId'=>$mandate['id'],
-     'description'=>'Steun Lichtpuntjes '.substr($p->id,0,8),'metadata'=>['support_pledge'=>$p->id],
+     'description'=>'Steun Jouw Lichtpuntjes '.substr($p->id,0,8),'metadata'=>['support_pledge'=>$p->id],
      'webhookUrl'=>rtrim(config('app.url'),'/').'/steun/mollie/webhook'], $p->id.'-subscription');
     $p->update(['subscription_id'=>$sub['id'],'subscription_status'=>$sub['status']]);
    }

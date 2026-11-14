@@ -1,5 +1,5 @@
 @extends('community.layout')
-@section('title', app()->getLocale()==='en'?'A smile from each other — Jouw Lichtpuntje':'Een glimlach van elkaar — Jouw Lichtpuntje')
+@section('title', app()->getLocale()==='en'?'A smile from each other — Jouw Lichtpuntjes':'Een glimlach van elkaar — Jouw Lichtpuntjes')
 @push('page-styles')<link rel="stylesheet" href="/css/moment-studio.css?v={{ filemtime(public_path('css/moment-studio.css')) }}"><script src="/js/moment-washing-line.js?v={{ filemtime(public_path('js/moment-washing-line.js')) }}" defer></script>@endpush
 @section('content')
 @php($en=app()->getLocale()==='en')

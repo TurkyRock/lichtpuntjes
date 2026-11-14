@@ -1,11 +1,11 @@
 @extends('community.layout')
-@section('title','Donaties | Jouw Lichtpuntje')
+@section('title','Donaties | Jouw Lichtpuntjes')
 @section('content')
 @php
  $money=fn($cents)=>'€ '.number_format((int)$cents/100,2,',','.');
  $paymentLabels=['paid'=>'Ontvangen','pending'=>'In behandeling','open'=>'Betaalverzoek open','authorized'=>'Geautoriseerd','failed'=>'Mislukt','canceled'=>'Geannuleerd','expired'=>'Verlopen'];
 @endphp
-<div class="admin-heading"><p class="admin-eyebrow">Met dank aan de community</p><h1>Alle beetjes helpen</h1><p>Dit is de steun die Jouw Lichtpuntje mogelijk maakt.</p></div>
+<div class="admin-heading"><p class="admin-eyebrow">Met dank aan de community</p><h1>Alle beetjes helpen</h1><p>Dit is de steun die Jouw Lichtpuntjes mogelijk maakt.</p></div>
 @if($mode==='test')<p class="status"><strong>Teststand — dit is geen echt ontvangen geld.</strong> Kies Live om echte donaties te bekijken.</p>@endif
 <section class="panel">@if(request('user_id'))<p>Betalingen van één geselecteerde gebruiker. <a href="/beheer/donaties?mode={{ $mode }}">Toon iedereen</a></p>@endif<form method="get" class="admin-filter-grid">@if(request('user_id'))<input type="hidden" name="user_id" value="{{ request('user_id') }}">@endif<label>Omgeving<select name="mode"><option value="live" @selected($mode==='live')>Live · echte donaties</option><option value="test" @selected($mode==='test')>Testbetalingen</option></select></label><label>Vanaf<input type="date" name="from" value="{{ request('from') }}"></label><label>Tot en met<input type="date" name="to" value="{{ request('to') }}"></label><label>Naam of e-mailadres<input name="q" value="{{ $search }}" maxlength="100"></label><label>Betaalstatus in de lijst<select name="status">@foreach(['all'=>'Alle statussen','paid'=>'Ontvangen','open'=>'Open','pending'=>'In behandeling','authorized'=>'Geautoriseerd','failed'=>'Mislukt','canceled'=>'Geannuleerd','expired'=>'Verlopen','refunded'=>'Met terugbetaling','chargeback'=>'Met terugboeking'] as $key=>$label)<option value="{{ $key }}" @selected($status===$key)>{{ $label }}</option>@endforeach</select></label><button>Overzicht tonen</button></form></section>
 <div class="admin-metrics admin-metrics-four">

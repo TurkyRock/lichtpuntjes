@@ -1,5 +1,5 @@
 @extends('community.layout')
-@section('title', app()->getLocale()==='en'?'Support Jouw Lichtpuntje':'Steun Jouw Lichtpuntje')
+@section('title', app()->getLocale()==='en'?'Support Jouw Lichtpuntjes':'Steun Jouw Lichtpuntjes')
 @push('page-styles')<link rel="stylesheet" href="/css/support-compact.css?v={{ filemtime(public_path('css/support-compact.css')) }}">@endpush
 @section('content')
 @php($en=app()->getLocale()==='en')
@@ -18,7 +18,7 @@
 <div class="support-story-column"><section class="support-paper support-letter support-family-letter">
 <span class="support-kicker">{{ $en?'My promise to you':'Mijn belofte aan jou' }}</span>
 <h1 class="support-compact-title">{{ $en?'Always free. No advertising.':'Altijd gratis. Zonder reclame.' }}</h1>
-<p class="support-compact-intro">{{ $en?'Thank you for being here. I work with love on Jouw Lichtpuntje: a free place for a little positivity.':'Dank je wel dat je hier bent. Ik werk met liefde aan Jouw Lichtpuntje: een gratis plek voor een beetje positiviteit.' }}</p>
+<p class="support-compact-intro">{{ $en?'Thank you for being here. I work with love on Jouw Lichtpuntjes: a free place for a little positivity.':'Dank je wel dat je hier bent. Ik werk met liefde aan Jouw Lichtpuntjes: een gratis plek voor een beetje positiviteit.' }}</p>
 <div class="support-personal-row">
 <figure class="support-family-photo"><img src="/images/erik-gezin.jpg" width="1535" height="2048" alt="{{ $en?'Erik with his family, together by an icy lake':'Erik met zijn gezin, samen bij een meer met ijsschotsen' }}" fetchpriority="high"><figcaption>{{ $en?'My family and me — my bright spots.':'Mijn gezin en ik — mijn lichtpuntjes.' }} <span aria-hidden="true">♡</span></figcaption></figure>
 <div class="support-personal-copy"><h2 class="support-build-heading"><span>{{ $en?'No business model.':'Geen verdienmodel.' }}</span><span>{{ $en?'Just a love of building.':'Wel plezier in bouwen.' }}</span></h2><p>{{ $en?'Your contribution keeps this place running and helps me keep building.':'Jouw bijdrage houdt deze plek draaiende en helpt mij verder te bouwen.' }}</p><div class="support-purpose-cards" aria-label="{{ $en?'Your contribution helps with':'Jouw bijdrage helpt bij' }}">

@@ -110,7 +110,7 @@ return [
 
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'name' => preg_replace('/^(?:Jouw )?Lichtpunt(?:je|jes)?$/u', 'Jouw Lichtpuntjes', env('MAIL_FROM_NAME', env('APP_NAME', 'Jouw Lichtpuntjes'))),
     ],
 
 ];

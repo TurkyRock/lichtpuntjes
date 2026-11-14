@@ -1,5 +1,5 @@
 @extends('community.layout')
-@section('title', app()->getLocale()==='en'?'What would you like to share? — Jouw Lichtpuntje':'Wat wil jij delen? — Jouw Lichtpuntje')
+@section('title', app()->getLocale()==='en'?'What would you like to share? — Jouw Lichtpuntjes':'Wat wil jij delen? — Jouw Lichtpuntjes')
 @push('page-styles')
 <link rel="stylesheet" href="/css/share-choice.css?v={{ filemtime(public_path('css/share-choice.css')) }}">
 @endpush

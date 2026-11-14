@@ -1,5 +1,5 @@
 @extends('community.layout')
-@section('title','Gebruikers beheren | Jouw Lichtpuntje')
+@section('title','Gebruikers beheren | Jouw Lichtpuntjes')
 @section('content')
 @php($en=app()->getLocale()==='en')
 <h1>{{ $en?'Our community':'Onze community' }}</h1><p class="account-intro">{{ $en?'Members, activity and profile photo reviews.':'Gebruikers, hun bijdragen en de controle van profielfoto’s.' }}</p>

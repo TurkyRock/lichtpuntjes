@@ -1,5 +1,5 @@
 @extends('community.layout')
-@section('title', app()->getLocale()==='en'?'My moments — Jouw Lichtpuntje':'Mijn momentjes — Jouw Lichtpuntje')
+@section('title', app()->getLocale()==='en'?'My moments — Jouw Lichtpuntjes':'Mijn momentjes — Jouw Lichtpuntjes')
 @push('page-styles')<link rel="stylesheet" href="/css/moment-studio.css?v={{ filemtime(public_path('css/moment-studio.css')) }}"><script src="/js/moment-studio.js?v={{ filemtime(public_path('js/moment-studio.js')) }}" defer></script>@endpush
 @push('page-styles')@include('shared.processing-styles')@endpush
 @section('content')
