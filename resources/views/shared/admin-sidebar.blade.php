@@ -5,6 +5,7 @@
 @foreach([
  ['/beheer', $adminEn?'Overview':'Overzicht','home'],
  ['/beheer/reacties', $adminEn?'Comments':'Reacties','comments'],
+ ['/beheer/sociaal',$adminEn?'Social publishing':'Sociaal','stories'],
  ['/beheer/opslag',$adminEn?'Storage & maintenance':'Opslag & onderhoud','articles'],
  ['/beheer/artikelen',$adminEn?'Articles':'Artikelen','articles'],
  ['/beheer/lichtpuntjes',$adminEn?'Community stories':'Eigen lichtpuntjes','stories'],

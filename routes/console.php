@@ -41,3 +41,5 @@ Schedule::command('support:sync --limit=25')->everyFifteenMinutes()
 Schedule::command('site:storage')->everyFifteenMinutes()->withoutOverlapping(15)->runInBackground()->appendOutputTo(storage_path('logs/storage-monitor.log'));
 Schedule::command('site:cleanup --apply')->dailyAt('03:30')->timezone('Europe/Amsterdam')->withoutOverlapping(60)->runInBackground()->appendOutputTo(storage_path('logs/retention.log'));
 Schedule::command('site:backup')->dailyAt('04:30')->timezone('Europe/Amsterdam')->withoutOverlapping(120)->runInBackground()->appendOutputTo(storage_path('logs/backup.log'));
+
+Schedule::command('social:prepare')->everyMinute()->withoutOverlapping(5)->runInBackground()->appendOutputTo(storage_path('logs/social-planner.log'));

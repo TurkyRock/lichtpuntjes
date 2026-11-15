@@ -122,3 +122,5 @@ Route::middleware(['auth','verified',\App\Http\Middleware\CommunityActive::class
  Route::get('/mijn-momentjes/prullenbak',[\App\Http\Controllers\MomentTrashController::class,'index']);
  Route::post('/mijn-momentjes/prullenbak/{id}/herstellen',[\App\Http\Controllers\MomentTrashController::class,'restore'])->whereNumber('id')->middleware('throttle:10,1,moment-restore:');
 });
+
+require __DIR__.'/social-publishing.php';
