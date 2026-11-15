@@ -3,7 +3,7 @@
 .mobile-feed-more,.mobile-moment-art,.mobile-moment-more{display:none}
 .home-unified #grid .mobile-card-read{display:none}
 @media (max-width:1023px){
- .home-unified{--mobile-ink:#243e29;--mobile-paper:#fff9e9;--mobile-sage:#dfe6cd;color:var(--mobile-ink);background:#fbfaf4}
+ .home-unified{--mobile-ink:#243e29;--mobile-paper:#fff9e9;--mobile-sage:#cdd4af;color:var(--mobile-ink);background:#fbfaf4}
  .home-unified>.shell{padding:0 12px}
  .home-unified .home-paper-board{margin:0 0 12px;padding:5px 10px 12px;border-radius:0 0 18px 18px;background:var(--mobile-sage) url('/images/button-paper-grain.svg');box-shadow:none}
  /* Header matches the green paper board. Account, language and weather remain in the menu. */
@@ -187,4 +187,104 @@
  .home-unified .mobile-feed-more button::before{content:'';position:absolute;inset:0;z-index:-1;background:#f2d879 url('/images/button-paper-grain.svg');mask:url('/images/filter-button-shape.svg') center/100% 100%;-webkit-mask:url('/images/filter-button-shape.svg') center/100% 100%}
  .home-unified .mobile-feed-more button::after{content:'';position:absolute;left:-21px;top:4px;width:17px;height:25px;background:url('/images/weather/sun-rays.svg') center/contain no-repeat;pointer-events:none}
  .home-unified .moment-footer-actions .moment-paper-action{background:none;filter:none}
+}
+
+/* Reference finish: natural paper edges, real moment photos and the botanical footer. */
+.mobile-home-ending{display:none}
+@media(max-width:1023px){
+ .home-unified .site-header .site-nav,.home-unified .home-paper-board{border-radius:0}
+ .home-unified .home-paper-board{padding-bottom:0}
+ .home-unified .site-header .site-sun{background:url('/images/mobile-paper-sun.svg') center/contain no-repeat}
+ .home-unified .site-header .site-sun img{opacity:0}
+ .home-unified .paper-welcome .welcome-paper{grid-template-columns:minmax(0,1fr) auto;column-gap:8px;padding-bottom:4px}
+ .home-unified .mobile-home-tagline{padding:6px 10px;font:italic 12px/1.22 Georgia,serif;background:url('/images/scrap-paper-ivory.webp') center/100% 100% no-repeat;white-space:normal;text-wrap:balance}
+ .home-unified .paper-welcome .daily-welcome-actions{position:relative;isolation:isolate;align-self:center;padding:1px 3px;gap:1px}
+ .home-unified .paper-welcome .daily-welcome-actions::before{content:'';position:absolute;inset:0;z-index:-1;background:url('/images/scrap-paper-ivory.webp') center/100% 100% no-repeat}
+ .home-unified .daily-welcome-actions .daily-account{border-left:1px solid #a29f7a}
+ .home-unified .daily-highlights{gap:9px;margin-bottom:12px}
+ .home-unified .daily-highlights .highlight-card::after,
+ .home-unified #grid>.card::before,
+ .home-unified .moment-washing-line .moment-paper-note::before{
+  background:url('/images/scrap-paper-ivory.webp') center/100% 100% no-repeat;
+  mask:none;-webkit-mask:none;border:0;border-image:none;inset:-2px;transform:none;
+ }
+ .home-unified .daily-highlights .highlight-card .highlight-art>a,
+ .home-unified #grid>.card>.picture,
+ .home-unified .mobile-moment-art img{
+  mask:url('/images/mobile-pill-mask.svg') center/100% 100%;
+  -webkit-mask:url('/images/mobile-pill-mask.svg') center/100% 100%;
+ }
+ .home-unified .daily-highlights .highlight-main .highlight-art>a{mask:none;-webkit-mask:none}
+ .home-unified .daily-highlights .highlight-main .highlight-art{overflow:hidden;border-radius:3px}
+ .home-unified .daily-highlights .highlight-card .highlight-copy .highlight-read{min-height:28px}
+ .home-unified .daily-highlights .highlight-small .highlight-sticker{display:none}
+ .home-unified .daily-highlights .highlight-small .mobile-feature-badge{
+  left:-3px;top:-7px;width:54px;height:55px;min-height:55px;padding:9px 5px;
+  background:url('/images/mobile-star-sticker.svg') center/contain no-repeat;
+  clip-path:none;border-radius:0;font:700 10px/1.05 Georgia,serif;transform:rotate(-11deg);
+ }
+ .home-unified .daily-highlights :is(.highlight-kind-likes,.highlight-kind-likes_total) .mobile-feature-badge{background-image:url('/images/mobile-heart-sticker.svg');padding:5px 4px 12px}
+ .home-unified .daily-highlights .highlight-small .highlight-copy{padding-left:10px;border-left:1px solid #d4c7a5;margin:3px 0}
+ .home-unified #stories .category-clothesline #filters>a::before{
+  mask:url('/images/mobile-pill-mask.svg') center/100% 100%;
+  -webkit-mask:url('/images/mobile-pill-mask.svg') center/100% 100%;
+ }
+ .home-unified #stories .category-clothesline #filters>a{min-height:30px;padding-top:5px;padding-bottom:5px}
+ .home-unified .mobile-news-heading{position:relative;padding-left:3px}
+ .home-unified .mobile-news-heading::before{content:'';position:absolute;left:-9px;top:2px;width:10px;height:18px;background:url('/images/weather/sun-rays.svg') center/contain no-repeat;pointer-events:none}
+ .home-unified .mobile-feed-more{position:relative;gap:0;margin-top:3px;margin-bottom:7px}
+ .home-unified .mobile-feed-more::after{content:'';align-self:center;margin-left:5px;width:17px;height:24px;background:url('/images/weather/sun-rays.svg') center/contain no-repeat;transform:rotate(180deg);pointer-events:none}
+ .home-unified #grid>.moment-home-grid{margin-top:10px}
+ .home-unified .moment-strip-heading{margin-bottom:8px}
+ .home-unified .moment-strip-heading h2{display:inline-block;position:relative;padding-right:35px}
+ .home-unified .moment-strip-heading h2::after{right:0;top:-2px;transform:rotate(-12deg);font-size:32px}
+ .home-unified .moment-quotes{gap:8px}
+ .home-unified .moment-quotes>.moment-paper-note{grid-template-columns:minmax(0,1fr);min-height:82px;gap:0;padding:8px 10px}
+ .home-unified .moment-quotes>.moment-paper-note.has-mobile-image{grid-template-columns:63px minmax(0,1fr);column-gap:9px}
+ .home-unified .moment-paper-note:not(.has-mobile-image) :is(.moment-note-copy,.moment-note-footer){grid-column:1}
+ .home-unified .mobile-moment-art{grid-row:1/span 2;grid-column:1;padding-right:8px;border-right:1px solid #cdbf99}
+ .home-unified .mobile-moment-art img{display:block;width:55px;height:66px;max-width:100%;object-fit:cover;border-radius:1px;mask:none;-webkit-mask:none}
+ .home-unified .moment-note-copy{align-self:start}
+ .home-unified .moment-note-footer{justify-content:flex-start;align-self:end;gap:7px;min-height:25px}
+ .home-unified .moment-note-reactions{margin-left:0}
+ .home-unified .moment-note-more{bottom:6px}
+ .home-unified .moment-author-copy strong{font-size:11px}
+ .home-unified .moment-strip-footer{margin-top:8px;position:relative;z-index:2}
+ .home-unified .moment-washing-line .moment-footer-actions{width:auto;max-width:none;display:flex;justify-content:center}
+ .home-unified .moment-washing-line .moment-footer-actions .moment-paper-action:only-child{width:auto;max-width:none;min-height:34px;padding:6px 14px;font:600 13px/1.2 Georgia,serif}
+ .home-unified .moment-footer-actions .moment-paper-action::before{background-image:url('/images/button-paper-grain.svg');background-size:auto;mask:url('/images/mobile-pill-mask.svg') center/100% 100%;-webkit-mask:url('/images/mobile-pill-mask.svg') center/100% 100%}
+ .home-unified .moment-strip-footer::before,.home-unified .moment-strip-footer::after{content:'';position:absolute;top:7px;left:calc(50% - 103px);width:18px;height:24px;background:url('/images/weather/sun-rays.svg') center/contain no-repeat;pointer-events:none}
+ .home-unified .moment-strip-footer::after{left:calc(50% + 86px);transform:rotate(180deg)}
+ /* The leaf collage reaches from the bottom notes to the small footer, like the reference. */
+ .home-unified .mobile-home-ending{display:block;position:relative;isolation:isolate;margin:-40px -10px 0;padding:64px 14px 8px;min-height:104px}
+ .home-unified .mobile-bottom-cutout{position:absolute;inset:auto 0 19px;height:clamp(95px,28vw,145px);z-index:-1;background:url('/images/mobile-footer-cutout.png') center bottom/100% 100% no-repeat;pointer-events:none}
+ .home-unified .mobile-bottom-links{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:3px 9px;position:relative;font:10px/1.3 Georgia,serif;color:var(--mobile-ink);margin:0;padding:0}
+ .home-unified .mobile-bottom-links>span{white-space:nowrap}
+ .home-unified .mobile-bottom-links :is(button,a){display:inline-flex;min-height:24px;align-items:center;margin:0;padding:2px 0;border:0;border-radius:0;background:none;color:var(--mobile-ink);font:10px/1.3 Georgia,serif;text-decoration:none}
+ .home-unified .mobile-bottom-links :is(button,a):hover{text-decoration:underline}
+ .home-unified .mobile-bottom-links>*+*::before{content:'|';display:inline-block;margin-right:9px;color:#718258}
+ .home-unified>.site-footer{display:none}
+}
+@media(max-width:359px){
+ .home-unified .paper-welcome .welcome-paper{grid-template-columns:minmax(0,1fr);row-gap:3px}
+ .home-unified .paper-welcome .daily-welcome-actions{justify-self:end}
+ .home-unified .moment-quotes>.moment-paper-note.has-mobile-image{grid-template-columns:52px minmax(0,1fr);column-gap:7px}
+ .home-unified .mobile-moment-art{padding-right:6px}
+ .home-unified .mobile-moment-art img{width:45px;height:62px}
+ .home-unified .mobile-bottom-links{gap:1px 7px}
+}
+@media(max-width:1023px){
+ .home-unified .mobile-home-tagline,
+ .home-unified .paper-welcome .daily-welcome-actions::before{
+  mask:url('/images/mobile-pill-mask.svg') center/100% 100%;
+  -webkit-mask:url('/images/mobile-pill-mask.svg') center/100% 100%;
+ }
+ .home-unified .daily-highlights .highlight-card .highlight-art>a,
+ .home-unified #grid>.card>.picture{
+  mask:url('/images/mobile-photo-edge.svg') center/100% 100%;
+  -webkit-mask:url('/images/mobile-photo-edge.svg') center/100% 100%;
+ }
+ .home-unified .daily-highlights .highlight-main .highlight-art{background:#fff9e9;border-radius:0;overflow:visible}
+ .home-unified .daily-highlights .highlight-main .highlight-art>a{inset:3px}
+ .home-unified .mobile-bottom-cutout{bottom:42px}
 }

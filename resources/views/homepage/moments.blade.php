@@ -10,8 +10,8 @@
 @if($momentHighlights->isNotEmpty())
 <div class="moment-quotes">
 @foreach($momentHighlights as $moment)
-<article class="moment-paper-note" id="moment-{{ $moment->id }}">
-<div class="mobile-moment-art {{ $loop->odd?'mobile-moment-flowers':'mobile-moment-robin' }}" aria-hidden="true"><span class="mobile-moment-decoration"></span></div>
+<article class="moment-paper-note{{ $moment->hasMomentImage()?' has-mobile-image':'' }}" id="moment-{{ $moment->id }}">
+@if($moment->hasMomentImage())<div class="mobile-moment-art" aria-hidden="true"><img src="{{ $moment->momentImageUrl() }}" width="88" height="88" loading="lazy" decoding="async" alt=""></div>@endif
 <span class="moment-clothespin" aria-hidden="true"></span><span class="moment-clothespin second" aria-hidden="true"></span>
 @php($momentSummary=preg_replace('/\s+/u',' ',trim($moment->bodyFor($locale))))
 @php($momentLong=mb_strlen($momentSummary)>120)
