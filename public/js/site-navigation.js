@@ -6,7 +6,7 @@
 
     // Follow the actual content width, including locally customized homepage widths.
     const header = navigation.closest('.site-header');
-    const content = document.querySelector('.home-paper-board, #weatherPage');
+    const content = document.querySelector('.home-paper-board, #weatherPage, #registrationPage');
     const alignToContent = () => {
         if (!header || !content) return;
         const bounds = content.getBoundingClientRect();
@@ -22,7 +22,7 @@
     }
     window.addEventListener('resize', alignToContent);
 
-    const compact = window.matchMedia('(max-width: 767px)');
+    const compact = window.matchMedia(document.body?.classList?.contains('home-unified')?'(max-width:1023px)':'(max-width:767px)');
     const setExpanded = expanded => {
         toggle.setAttribute('aria-expanded', String(expanded));
         navigation.classList.toggle('is-open', expanded);

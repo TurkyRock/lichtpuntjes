@@ -1,5 +1,6 @@
 @php($selectedSort=in_array(request('sort'),['reads','likes'],true)?request('sort'):'newest')
 <div class="news-toolbar category-clothesline" role="region" aria-label="{{ $locale==='en'?'Choose a category and sort the news':'Kies een categorie en sorteer het nieuws' }}">
+<h2 class="mobile-news-heading">{{ $locale==='en'?'Discover bright spots':'Ontdek lichtpuntjes' }}</h2>
 <div class="topic-control"><div class="filters" id="filters" role="group" aria-label="{{ $locale==='en'?'Categories':'Categorieën' }}">
 @foreach(\App\Support\StorySeo::CATEGORIES as $key=>$label)
 <a data-cat="{{ $key }}" href="{{ \App\Support\StorySeo::home($locale,$key).($selectedSort==='newest'?'':'?sort='.$selectedSort) }}" @if($category===$key) aria-current="page" @endif><span class="category-peg" aria-hidden="true"></span><svg class="filter-icon" viewBox="0 0 32 32" aria-hidden="true"><use href="/images/home-filter-icons.svg#{{ $key }}"/></svg><span class="category-label">{{ $label[$locale==='en'?1:0] }}</span><small class="category-chosen">✓ {{ $locale==='en'?'Selected':'Gekozen' }}</small></a>

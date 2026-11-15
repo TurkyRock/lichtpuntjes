@@ -11,6 +11,7 @@
 <div class="moment-quotes">
 @foreach($momentHighlights as $moment)
 <article class="moment-paper-note" id="moment-{{ $moment->id }}">
+<div class="mobile-moment-art {{ $loop->odd?'mobile-moment-flowers':'mobile-moment-robin' }}" aria-hidden="true"><span class="mobile-moment-decoration"></span></div>
 <span class="moment-clothespin" aria-hidden="true"></span><span class="moment-clothespin second" aria-hidden="true"></span>
 @php($momentSummary=preg_replace('/\s+/u',' ',trim($moment->bodyFor($locale))))
 @php($momentLong=mb_strlen($momentSummary)>120)
@@ -31,6 +32,7 @@
 @endif
 </div>
 </section>
+<div class="mobile-moment-more"><a href="/momentjes?lang={{ $locale }}">{{ $locale==='en'?'All moments →':'Alle momentjes →' }}</a></div>
 <div class="moment-strip-footer">
 <div class="moment-footer-copy">@if($showMomentPrompt)<aside class="moment-evening"><span class="moment-sun" aria-hidden="true">☀</span><div><h2>{{ $locale==='en'?'Close your day with something lovely':'Sluit je dag af met iets moois' }}</h2><p>{{ $locale==='en'?'A small moment counts too. Save it for yourself or share a smile.':'Iets kleins telt ook. Bewaar het voor jezelf of geef een glimlach door.' }}</p></div></aside>@endif</div>
 <div class="moment-footer-actions">

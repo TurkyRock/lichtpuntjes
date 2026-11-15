@@ -45,3 +45,23 @@ main:has(.weather-page){padding-left:32px;padding-right:32px}
 .weather-location-feedback:empty{display:none}.weather-location-feedback{font:12px/1.4 system-ui,sans-serif;position:absolute;top:100%;right:0;z-index:9;width:260px;background:#fff5cf;padding:8px 10px;box-shadow:0 2px 6px #264d3426}
 @media(max-width:850px){.weather-location{width:180px;top:-10px}.weather-heading{margin-top:70px}.weather-nature-photo{top:105px}}
 @media(min-width:851px) and (max-width:1000px){.weather-location{top:55px;right:-45px}}
+
+/* Every weekday uses the same paper silhouette, including the selected day. */
+.weather-page .weather-week button::before,
+.weather-page .weather-week button[aria-pressed=true]::before{
+ inset:0;background:url('/images/weather/reference-paper.png') center/100% 100% no-repeat;
+ mask:none;-webkit-mask:none;
+}
+.weather-page .weather-week button[aria-pressed=true]::before{filter:sepia(.48) saturate(2.3)}
+/* Keep the messages above the paper layer and let both notes grow with their text. */
+.weather-page .weather-plans section{height:auto;min-height:124px;overflow:visible}
+.weather-page .weather-plans :is(h2,p,a){position:relative;z-index:1;visibility:visible;opacity:1;color:var(--ink)}
+.weather-page .weather-plans :is(h2,p){display:block;height:auto;white-space:normal;overflow-wrap:anywhere}
+.weather-page .weather-plans h2{line-height:1.15}
+.weather-page .weather-plans p{line-height:1.35}
+.weather-page .weather-today-copy{min-width:0}
+@media(min-width:851px){
+ .weather-page .weather-today{height:auto;min-height:270px;align-items:center;padding-top:0;padding-bottom:0}
+ .weather-page .weather-today-copy{margin-top:0;transform:translateY(-12px);min-height:0}
+}
+@media(min-width:551px) and (max-width:850px){.weather-page .weather-today-copy{transform:translateY(-10px)}}
