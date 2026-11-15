@@ -57,6 +57,11 @@ Route::post('/uitloggen',[Accounts::class,'logout'])->middleware('auth');
 Route::middleware(['auth',CommunityActive::class])->group(function(){
  Route::post('/lichtpuntjes/meldingen',[\App\Http\Controllers\LightpointNoticeController::class,'collect'])->middleware(['verified','throttle:12,1,lightpoint-notice:']);
  Route::get('/profiel',[Community::class,'profile']);
+ Route::get('/mijn-interesses',[\App\Http\Controllers\NewsPreferenceController::class,'edit']);
+ Route::put('/mijn-interesses',[\App\Http\Controllers\NewsPreferenceController::class,'update'])->middleware('throttle:20,1');
+ Route::post('/mijn-interesses/overslaan',[\App\Http\Controllers\NewsPreferenceController::class,'skip']);
+ Route::delete('/mijn-interesses',[\App\Http\Controllers\NewsPreferenceController::class,'destroy']);
+ Route::post('/mijn-interesses/minder',[\App\Http\Controllers\NewsPreferenceController::class,'less'])->middleware('throttle:30,1');
  Route::get('/lichtpuntje/delen',[\App\Http\Controllers\MomentController::class,'choose']);
  Route::get('/mijn-momentjes',[\App\Http\Controllers\MomentController::class,'index']);
  Route::post('/momentjes/{moment}/hart',[\App\Http\Controllers\MomentController::class,'heart'])->whereNumber('moment')->middleware(['verified','throttle:30,1']);

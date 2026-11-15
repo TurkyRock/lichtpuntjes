@@ -101,7 +101,8 @@ class SocialAuthController extends Controller
             try { event(new Registered($u)); }
             catch (\Throwable $e) { $r->session()->flash('status', $this->text('Je account is aangemaakt. Verstuur de bevestigingsmail opnieuw vanuit je profiel.', 'Your account was created. Resend the confirmation email from your profile.')); }
         }
-        return $this->signIn($r, $u, $p);
+        $response = $this->signIn($r, $u, $p);
+        return $created ? redirect('/mijn-interesses?welcome=1&lang='.app()->getLocale()) : $response;
     }
 
     private function pending(Request $r): array

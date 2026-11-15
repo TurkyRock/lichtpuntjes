@@ -14,6 +14,7 @@
    ['/mijn-bijdragen', null, $accountEn ? 'My donations' : 'Mijn donaties', request()->is('mijn-bijdragen'), 'donations'],
   ]],
   ['account', 'Account', [
+   ['/mijn-interesses', null, $accountEn ? 'My interests' : 'Mijn interesses', request()->is('mijn-interesses'), 'heart'],
    ['/profiel', 'invite', $accountEn ? 'Invite a friend' : 'Nodig iemand uit', request()->is('profiel') && $sidebarSection === 'invite', 'invite'],
    ['/privacy/verzoeken', null, $accountEn ? 'My data' : 'Mijn gegevens', request()->is('privacy/verzoeken','profiel/email/*','beveiliging','beveiliging/*'), 'settings'],
    ['/mijn-momentjes/prullenbak', null, $accountEn ? 'Trash' : 'Prullenbak', request()->is('mijn-momentjes/prullenbak'), 'trash'],

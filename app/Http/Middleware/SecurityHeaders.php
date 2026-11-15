@@ -6,7 +6,7 @@ class SecurityHeaders {
  public function handle(Request $request,Closure $next){
   $nonce=base64_encode(random_bytes(24));$request->attributes->set('csp_nonce',$nonce);
   $response=$next($request);
-  if(!$request->isMethod('GET')||$request->is('beveiliging','beveiliging/*','mijn-bijdragen','steun/bedankt/*','news/*','beheer','beheer/*','profiel','mijn-momentjes','mijn-momentjes/*','profiel/*','profielfotos/*','mijn-lichtpuntjes','mijn-lichtpuntjes/*','auth/*','inloggen','aanmelden','aanmelden/*','lichtpuntje/*','email/*','reset-password/*','wachtwoord-vergeten','privacy/verzoeken')||$response->getStatusCode()>=400)$response->headers->set('X-Robots-Tag','noindex');
+  if(!$request->isMethod('GET')||$request->is('beveiliging','beveiliging/*','mijn-bijdragen','mijn-interesses','mijn-interesses/*','steun/bedankt/*','news/*','beheer','beheer/*','profiel','mijn-momentjes','mijn-momentjes/*','profiel/*','profielfotos/*','mijn-lichtpuntjes','mijn-lichtpuntjes/*','auth/*','inloggen','aanmelden','aanmelden/*','lichtpuntje/*','email/*','reset-password/*','wachtwoord-vergeten','privacy/verzoeken')||$response->getStatusCode()>=400)$response->headers->set('X-Robots-Tag','noindex');
   if(config('beta.closed_site')||$request->is('testgroep','testgroep/*')){$response->headers->set('X-Robots-Tag','noindex, nofollow');$response->headers->set('Referrer-Policy','no-referrer');}
   $response->headers->set('X-Content-Type-Options','nosniff');
   $response->headers->set('X-Frame-Options','DENY');

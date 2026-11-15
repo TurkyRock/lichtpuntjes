@@ -12,6 +12,9 @@ $sectionTitles = [
 <h1>{{ $sectionTitles[$accountSection] }}</h1>
 @if($accountSection === 'overview')
 <p class="account-intro">{{ $profileEn ? 'Good to see you, '.$user->name.'. Here are your little joys and kind contributions.' : 'Fijn dat je er bent, '.$user->name.'. Hier vind je jouw kleine gelukjes en vriendelijke bijdragen.' }}</p>
+@if(!$user->news_preferences_answered_at)
+<section class="panel sunny"><h2>{{ $profileEn ? 'What makes you smile?' : 'Waar krijg jij een glimlach van?' }}</h2><p>{{ $profileEn ? 'Choose your interests for a personal news selection. This is optional.' : 'Kies je interesses voor een persoonlijke nieuwsselectie. Helemaal vrijblijvend.' }}</p><div class="row"><a class="button" href="/mijn-interesses?welcome=1&amp;lang={{ app()->getLocale() }}">{{ $profileEn ? 'Choose my interests' : 'Kies mijn interesses' }}</a><form method="post" action="/mijn-interesses/overslaan">@csrf<button class="quiet">{{ $profileEn ? 'Maybe later' : 'Misschien later' }}</button></form></div></section>
+@endif
 @include('community.publication-revisions')
 @include('community.profile-photo')
 @if(!$user->hasVerifiedEmail())

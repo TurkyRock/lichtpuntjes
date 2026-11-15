@@ -21,6 +21,7 @@ class NewsEngagementController extends Controller {
             'page'=>'sometimes|integer|min:1|max:1000000',
             'category'=>'sometimes|in:all,community,media,sport,energy,nature,science,people',
             'q'=>'sometimes|nullable|string|max:200','lang'=>'sometimes|in:nl,en',
+            'view'=>'sometimes|in:for-you,all',
             'sort'=>'sometimes|in:newest,reads,likes','archive'=>'sometimes|boolean',
         ]);
         $language=$input['lang']??'nl';
@@ -37,6 +38,8 @@ class NewsEngagementController extends Controller {
                 ->orWhere($language.'->body','like',$term)->orWhere('source_name','like',$term);
         });
         $sort=$input['sort']??'newest';
+        $preferences=app(\App\Services\NewsPreferences::class);
+        $personal=$preferences->enabled($request->user()) && ($input['view']??'for-you')==='for-you' && $sort==='newest' && !$request->boolean('archive');
         // Round robin: one story per available category before its next story.
         // Community origin groups old and new user stories together without a data rewrite.
         $order=match($sort) {
@@ -44,7 +47,14 @@ class NewsEngagementController extends Controller {
             'likes'=>'articles.likes_count DESC, articles.published_at DESC, articles.id DESC',
             default=>'articles.published_at DESC, articles.id DESC',
         };
-        if ($category==='all') {
+        if ($personal) {
+            [$score,$bindings]=$preferences->relevance($request->user());
+            $ranked=(clone $query)->select('articles.id')->selectRaw("($score) AS preference_score",$bindings)->selectRaw(
+                "ROW_NUMBER() OVER (PARTITION BY CASE WHEN articles.origin = 'community' THEN 'community' ELSE articles.category END ORDER BY ($score) DESC, $order) AS category_position", $bindings
+            );
+            $query->joinSub($ranked,'balanced',fn($join)=>$join->on('articles.id','=','balanced.id'))
+                ->orderByRaw('(balanced.preference_score - 14 * (balanced.category_position - 1)) DESC');
+        } elseif ($category==='all') {
             $ranked=(clone $query)->select('articles.id')->selectRaw(
                 "ROW_NUMBER() OVER (PARTITION BY CASE WHEN articles.origin = 'community' THEN 'community' ELSE articles.category END ORDER BY $order) AS category_position"
             );
@@ -56,9 +66,11 @@ class NewsEngagementController extends Controller {
         if ($items->currentPage()>$items->lastPage()) $items=$query->paginate(12,['articles.*'],'page',$items->lastPage());
         $liked=$request->user()?DB::table('user_article_likes')->where('user_id',$request->user()->id)->whereIn('article_id',$items->getCollection()->pluck('id'))->pluck('article_id')->all():[];
         return response()->json([
+            'personalized'=>$personal,
             'articles'=>$items->getCollection()->map(fn($a)=>[
                 'id'=>(string)$a->id,'story_urls'=>\App\Support\StorySeo::urls($a),'cat'=>$a->origin==='community'?'community':$a->category,'date'=>$a->published_at?->format('Y-m-d'),
                 'origin'=>$a->origin,'source'=>$a->source_name,'url'=>$a->source_url,'nl'=>$a->nl,'en'=>$a->en,'photo'=>$a->photo,
+                'feedback_topic'=>($a->interest_topics[0]??(array_key_exists($a->category,\App\Services\NewsPreferences::TOPICS)?$a->category:null)),
                 'views_count'=>(int)$a->views_count,'likes_count'=>(int)$a->likes_count,
                 'liked'=>in_array($a->id,$liked),
             ])->values(),

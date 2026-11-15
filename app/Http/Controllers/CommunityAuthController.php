@@ -17,7 +17,7 @@ class CommunityAuthController extends Controller {
   $u->forceFill(['community_accepted_at'=>now(),'community_version'=>'2026-10-10','invite_code'=>bin2hex(random_bytes(16)),'referred_by'=>isset($v['invite'])?User::where('invite_code',$v['invite'])->where('is_suspended',false)->value('id'):null])->save();
   Auth::login($u);$r->session()->regenerate();
   try {event(new Registered($u));$message='Welkom! Bevestig je e-mailadres en breng je eerste glimlach.';}catch(\Throwable $e){$message='Je account is aangemaakt. De bevestigingsmail kon nog niet worden verstuurd; probeer dit straks opnieuw.';}
-  return redirect('/profiel')->with('status',$message);
+  return redirect('/mijn-interesses?welcome=1&lang='.app()->getLocale())->with('status',$message);
  }
  public function login(Request $r){
   $v=$r->validate(['email'=>'required|email','password'=>'required|string|max:128']);

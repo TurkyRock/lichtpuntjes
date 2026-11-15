@@ -7,20 +7,26 @@ class PublicStoryController extends Controller {
  public function home(Request $request){
   $locale=(string)$request->route('locale','nl');$category=(string)$request->route('category','all');
   if($request->query('story')!==null){$id=$request->query('story');abort_unless(is_string($id)&&ctype_digit($id),404);$a=Article::visible()->findOrFail($id);return redirect(StorySeo::path($a,$request->query('lang')==='en'?'en':$locale),301);}
-  if($request->query('lang')==='en'&&$locale==='nl')return redirect(StorySeo::home('en',$category,(int)$request->query('page',1)),301);
+  if($request->query('lang')==='en'&&$locale==='nl')return redirect($this->homeRedirect('en',$category,(int)$request->query('page',1),$request),301);
   abort_unless(isset(StorySeo::CATEGORIES[$category]),404);
   app()->setLocale($locale);$request->session()->put('lichtpunt_locale',$locale);
   $request->query->set('lang',$locale);$request->query->set('category',$category);
   $feed=app(NewsEngagementController::class)->index($request)->getData(true);
   $feed['articles']=array_map(function($story){foreach(['nl','en'] as $lang){$story[$lang]['teaser']=(string)($story[$lang]['teaser']??'');}return $story;},$feed['articles']);
   $page=$feed['pagination']['current_page'];
-  if((int)$request->query('page',1)>$page)return redirect(StorySeo::home($locale,$category,$page),301);
+  if((int)$request->query('page',1)>$page)return redirect($this->homeRedirect($locale,$category,$page,$request),301);
   $seo=StorySeo::meta($locale,$category,$page);
   $highlights=[];foreach(app(\App\Services\DailySpotlight::class)->highlights() as $item){$story=app(NewsEngagementController::class)->story($request,$item['article'])->getData(true);$highlights[]=['kind'=>$item['kind'],'story'=>$story];}
   $momentHighlights=\App\Models\PositiveMoment::publicVisible()->with('user.profilePhoto')->withCount(['hearts'=>fn($q)=>$q->where('is_suspended',false)])->latest('id')->limit(30)->get()->unique('user_id')->take(4)->values();
   $likedMomentIds=$request->user()?\Illuminate\Support\Facades\DB::table('moment_hearts')->where('user_id',$request->user()->id)->whereIn('moment_id',$momentHighlights->pluck('id'))->pluck('moment_id')->all():[];
   $showMomentPrompt=now('Europe/Amsterdam')->hour>=19&&(!$request->user()||!\App\Models\PositiveMoment::where('user_id',$request->user()->id)->whereDate('moment_date',now('Europe/Amsterdam')->toDateString())->exists());
   return view('lichtpunt',compact('seo','feed','category','locale','highlights','momentHighlights','showMomentPrompt','likedMomentIds'));
+ }
+ private function homeRedirect(string $locale,string $category,int $page,Request $request):string {
+  $path=StorySeo::home($locale,$category,$page);$extra=[];
+  if(in_array($request->query('view'),['all','for-you'],true))$extra['view']=$request->query('view');
+  if(in_array($request->query('sort'),['reads','likes'],true))$extra['sort']=$request->query('sort');
+  return $path.($extra?(str_contains($path,'?')?'&':'?').http_build_query($extra):'');
  }
  public function article(Request $request){
   $locale=(string)$request->route('locale','nl');$id=(int)$request->route('id');
@@ -45,5 +51,5 @@ class PublicStoryController extends Controller {
    echo '</urlset>';
   },200,['Content-Type'=>'application/xml; charset=UTF-8','Cache-Control'=>'public, max-age=300']);
  }
- public function robots(){return response("User-agent: *\nDisallow: /beheer\nDisallow: /profiel\nDisallow: /mijn-lichtpuntjes\nDisallow: /auth/\nDisallow: /news/\nSitemap: ".StorySeo::absolute('/sitemap.xml')."\n",200,['Content-Type'=>'text/plain; charset=UTF-8']);}
+ public function robots(){return response("User-agent: *\nDisallow: /beheer\nDisallow: /profiel\nDisallow: /mijn-lichtpuntjes\nDisallow: /mijn-interesses\nDisallow: /auth/\nDisallow: /news/\nSitemap: ".StorySeo::absolute('/sitemap.xml')."\n",200,['Content-Type'=>'text/plain; charset=UTF-8']);}
 }
