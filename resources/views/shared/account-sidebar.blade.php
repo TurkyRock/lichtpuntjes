@@ -14,7 +14,6 @@
    ['/mijn-bijdragen', null, $accountEn ? 'My donations' : 'Mijn donaties', request()->is('mijn-bijdragen'), 'donations'],
   ]],
   ['account', 'Account', [
-   ['/profiel', 'overview', $accountEn ? 'Overview' : 'Overzicht', request()->is('profiel') && $sidebarSection === 'overview', 'home'],
    ['/profiel', 'invite', $accountEn ? 'Invite a friend' : 'Nodig iemand uit', request()->is('profiel') && $sidebarSection === 'invite', 'invite'],
    ['/privacy/verzoeken', null, $accountEn ? 'My data' : 'Mijn gegevens', request()->is('privacy/verzoeken','profiel/email/*','beveiliging','beveiliging/*'), 'settings'],
    ['/mijn-momentjes/prullenbak', null, $accountEn ? 'Trash' : 'Prullenbak', request()->is('mijn-momentjes/prullenbak'), 'trash'],
@@ -27,6 +26,7 @@
 <div class="account-menu-heading"><span class="account-menu-sun" aria-hidden="true"></span><p class="account-sidebar-title">{{ $accountEn ? 'My account' : 'Mijn account' }}</p></div>
 <button class="account-menu-toggle" type="button" aria-expanded="true" aria-controls="accountGroupedNav" hidden><span>{{ $accountCurrentLabel }}</span><span class="account-menu-toggle-label">Menu</span><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m5 7 5 5 5-5"/></svg></button>
 <nav id="accountGroupedNav" aria-label="{{ $accountEn ? 'Account sections' : 'Accountonderdelen' }}">
+<a class="account-overview-tab" href="/profiel?{{ http_build_query(['lang'=>app()->getLocale(),'section'=>'overview']) }}" @if(request()->is('profiel') && $sidebarSection === 'overview') aria-current="page" @endif>@include('shared.account-menu-icon', ['icon'=>'home'])<span>{{ $accountEn ? 'Overview' : 'Overzicht' }}</span></a>
 @foreach($accountGroups as [$accountGroupId, $accountGroupTitle, $accountItems])
 <section class="account-menu-group" aria-labelledby="account-group-{{ $accountGroupId }}">
 <h2 id="account-group-{{ $accountGroupId }}">{{ $accountGroupTitle }}</h2>

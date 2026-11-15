@@ -22,6 +22,11 @@
 .account-scrapbook .account-menu-grouped .account-menu-group a[aria-current=page]{font-weight:700;color:#173b2b;box-shadow:inset 3px 0 #244b32}
 .account-scrapbook .account-menu-grouped .account-menu-group a[aria-current=page]::before{background:#f7df8c url('/images/button-paper-grain.svg')}
 .account-menu-grouped a:focus-visible,.account-menu-grouped .account-menu-toggle:focus-visible{outline:3px solid #95701a;outline-offset:3px}
+/* A separate yellow paper home tab above the three groups. */
+.account-scrapbook .account-menu-grouped .account-overview-tab{position:relative;isolation:isolate;display:flex;align-items:center;gap:10px;width:100%;min-height:41px;margin:0 0 20px;padding:9px 11px;border:0;border-radius:0;background:none;box-shadow:none;clip-path:none;color:#233d2d;font:400 14px/1.35 AccountPaper,Georgia,serif;text-decoration:none}
+.account-scrapbook .account-menu-grouped .account-overview-tab::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;border:0;border-image:none;background:#f5dc88 url('/images/button-paper-grain.svg');mask:url('/images/mobile-card-shape.svg') center/100% 100%;-webkit-mask:url('/images/mobile-card-shape.svg') center/100% 100%;transform:none;filter:drop-shadow(0 2px 1px #77622d25)}
+.account-scrapbook .account-menu-grouped .account-overview-tab:hover::before{background-color:#f1d16c}
+.account-scrapbook .account-menu-grouped .account-overview-tab[aria-current=page]{font-weight:700;box-shadow:inset 3px 0 #244b32}
 .account-menu-toggle[hidden]{display:none!important}
 @media(max-width:760px){
  .account-scrapbook .account-sidebar.account-menu-grouped{position:relative;top:auto;padding:14px 13px;margin:0 0 22px}
@@ -34,6 +39,7 @@
  .account-menu-toggle-label{font:600 11px/1.2 system-ui,sans-serif}
  .account-menu-toggle[aria-expanded=true]>svg{transform:rotate(180deg)}
  .account-scrapbook .account-menu-grouped nav{padding-top:15px}
+ .account-scrapbook .account-menu-grouped .account-overview-tab{min-height:42px;margin-bottom:16px;font-size:13px}
  .account-menu-grouped .account-menu-group{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px 7px}
  .account-scrapbook .account-menu-grouped .account-menu-group h2{grid-column:1/-1;justify-self:start;margin-bottom:5px;font-size:11px}
  .account-scrapbook .account-menu-grouped .account-menu-group a{min-height:42px;padding:7px 4px;font-size:12px;gap:6px}
@@ -42,6 +48,6 @@
 }
 @media(forced-colors:active){
  .account-scrapbook .account-sidebar.account-menu-grouped{background:Canvas;border:1px solid CanvasText}
- .account-menu-grouped::before,.account-menu-grouped::after,.account-menu-grouped .account-menu-group h2::before,.account-menu-grouped .account-menu-group a::before{display:none}
- .account-menu-grouped .account-menu-group a[aria-current=page]{outline:2px solid Highlight}
+ .account-menu-grouped::before,.account-menu-grouped::after,.account-menu-grouped .account-menu-group h2::before,.account-menu-grouped .account-menu-group a::before,.account-menu-grouped .account-overview-tab::before{display:none}
+ .account-menu-grouped .account-menu-group a[aria-current=page],.account-menu-grouped .account-overview-tab[aria-current=page]{outline:2px solid Highlight}
 }
