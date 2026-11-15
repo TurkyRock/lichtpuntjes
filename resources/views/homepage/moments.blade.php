@@ -11,7 +11,7 @@
 <div class="moment-quotes">
 @foreach($momentHighlights as $moment)
 <article class="moment-paper-note{{ $moment->hasMomentImage()?' has-mobile-image':'' }}" id="moment-{{ $moment->id }}">
-@if($moment->hasMomentImage())<div class="mobile-moment-art" aria-hidden="true"><img src="{{ $moment->momentImageUrl() }}" width="88" height="88" loading="lazy" decoding="async" alt=""></div>@endif
+<div class="mobile-moment-art" aria-hidden="true">@if($moment->hasMomentImage())<img src="{{ $moment->momentImageUrl() }}" width="88" height="88" loading="lazy" decoding="async" alt="">@endif</div>
 <span class="moment-clothespin" aria-hidden="true"></span><span class="moment-clothespin second" aria-hidden="true"></span>
 @php($momentSummary=preg_replace('/\s+/u',' ',trim($moment->bodyFor($locale))))
 @php($momentLong=mb_strlen($momentSummary)>120)
