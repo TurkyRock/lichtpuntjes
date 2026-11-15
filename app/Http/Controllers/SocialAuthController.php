@@ -41,7 +41,7 @@ class SocialAuthController extends Controller
         catch (\Throwable $e) { return $this->failure('De inlogcontrole is niet gelukt. Begin opnieuw.', 'Sign-in could not be verified. Please start again.'); }
         if (($identity['provider'] ?? '') !== $provider || empty($identity['subject']) || strlen($identity['subject']) > 191) return $this->failure('Dit account kon niet worden gecontroleerd.', 'This account could not be verified.');
         $account = SocialAccount::where('provider', $provider)->where('provider_user_id', $identity['subject'])->first();
-        if ($account) return $this->signIn($r, $account->user);
+        if ($account) return $this->signIn($r, $account->user, $identity);
         $r->session()->regenerate();
         $r->session()->put('social.pending', $identity + ['expires' => time() + 600, 'invite' => $flow['invite'] ?? null]);
         return redirect('/aanmelden/afronden');
@@ -101,7 +101,7 @@ class SocialAuthController extends Controller
             try { event(new Registered($u)); }
             catch (\Throwable $e) { $r->session()->flash('status', $this->text('Je account is aangemaakt. Verstuur de bevestigingsmail opnieuw vanuit je profiel.', 'Your account was created. Resend the confirmation email from your profile.')); }
         }
-        return $this->signIn($r, $u);
+        return $this->signIn($r, $u, $p);
     }
 
     private function pending(Request $r): array
@@ -114,9 +114,17 @@ class SocialAuthController extends Controller
         return $p;
     }
 
-    private function signIn(Request $r, ?User $u)
+    private function signIn(Request $r, ?User $u, array $identity = [])
     {
         if (!$u || $u->is_suspended) return $this->failure('Dit account is gepauzeerd.', 'This account is paused.');
+        try {
+            if (app(\App\Services\GoogleProfilePhoto::class)->import($u, $identity)) {
+                $r->session()->flash('status', $this->text('Je Google-profielfoto is overgenomen. Na de gebruikelijke fotocontrole wordt deze zichtbaar.', 'Your Google profile photo has been imported. It becomes visible after the usual photo review.'));
+            }
+        } catch (\Throwable $e) {
+            // An unavailable picture must never prevent an otherwise valid login.
+            \Illuminate\Support\Facades\Log::warning('Google profile photo import unavailable', ['user_id' => $u->id]);
+        }
         Auth::login($u);
         $r->session()->regenerate();
         return redirect('/profiel');

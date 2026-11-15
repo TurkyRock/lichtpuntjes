@@ -6,6 +6,9 @@
 <h1>{{ $en ? 'One more smile, and you’re in.' : 'Nog één glimlach, en je bent erbij.' }}</h1>
 <p>{{ $en ? 'Your account was checked by '.ucfirst($pending['provider']).'. Choose your public name and join our positive community.' : 'Je account is gecontroleerd door '.ucfirst($pending['provider']).'. Kies je openbare naam en sluit je aan bij onze positieve community.' }}</p>
 @include($en ? 'community.en.intentions' : 'community.intentions')
+@if($pending['provider'] === 'google' && !empty($pending['avatar']))
+<p class="small">{{ $en ? 'If you do not already have a profile photo, we copy your Google photo. It becomes visible after our usual photo review. You can change or remove it in your account.' : 'Heb je nog geen profielfoto, dan nemen we je Google-foto over. Deze wordt zichtbaar na onze gebruikelijke fotocontrole. Je kunt hem in je account wijzigen of verwijderen.' }}</p>
+@endif
 <form method="post" action="/aanmelden/afronden">
 @csrf
 <label for="name">{{ $en ? 'Your public name' : 'Zo mogen we je noemen' }}</label>

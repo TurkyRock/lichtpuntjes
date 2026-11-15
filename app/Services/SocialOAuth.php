@@ -26,7 +26,8 @@ class SocialOAuth
 
     public function enabled(): array
     {
-        return array_values(array_filter(self::PROVIDERS, fn($p) => $this->available($p)));
+        // Google and Microsoft are shared by registration and sign-in screens.
+        return array_values(array_filter(['google', 'microsoft'], fn($p) => $this->available($p)));
     }
 
     public function sameOrigin(Request $request, string $provider): bool
@@ -72,8 +73,9 @@ class SocialOAuth
             'provider' => $provider, 'subject' => (string) $u->getId(),
             'email' => $email, 'email_verified' => $email !== '' && $verified,
             'name' => (string) $u->getName(),
+            'avatar' => $provider === 'google' ? (string) $u->getAvatar() : '',
         ];
-        // Access/refresh/identity tokens and avatars are intentionally not persisted.
+        // Access/refresh/identity tokens are never persisted. The picture URL is temporary.
     }
 
     private function providerClass(string $provider): string

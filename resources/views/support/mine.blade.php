@@ -9,7 +9,7 @@
  $paymentLabels=$en?['paid'=>'Paid','pending'=>'Pending','open'=>'Awaiting payment','failed'=>'Failed','canceled'=>'Cancelled','expired'=>'Expired','authorized'=>'Awaiting settlement']:['paid'=>'Betaald','pending'=>'In behandeling','open'=>'Wacht op betaling','failed'=>'Mislukt','canceled'=>'Geannuleerd','expired'=>'Verlopen','authorized'=>'Wacht op verwerking'];
 @endphp
 <link rel="stylesheet" href="/css/contributions-post.css?v={{ filemtime(public_path('css/contributions-post.css')) }}">
-<h1>{{ $en?'My contributions':'Mijn bijdragen' }}</h1>
+<h1>{{ $en?'My donations':'Mijn donaties' }}</h1>
 <div class="contributions-post">
 @if($testVisible)<p class="post-test-note" role="status">{{ $en?'Test environment: these are test payments. Live contributions are not included here.':'Testomgeving: dit zijn testbetalingen. Livebijdragen worden hier niet meegeteld.' }}</p>@endif
 @if($showThanks)
