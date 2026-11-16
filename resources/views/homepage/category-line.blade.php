@@ -1,3 +1,6 @@
+@once
+<link rel="stylesheet" href="/css/personal-news.css?v={{ filemtime(public_path('css/personal-news.css')) }}">
+@endonce
 @php($hasNewsPreferences=app(\App\Services\NewsPreferences::class)->enabled(auth()->user()))
 @if(auth()->check())
 <div class="personal-news-switch">

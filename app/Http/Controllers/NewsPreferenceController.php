@@ -24,6 +24,7 @@ class NewsPreferenceController extends Controller
         $v['interests']=array_values(array_diff($v['interests'],$v['less_topics']));
         $v['place']=trim(preg_replace('/\s+/u',' ', $v['place']??''));
         unset($v['welcome']);
+        if(!$v['enabled'])$v=['enabled'=>false];
         $request->user()->forceFill(['news_preferences'=>$v,'news_preferences_answered_at'=>now()])->save();
         $en=app()->getLocale()==='en';
         return redirect($request->boolean('welcome')?($en?'/en':'/').'?view='.($v['enabled']?'for-you':'all'):'/mijn-interesses?lang='.app()->getLocale())->with('status',$en?'Your preferences have been saved.':'Je voorkeuren zijn opgeslagen.');

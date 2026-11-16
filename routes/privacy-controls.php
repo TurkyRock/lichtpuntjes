@@ -10,6 +10,11 @@ Route::middleware([\App\Http\Middleware\CommunityLocale::class,\App\Http\Middlew
  Route::post('/steun/beheren/{pledge}',[DetachedSupportController::class,'stop'])->middleware(['signed','throttle:6,1,detached-stop:']);
  Route::get('/melden/{kind}/{id}',[ContentReportController::class,'form'])->whereIn('kind',['article','comment','moment'])->whereNumber('id');
  Route::middleware(['auth',\App\Http\Middleware\CommunityActive::class])->group(function(){
+  Route::get('/mijn-interesses',[\App\Http\Controllers\NewsPreferenceController::class,'edit']);
+  Route::put('/mijn-interesses',[\App\Http\Controllers\NewsPreferenceController::class,'update'])->middleware('throttle:10,1,news-preferences-save:');
+  Route::delete('/mijn-interesses',[\App\Http\Controllers\NewsPreferenceController::class,'destroy'])->middleware('throttle:10,1,news-preferences-remove:');
+  Route::post('/mijn-interesses/overslaan',[\App\Http\Controllers\NewsPreferenceController::class,'skip'])->middleware('throttle:10,1,news-preferences-skip:');
+  Route::post('/mijn-interesses/minder',[\App\Http\Controllers\NewsPreferenceController::class,'less'])->middleware('throttle:10,1,news-preferences-feedback:');
   Route::post('/profiel/nieuwsvoorkeuren',[NewsPreferencesController::class,'update'])->middleware('throttle:10,1,preferences:');
   Route::delete('/profiel/bijdragen/{kind}/{id}',[AccountPrivacyController::class,'eraseContribution'])->whereIn('kind',['comment','story'])->whereNumber('id')->middleware('throttle:10,1,erase-contribution:');
   Route::post('/profiel/export',[AccountPrivacyController::class,'export'])->middleware('throttle:3,60,privacy-export:');

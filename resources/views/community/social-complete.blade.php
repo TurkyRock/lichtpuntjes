@@ -24,7 +24,7 @@
 <div class="honeypot" aria-hidden="true"><label>Leave empty<input name="website" tabindex="-1" autocomplete="off"></label></div>
 <label><input type="checkbox" name="intentions" value="1" required> {{ $en ? 'I share happy stories and respond kindly. I accept the' : 'Ik deel leuke berichten en reageer vriendelijk. Ik accepteer de' }} <a href="/huisregels?lang={{ app()->getLocale() }}" target="_blank" rel="noopener">{{ $en ? 'community rules' : 'huisregels' }}</a>.</label>
 <label><input type="checkbox" name="adult" value="1" required> {{ $en?'I am 18 or older.':'Ik ben 18 jaar of ouder.' }}</label>
-@include('community.news-preferences',['user'=>null])
+@include('community.news-preferences-fields',['user'=>null])
 <p><button>{{ $en ? 'Let’s bring some sunshine' : 'Ja, ik breng wat licht mee' }}</button></p>
 </form>
 <p class="small"><a href="/inloggen?lang={{ app()->getLocale() }}">{{ $en ? 'Use another sign-in option' : 'Een andere inlogoptie gebruiken' }}</a></p>
