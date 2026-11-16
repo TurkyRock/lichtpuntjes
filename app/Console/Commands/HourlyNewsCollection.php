@@ -96,9 +96,11 @@ class HourlyNewsCollection extends Command
                         $ready->update(['photo'=>array_merge($ready->photo??[],['requested_style'=>LichtpuntIllustrationPrompt::PHOTO_STYLE])]);
                         if(!$photos->attach($ready)){$imageFailed[]=$ready->id;continue;}
                         $ready->refresh();if(!$photos->current($ready)){$imageFailed[]=$ready->id;continue;}
-                    }catch(\App\Services\LocalAiPending|\App\Services\ImagePendingException $e){return $this->paused('Lokale tekst-/beeldopdracht staat in de wachtrij. Voortgang bewaard.',self::SUCCESS);}
+                    }catch(\App\Services\ImagePendingException $e){return $this->paused($e->getMessage().' Voortgang bewaard.',self::SUCCESS);}
+                    catch(\App\Services\LocalAiPending $e){return $this->paused('Lokale tekst-/beeldopdracht staat in de wachtrij. Voortgang bewaard.',self::SUCCESS);}
+                    catch(\App\Services\ArticleImageRejected $e){$imageFailed[]=$ready->id;$this->warn('#'.$ready->id.' '.$e->getMessage());continue;}
                     catch(ImageBudgetException $e){return $this->paused($e->getMessage());}
-                    catch(\Throwable $e){Log::warning('Hourly news image deferred',['article_id'=>$ready->id,'exception'=>get_class($e)]);$imageFailed[]=$ready->id;$this->warn('#'.$ready->id.' beeld nog niet geschikt/beschikbaar; ander artikel zoeken.');continue;}
+                    catch(\Throwable $e){Log::warning('Hourly news image deferred',['article_id'=>$ready->id,'exception'=>get_class($e)]);$imageFailed[]=$ready->id;$this->warn('#'.$ready->id.' technische beeldfout ('.class_basename($e).'); ander artikel zoeken.');continue;}
                     // Persist the selection BEFORE publishing: a crash between DB update and file save cannot double the quota.
                     $this->state['selected'][(string)$ready->id]=$ready->category;$this->save();
                     DB::transaction(function()use($ready){
