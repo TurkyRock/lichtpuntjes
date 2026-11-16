@@ -114,7 +114,7 @@ class FreshNewsCollection extends Command
                 if(($this->state['finished']??false)&&!$this->option('new-batch')){$this->info('Deze schone collectie is klaar: '.$this->target.' artikelen. Er is niets opnieuw verwijderd.');return self::SUCCESS;}
             }
             $images->check();
-            if(!config('news.newsdata_key')||!config('news.gemini_key'))throw new NewsServiceException('NEWSDATA_API_KEY en GEMINI_API_KEY moeten ingesteld zijn. Er is niets verwijderd.');
+            if(!config('news.newsdata_key')||(!config('local-ai.enabled')&&!config('news.gemini_key')))throw new NewsServiceException('NEWSDATA_API_KEY en GEMINI_API_KEY moeten ingesteld zijn. Er is niets verwijderd.');
             if($this->option('new-batch')&&$this->state){
                 $dir=storage_path('app/news-fresh-runs');File::ensureDirectoryExists($dir);
                 $archived=$dir.'/previous-'.\Illuminate\Support\Str::uuid().'.json';

@@ -21,10 +21,10 @@ Return a decision (approve/reject/doubt), confidence from 0 to 1, and a brief Du
 PROMPT,['author_name'=>$comment->user->name,'article_title'=>$comment->article->source_title,'article_summary'=>$comment->article->nl,'reply_to'=>($comment->parent&&$comment->parent->status==='approved'&&!$comment->parent->user->is_suspended)?['author_name'=>$comment->parent->user->name,'body'=>$comment->parent->body]:null,'comment'=>$comment->body],['type'=>'OBJECT','properties'=>['decision'=>['type'=>'STRING','enum'=>['approve','reject','doubt']],'confidence'=>['type'=>'NUMBER'],'reason'=>['type'=>'STRING']],'required'=>['decision','confidence','reason']]);
     Validator::make($result,['decision'=>'required|in:approve,reject,doubt','confidence'=>'required|numeric|between:0,1','reason'=>'required|string|max:1500'])->validate();
     $status=$result['decision']==='approve'&&$result['confidence']>=.90?'approved':($result['decision']==='reject'&&$result['confidence']>=.85?'rejected':'doubt');$error=false;
-   }catch(\Throwable $e){$result=['reason'=>'AI-keuring niet beschikbaar of onvolledig. Handmatig controleren.','confidence'=>0];$status='doubt';$error=true;}
+   }catch(LocalAiPending $e){$comment->update(['status'=>'pending','ai_error'=>true,'ai_reason'=>'Wacht op je lokale AI-model. Je reactie is nog niet openbaar.']);return;}catch(\Throwable $e){$result=['reason'=>'AI-keuring niet beschikbaar of onvolledig. Handmatig controleren.','confidence'=>0];$status='doubt';$error=true;}
    DB::transaction(function()use($comment,$result,$status,$error){
     $c=Comment::whereKey($comment->id)->lockForUpdate()->firstOrFail();if($c->moderated_by||!in_array($c->status,['pending','doubt']))return;
-    $c->update(['status'=>$status,'ai_reason'=>$result['reason'],'ai_confidence'=>$result['confidence'],'ai_error'=>$error,'ai_model'=>config('news.gemini_model'),'approved_at'=>$status==='approved'?now():null]);
+    $c->update(['status'=>$status,'ai_reason'=>$result['reason'],'ai_confidence'=>$result['confidence'],'ai_error'=>$error,'ai_model'=>(config('local-ai.enabled')?'local:'.config('local-ai.model'):config('news.gemini_model')),'approved_at'=>$status==='approved'?now():null]);
     if($status==='approved'&&$c->article->status==='published'&&!$c->user->is_suspended)$this->points->comment($c);
    },3);
    ContributionTranslator::queue('comment',$comment->id);

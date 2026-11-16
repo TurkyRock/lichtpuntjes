@@ -38,7 +38,7 @@ class ProfilePhotoModerator {
     if($user->profile_photo_id===$p->id)$user->forceFill(['profile_photo_id'=>null])->save();
     if($p->path)$remove[]=$p->path;$p->path=null;
    }
-   $p->fill(['status'=>$decision,'reason'=>$reason,'ai_model'=>$admin?null:config('news.gemini_model'),'reviewed_by'=>$admin?->id])->save();
+   $p->fill(['status'=>$decision,'reason'=>$reason,'ai_model'=>$admin?null:(config('local-ai.enabled')?'local:'.config('local-ai.model'):config('news.gemini_model')),'reviewed_by'=>$admin?->id])->save();
   },3);
   foreach($remove as $path)Storage::disk('local')->delete($path);
  }

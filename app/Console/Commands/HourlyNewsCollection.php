@@ -43,7 +43,7 @@ class HourlyNewsCollection extends Command
             try{$importer->assess($article,true,'news_ready');return;}
             catch(GeminiTemporaryException $e){
                 $seconds=$retry++===0?60:300;
-                $this->warn('Gemini tijdelijk niet beschikbaar; nieuwe poging over '.$seconds.' seconden.');
+                $this->warn((config('local-ai.enabled')?'Lokale laptop-AI':'Gemini').' tijdelijk niet beschikbaar; nieuwe poging over '.$seconds.' seconden.');
                 for($elapsed=0;$elapsed<$seconds;$elapsed+=5){
                     if(microtime(true)+5>=$this->deadline)throw new \RuntimeException('De uitvoeringstijd van deze ronde is voorbij.');
                     Sleep::for(5)->seconds();

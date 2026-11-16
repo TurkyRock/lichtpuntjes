@@ -27,7 +27,7 @@ PROMPT,['visibility'=>$moment->visibility,'moment'=>$moment->body],['type'=>'OBJ
   }catch(AiWaitException $e){if($moment->fresh()?->revision===$revision)app(AiAvailability::class)->defer($moment,$e);return;}catch(\Throwable $e){$status='doubt';$reason=['nl'=>'De controle is tijdelijk niet beschikbaar of niet duidelijk. Je momentje blijft privé. Je kunt de controle later opnieuw starten.','en'=>'The review is unavailable or uncertain. Your moment stays private. You can retry later.'];}
    // This explicitly requested language rule is enforced even if the model misses it.
    if(preg_match('/\bkut\s*dag\b/ui',$moment->body)){$status='rejected';$reason=['nl'=>'Gebruik vriendelijker taalgebruik. Bijvoorbeeld: ik had een rotdag.','en'=>'Please use respectful language. For example: I had a rough day.'];}
-  DB::transaction(function()use($moment,$revision,$status,$reason){$m=PositiveMoment::whereKey($moment->id)->lockForUpdate()->firstOrFail();if($m->revision!==$revision||$m->status!=='pending')return;$m->update(['status'=>$status,'reason'=>$reason,'ai_model'=>config('news.gemini_model'),'ai_retry_at'=>null,'ai_wait_reason'=>null]);
+  DB::transaction(function()use($moment,$revision,$status,$reason){$m=PositiveMoment::whereKey($moment->id)->lockForUpdate()->firstOrFail();if($m->revision!==$revision||$m->status!=='pending')return;$m->update(['status'=>$status,'reason'=>$reason,'ai_model'=>(config('local-ai.enabled')?'local:'.config('local-ai.model'):config('news.gemini_model')),'ai_retry_at'=>null,'ai_wait_reason'=>null]);
    $this->syncPoints($m);
   },3);
   ContributionTranslator::queue('moment',$moment->id);

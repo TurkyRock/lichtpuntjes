@@ -12,7 +12,7 @@ class NewsAssessmentRetry
             try{$importer->assess($article,$stage);return;}
             catch(GeminiTemporaryException $e){
                 $seconds=$retry++===0?60:300;
-                if($notice)$notice('#'.$article->id.' · Gemini tijdelijk niet beschikbaar. Nieuwe poging over '.$seconds.' seconden (Ctrl+C om te stoppen).');
+                if($notice)$notice('#'.$article->id.' · '.(config('local-ai.enabled')?'Lokale laptop-AI':'Gemini').' tijdelijk niet beschikbaar. Nieuwe poging over '.$seconds.' seconden (Ctrl+C om te stoppen).');
                 // Short chunks make cancellation responsive, including on Windows.
                 for($waited=0;$waited<$seconds;$waited+=5)Sleep::for(5)->seconds();
                 $article->refresh();

@@ -43,3 +43,9 @@ Schedule::command('site:cleanup --apply')->dailyAt('03:30')->timezone('Europe/Am
 Schedule::command('site:backup')->dailyAt('04:30')->timezone('Europe/Amsterdam')->withoutOverlapping(120)->runInBackground()->appendOutputTo(storage_path('logs/backup.log'));
 
 Schedule::command('social:prepare')->everyMinute()->withoutOverlapping(5)->runInBackground()->appendOutputTo(storage_path('logs/social-planner.log'));
+
+// Bounded recovery and expiry of encrypted local text tasks.
+Schedule::command('local-ai:tick')->everyMinute()->withoutOverlapping(5);
+\Illuminate\Support\Facades\Artisan::command('local-ai:token',function(){
+ $token=bin2hex(random_bytes(32));$this->line('Laptop worker.json / local_ai_token: '.$token);$this->line('Server .env: LOCAL_AI_TOKEN_HASH='.hash('sha256',$token));$this->warn('Bewaar de sleutel privé; deel hem niet via chat of git.');
+})->purpose('Maak een afzonderlijke sleutel voor de lokale tekstworker');

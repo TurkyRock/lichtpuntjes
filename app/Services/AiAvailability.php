@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 class AiAvailability {
  private function key():string{return 'gemini:'.config('news.gemini_model');}
  public function check():void {
+  if(config('local-ai.enabled'))return;
   $row=DB::table('ai_service_pauses')->where('service',$this->key())->first();
   if($row&&CarbonImmutable::parse($row->retry_at,'UTC')->isFuture())throw new AiWaitException(CarbonImmutable::parse($row->retry_at,'UTC'),$row->reason);
  }
