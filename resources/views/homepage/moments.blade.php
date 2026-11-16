@@ -10,8 +10,8 @@
 @if($momentHighlights->isNotEmpty())
 <div class="moment-quotes">
 @foreach($momentHighlights as $moment)
-<article class="moment-paper-note {{ $loop->index % 2 === 0 ? 'mobile-moment-flower' : 'mobile-moment-robin' }}" id="moment-{{ $moment->id }}">
-<div class="mobile-moment-art" aria-hidden="true"><span class="mobile-moment-decoration"></span></div>
+<article class="moment-paper-note{{ $moment->hasMomentImage()?' has-mobile-image':'' }}" id="moment-{{ $moment->id }}">
+<div class="mobile-moment-art" aria-hidden="true">@if($moment->hasMomentImage())<img src="{{ $moment->momentImageUrl() }}" width="88" height="88" loading="lazy" decoding="async" alt="">@endif</div>
 <span class="moment-clothespin" aria-hidden="true"></span><span class="moment-clothespin second" aria-hidden="true"></span>
 @php($momentSummary=preg_replace('/\s+/u',' ',trim($moment->bodyFor($locale))))
 @php($momentLong=mb_strlen($momentSummary)>120)
@@ -24,7 +24,7 @@
 </div>
 <div class="moment-note-reactions">@include('shared.moment-image',['momentImageContext'=>'home'])@include('shared.moment-heart')</div>
 </div>
-</article>
+<a class="small" href="/melden/moment/{{ $moment->id }}?lang={{ app()->getLocale() }}">{{ app()->getLocale()==='en'?'Report':'Melden' }}</a></article>
 @endforeach
 </div>
 @else

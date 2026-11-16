@@ -13,7 +13,7 @@ class NewsPreferences
         'energy'=>['Duurzaamheid','Sustainability','energy'], 'sport'=>['Sport','Sport','sport'],
         'media'=>['Cultuur & media','Culture & media','media'], 'people'=>['Mensen & mooie initiatieven','People & kind initiatives','people'],
     ];
-    public const AGES = ['under18','18-24','25-39','40-59','60plus'];
+    public const AGES = ['18-24','25-39','40-59','60plus'];
 
     public function enabled(?User $user): bool
     {

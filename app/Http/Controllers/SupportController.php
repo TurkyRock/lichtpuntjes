@@ -20,7 +20,8 @@ class SupportController extends Controller {
   if($v['frequency']==='monthly'&&!$r->user()){$r->session()->put('url.intended',url('/steun'));return redirect('/inloggen')->with('status','Log in om je maandelijkse bijdrage zelf te kunnen beheren.');}
   if($v['frequency']==='monthly')abort_unless($r->user()->hasVerifiedEmail()&&!$r->user()->is_suspended,403,'Bevestig eerst je e-mailadres.');
   try {
-   $url=Cache::lock('support-start-'.$v['attempt'],120)->block(5,function()use($v,$r,$cents,$service){
+   $url=Cache::lock('support-owner-'.($r->user()?->id??$v['attempt']),120)->block(5,function()use($v,$r,$cents,$service){
+    if($r->user())abort_unless(\App\Models\User::whereKey($r->user()->id)->where('is_suspended',false)->exists(),403);
     $p=SupportPledge::firstOrCreate(['id'=>$v['attempt']],['user_id'=>$r->user()?->id,'cents'=>$cents,'frequency'=>$v['frequency'],'mode'=>$service->mode(),'consented_at'=>$v['frequency']==='monthly'?now():null]);
     abort_if($p->cents!==$cents||$p->frequency!==$v['frequency'],422,'Dit betaalverzoek is al gebruikt. Open de bijdragepagina opnieuw.');
     return $service->checkout($p);

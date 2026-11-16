@@ -41,7 +41,7 @@ class SocialAuthController extends Controller
         catch (\Throwable $e) { return $this->failure('De inlogcontrole is niet gelukt. Begin opnieuw.', 'Sign-in could not be verified. Please start again.'); }
         if (($identity['provider'] ?? '') !== $provider || empty($identity['subject']) || strlen($identity['subject']) > 191) return $this->failure('Dit account kon niet worden gecontroleerd.', 'This account could not be verified.');
         $account = SocialAccount::where('provider', $provider)->where('provider_user_id', $identity['subject'])->first();
-        if ($account) return $this->signIn($r, $account->user, $identity);
+        if ($account) return $this->signIn($r, $account->user);
         $r->session()->regenerate();
         $r->session()->put('social.pending', $identity + ['expires' => time() + 600, 'invite' => $flow['invite'] ?? null]);
         return redirect('/aanmelden/afronden');
@@ -63,9 +63,10 @@ class SocialAuthController extends Controller
         $r->merge(['email' => $p['email'] !== '' ? $p['email'] : strtolower(trim((string) $r->input('email')))]);
         $v = $r->validate([
             'name' => \App\Rules\FriendlyDisplayName::rules(),
-            'email' => 'required|email|max:254', 'intentions' => 'accepted',
+            'email' => 'required|email|max:254', 'intentions' => 'accepted', 'adult'=>'accepted',
             'existing_password' => 'nullable|string|max:128', 'website' => 'prohibited',
         ]);
+        $r->validate(NewsPreferencesController::rules());
         $created = false;
         try {
             $u = DB::transaction(function () use ($p, $v, &$created) {
@@ -89,20 +90,20 @@ class SocialAuthController extends Controller
                     ])->save();
                     $created = true;
                 }
-                $u->forceFill(['community_accepted_at' => now(), 'community_version' => '2026-10-10'])->save();
+                $u->forceFill(['adult_confirmed_at'=>now(),'community_accepted_at' => now(), 'community_version' => '2026-11-16'])->save();
                 SocialAccount::create(['user_id' => $u->id, 'provider' => $p['provider'], 'provider_user_id' => $p['subject']]);
                 return $u;
             });
         } catch (\Illuminate\Database\QueryException $e) {
             return back()->withErrors(['account' => $this->text('Afronden lukte niet. Probeer opnieuw; mogelijk is dit account ondertussen al aangemaakt.', 'Could not finish. Please try again; this account may have been created in the meantime.')])->onlyInput('name');
         }
+        if($created) NewsPreferencesController::save($r,$u);
         $r->session()->forget('social.pending');
         if ($created && !$u->hasVerifiedEmail()) {
             try { event(new Registered($u)); }
             catch (\Throwable $e) { $r->session()->flash('status', $this->text('Je account is aangemaakt. Verstuur de bevestigingsmail opnieuw vanuit je profiel.', 'Your account was created. Resend the confirmation email from your profile.')); }
         }
-        $response = $this->signIn($r, $u, $p);
-        return $created ? redirect('/mijn-interesses?welcome=1&lang='.app()->getLocale()) : $response;
+        return $this->signIn($r, $u);
     }
 
     private function pending(Request $r): array
@@ -115,17 +116,9 @@ class SocialAuthController extends Controller
         return $p;
     }
 
-    private function signIn(Request $r, ?User $u, array $identity = [])
+    private function signIn(Request $r, ?User $u)
     {
         if (!$u || $u->is_suspended) return $this->failure('Dit account is gepauzeerd.', 'This account is paused.');
-        try {
-            if (app(\App\Services\GoogleProfilePhoto::class)->import($u, $identity)) {
-                $r->session()->flash('status', $this->text('Je Google-profielfoto is overgenomen. Na de gebruikelijke fotocontrole wordt deze zichtbaar.', 'Your Google profile photo has been imported. It becomes visible after the usual photo review.'));
-            }
-        } catch (\Throwable $e) {
-            // An unavailable picture must never prevent an otherwise valid login.
-            \Illuminate\Support\Facades\Log::warning('Google profile photo import unavailable', ['user_id' => $u->id]);
-        }
         Auth::login($u);
         $r->session()->regenerate();
         return redirect('/profiel');

@@ -8,6 +8,7 @@
 @include('community.profile-photo',['user'=>auth()->user(),'profilePhotoUpload'=>\App\Models\ProfilePhoto::where('user_id',auth()->id())->latest('id')->first()])
 @include('community.account-email-settings')
 @include('community.account-security-settings')
+@include('community.account-privacy-controls')
 @endif
 <p>{{ $en?'Requests are private and reviewed by the administrator. Requesting deletion does not immediately delete your account.':'Verzoeken zijn privé en worden door de beheerder behandeld. Een verwijderverzoek wist je account niet direct.' }}</p>
 @if(!$admin)

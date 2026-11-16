@@ -4,6 +4,19 @@ use App\Models\LocalAiJob;
 use Illuminate\Support\Facades\DB;
 class LocalAi {
  public function ask(string $system,array $data,array $schema,?array $image=null):array {
+  if(isset($data['__privacy_owner_id'])){
+   $owners=array_unique(array_merge([(int)$data['__privacy_owner_id']],$data['__privacy_related_user_ids']??[]));sort($owners);
+   $subjects=$data['__privacy_subjects']??[];
+   unset($data['__privacy_owner_id'],$data['__privacy_related_user_ids'],$data['__privacy_subjects']);
+   $answer=DB::transaction(function()use($owners,$subjects,$system,$data,$schema,$image){
+    foreach($owners as $owner)if(!\App\Models\User::whereKey($owner)->lockForUpdate()->first(['id']))throw new NewsServiceException('Account bestaat niet meer; geen AI-opdracht opgeslagen.');
+    foreach($subjects as $subject){$class=match($subject['kind']){'comment'=>\App\Models\Comment::class,'moment'=>\App\Models\PositiveMoment::class,'story'=>\App\Models\LightspotSubmission::class,default=>throw new NewsServiceException('Onbekende bijdrage.')};if(!$class::whereKey($subject['id'])->lockForUpdate()->first(['id']))throw new NewsServiceException('Bijdrage is verwijderd; geen AI-opdracht opgeslagen.');}
+    try{return $this->ask($system,$data,$schema,$image);}catch(LocalAiPending $pending){return $pending;}
+   });
+   if($answer instanceof LocalAiPending)throw $answer;
+   return $answer;
+  }
+
   if($image!==null && (!isset($data['article'],$data['brief'])))throw new NewsServiceException('Profielfoto’s gaan in lokale modus naar handmatige controle.');
   $model=(string)config($image!==null?'local-ai.vision_model':'local-ai.model');
   if(!preg_match('/^[a-zA-Z0-9_.:-]{1,80}$/D',$model)||str_contains(strtolower($model),'cloud'))throw new NewsServiceException('Stel een lokaal model in, bijvoorbeeld qwen3:8b.');

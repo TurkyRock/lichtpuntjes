@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\{Cache,DB};
 class LightspotController extends Controller {
  private function author(Request $r):void {abort_unless($r->user()->community_accepted_at,403,'Bevestig eerst de huisregels in je account.');}
  private function fields(Request $r):array {
+  \App\Services\ContributionConsent::validate($r);
   $v=$r->validate(['title'=>'required|string|min:5|max:140','body'=>'required|string|min:120|max:6000','language'=>'required|in:nl,en','intentions'=>'accepted','website'=>'prohibited']);
   $v['category']='community';$v['title']=trim($v['title']);$v['body']=trim($v['body']);
   if(mb_strlen($v['title'])<5||mb_strlen($v['body'])<120)throw \Illuminate\Validation\ValidationException::withMessages(['body'=>'Schrijf minstens 120 tekens en een duidelijke titel.']);
@@ -22,7 +23,7 @@ class LightspotController extends Controller {
    abort_if(LightspotSubmission::where('user_id',$user->id)->where('created_at','>=',now()->subDay())->count()>=3,429,'Maximaal drie verhalen per 24 uur. Morgen is er weer ruimte.');
    abort_if(LightspotSubmission::where('user_id',$user->id)->where('body',$v['body'])->exists(),422,'Je hebt dit verhaal al gedeeld.');
    return LightspotSubmission::create($v+['user_id'=>$user->id,'status'=>'pending']);
-  });ProcessLightspot::dispatch($s->id);
+  });\App\Services\ContributionConsent::record($r,'story',$s->id,$s->revision);ProcessLightspot::dispatch($s->id);
   return redirect('/mijn-lichtpuntjes')->with('status',app()->getLocale()==='en'?'Your story is saved. We review it first, then create an illustration.':'Je verhaal is opgeslagen. Eerst keuren we het, daarna maken we de illustratie.');
  }
  public function edit(Request $r,LightspotSubmission $submission){abort_unless($submission->user_id===$r->user()->id,403);abort_unless($submission->status==='rejected',422);return view('community.lightspot-write',['submission'=>$submission]);}
@@ -34,7 +35,7 @@ class LightspotController extends Controller {
    abort_if(DB::table('lightspot_reviews')->where('submission_id',$submission->id)->where('decision','revision')->where('created_at','>=',now()->subDay())->count()>=3,429,'Maximaal drie aanpassingen per 24 uur.');
    DB::table('lightspot_reviews')->insert(['submission_id'=>$submission->id,'decision'=>'revision','note'=>json_encode(['title'=>$submission->title,'body'=>$submission->body,'reason'=>$submission->reason],JSON_UNESCAPED_UNICODE),'created_at'=>now(),'updated_at'=>now()]);
    $submission->update($v+['status'=>'pending','ai_retry_at'=>null,'ai_wait_reason'=>null,'translations'=>null,'confidence'=>null,'reason'=>null,'ai_error'=>false,'moderated_by'=>null,'moderator_note'=>null,'appealed_at'=>null,'revision'=>$submission->revision+1]);
-  });}finally{$lock->release();}ProcessLightspot::dispatch($submission->id);return redirect('/mijn-lichtpuntjes')->with('status','Je aangepaste verhaal wordt opnieuw gekeurd.');
+  });}finally{$lock->release();}\App\Services\ContributionConsent::record($r,'story',$submission->id,$submission->revision);ProcessLightspot::dispatch($submission->id);return redirect('/mijn-lichtpuntjes')->with('status','Je aangepaste verhaal wordt opnieuw gekeurd.');
  }
  public function appeal(Request $r,LightspotSubmission $submission){
   abort_unless($submission->user_id===$r->user()->id,403);$lock=Cache::lock('lichtpunt-submission-'.$submission->id,2100);abort_unless($lock->get(),409);

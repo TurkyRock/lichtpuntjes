@@ -15,6 +15,7 @@ class ArticleImageGenerator {
  public function check():void {if(config('news_images.provider')==='laptop'){if(!app(LaptopImages::class)->enabled())throw new NewsServiceException('Zet LAPTOP_IMAGES_ENABLED aan.');return;}$this->generator()->check();}
  public function summary():string {if(config('news_images.provider')==='laptop')return 'Laptopwachtrij ingesteld. De worker maakt beelden via zijn lokale ComfyUI en uploadt ze. Er is niets gegenereerd.';return config('news_images.provider','cloudflare')==='cloudflare'?'Cloudflare: account, token en FLUX.1 Schnell beschikbaar. Geen afbeelding gemaakt. Gebruik Workers Free; dagelijkse limieten worden door Cloudflare bewaakt.':'Lokale ComfyUI en checkpoint zijn beschikbaar. Er is niets gegenereerd.';}
  public function generate(Article $a):array {
+  if(config('privacy.local_ai_only')&&!app()->environment('testing')&&config('news_images.provider')!=='laptop')throw new NewsServiceException('Alleen lokale beeldverwerking is toegestaan.');
   if(config('news_images.provider')==='laptop'){if(!app(LaptopImages::class)->enabled())throw new NewsServiceException('Laptopbeelden staan uit.');return app(LaptopArticleImages::class)->generate($a);}
   $style=app(LichtpuntIllustrationPrompt::class)->style($a);
   if(!in_array($style,[LichtpuntIllustrationPrompt::COLLAGE_STYLE,LichtpuntIllustrationPrompt::PHOTO_STYLE],true))return $this->generator()->generate($a);

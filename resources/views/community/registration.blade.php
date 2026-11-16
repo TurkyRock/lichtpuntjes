@@ -17,8 +17,9 @@
 <div><label for="password_confirmation">{{ $en ? 'Repeat password' : 'Herhaal wachtwoord' }}</label><input id="password_confirmation" type="password" name="password_confirmation" minlength="15" maxlength="128" autocomplete="new-password" required></div>
 </div>
 <p class="registration-hint" id="registrationPasswordHint">{{ $en ? 'At least 15 characters. A long password phrase works well.' : 'Minimaal 15 tekens. Een lange wachtwoordzin mag ook.' }}</p>
-<label class="registration-consent"><input type="checkbox" name="intentions" value="1" @checked(old('intentions')) required><span>{{ $en ? 'I agree to the' : 'Ik ga akkoord met de' }} <a href="/huisregels?lang={{ app()->getLocale() }}" target="_blank" rel="noopener">{{ $en ? 'community rules' : 'huisregels' }}</a> {{ $en ? 'and' : 'en' }} <a href="/privacy?lang={{ app()->getLocale() }}" target="_blank" rel="noopener">{{ $en ? 'privacy statement' : 'privacyverklaring' }}</a>.</span></label>
-<p class="registration-hint">{{ $en ? 'Next, you can optionally choose your news interests. You can skip that step.' : 'Hierna kun je vrijblijvend je nieuwsinteresses kiezen. Die stap mag je overslaan.' }}</p>
+<label class="registration-consent"><input type="checkbox" name="intentions" value="1" @checked(old('intentions')) required><span>{{ $en ? 'I agree to the' : 'Ik ga akkoord met de' }} <a href="/huisregels?lang={{ app()->getLocale() }}" target="_blank" rel="noopener">{{ $en ? 'community rules' : 'huisregels' }}</a> {{ $en ? 'and have read the' : 'en heb kennisgenomen van de' }} <a href="/privacy?lang={{ app()->getLocale() }}" target="_blank" rel="noopener">{{ $en ? 'privacy statement' : 'privacyverklaring' }}</a>.</span></label>
+<label><input type="checkbox" name="adult" value="1" required> {{ $en?'I am 18 or older.':'Ik ben 18 jaar of ouder.' }}</label>
+@include('community.news-preferences',['user'=>null])
 <button class="registration-submit" type="submit">{{ $en ? 'Create my account' : 'Maak mijn account' }}</button>
 </form>
 <p class="registration-login">{{ $en ? 'Already have an account?' : 'Al een account?' }} <a href="/inloggen?lang={{ app()->getLocale() }}">{{ $en ? 'Log in' : 'Inloggen' }}</a></p>

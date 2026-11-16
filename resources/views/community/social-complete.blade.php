@@ -6,9 +6,6 @@
 <h1>{{ $en ? 'One more smile, and you’re in.' : 'Nog één glimlach, en je bent erbij.' }}</h1>
 <p>{{ $en ? 'Your account was checked by '.ucfirst($pending['provider']).'. Choose your public name and join our positive community.' : 'Je account is gecontroleerd door '.ucfirst($pending['provider']).'. Kies je openbare naam en sluit je aan bij onze positieve community.' }}</p>
 @include($en ? 'community.en.intentions' : 'community.intentions')
-@if($pending['provider'] === 'google' && !empty($pending['avatar']))
-<p class="small">{{ $en ? 'If you do not already have a profile photo, we copy your Google photo. It becomes visible after our usual photo review. You can change or remove it in your account.' : 'Heb je nog geen profielfoto, dan nemen we je Google-foto over. Deze wordt zichtbaar na onze gebruikelijke fotocontrole. Je kunt hem in je account wijzigen of verwijderen.' }}</p>
-@endif
 <form method="post" action="/aanmelden/afronden">
 @csrf
 <label for="name">{{ $en ? 'Your public name' : 'Zo mogen we je noemen' }}</label>
@@ -26,6 +23,8 @@
 @endif
 <div class="honeypot" aria-hidden="true"><label>Leave empty<input name="website" tabindex="-1" autocomplete="off"></label></div>
 <label><input type="checkbox" name="intentions" value="1" required> {{ $en ? 'I share happy stories and respond kindly. I accept the' : 'Ik deel leuke berichten en reageer vriendelijk. Ik accepteer de' }} <a href="/huisregels?lang={{ app()->getLocale() }}" target="_blank" rel="noopener">{{ $en ? 'community rules' : 'huisregels' }}</a>.</label>
+<label><input type="checkbox" name="adult" value="1" required> {{ $en?'I am 18 or older.':'Ik ben 18 jaar of ouder.' }}</label>
+@include('community.news-preferences',['user'=>null])
 <p><button>{{ $en ? 'Let’s bring some sunshine' : 'Ja, ik breng wat licht mee' }}</button></p>
 </form>
 <p class="small"><a href="/inloggen?lang={{ app()->getLocale() }}">{{ $en ? 'Use another sign-in option' : 'Een andere inlogoptie gebruiken' }}</a></p>

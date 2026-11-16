@@ -19,7 +19,7 @@ class MomentController extends Controller {
  public function store(Request $r){
   $v=$this->validateMoment($r);$image=$r->boolean('image_processing');
   $m=PositiveMoment::create(['user_id'=>$r->user()->id,'body'=>$v['body'],'visibility'=>$v['visibility'],'moment_date'=>now('Europe/Amsterdam')->toDateString(),'ai_accepted_at'=>now(),'image_accepted_at'=>$image?now():null,'image_state'=>$image?'queued':null]);
-  $this->dispatch($m);return redirect('/mijn-momentjes?lang='.app()->getLocale())->with('status',app()->getLocale()==='en'?'Saved privately for review.':'Privé opgeslagen voor controle.');
+  \App\Services\ContributionConsent::record($r,'moment',$m->id,$m->revision,$m->visibility);$this->dispatch($m);return redirect('/mijn-momentjes?lang='.app()->getLocale())->with('status',app()->getLocale()==='en'?'Saved privately for review.':'Privé opgeslagen voor controle.');
  }
  public function update(Request $r,PositiveMoment $moment){
   abort_unless($moment->user_id===$r->user()->id,403);$v=$this->validateMoment($r);$oldPath=null;
@@ -28,11 +28,11 @@ class MomentController extends Controller {
    DB::table('moment_hearts')->where('moment_id',$m->id)->delete();
    $m->update(['body'=>$v['body'],'visibility'=>$v['visibility'],'status'=>'pending','ai_retry_at'=>null,'ai_wait_reason'=>null,'reason'=>null,'translations'=>null,'translation_hash'=>null,'translation_state'=>'pending','source_language'=>null,'revision'=>$m->revision+1,'moderated_by'=>null,'ai_accepted_at'=>now(),'image_accepted_at'=>$r->boolean('image_processing')?now():null,'image_state'=>$r->boolean('image_processing')?'queued':null,'image_path'=>null,'image_style'=>null,'image_subject'=>null,'image_revision'=>null]);return $m;
   });
-  \App\Services\MomentImageFiles::remove($oldPath);app(\App\Services\MomentModerator::class)->syncPoints($m);$this->dispatch($m);
+  \App\Services\MomentImageFiles::remove($oldPath);app(\App\Services\MomentModerator::class)->syncPoints($m);\App\Services\ContributionConsent::record($r,'moment',$m->id,$m->revision,$m->visibility);$this->dispatch($m);
   return back()->with('status',app()->getLocale()==='en'?'Changes saved for a new review.':'Aanpassing opgeslagen voor een nieuwe controle.');
  }
  public function destroy(Request $r,PositiveMoment $moment){abort_unless($moment->user_id===$r->user()->id,403);DB::transaction(function()use($moment){$m=PositiveMoment::whereKey($moment->id)->lockForUpdate()->firstOrFail();$day=$m->moment_date->toDateString();$m->delete();if(!PositiveMoment::where('user_id',$m->user_id)->whereDate('moment_date',$day)->where('status','approved')->exists())DB::table('lightpoint_events')->where('user_id',$m->user_id)->where('reference','moment:'.$day)->update(['active'=>false]);});return back()->with('status',app()->getLocale()==='en'?'Moment removed.':'Momentje verwijderd.');}
- private function validateMoment(Request $r):array {return $r->validate(['body'=>'required|string|min:3|max:500','visibility'=>'required|in:private,public','ai_processing'=>'accepted','image_processing'=>'sometimes|accepted','website'=>'prohibited']);}
+ private function validateMoment(Request $r):array {\App\Services\ContributionConsent::validate($r);return $r->validate(['body'=>'required|string|min:3|max:500','visibility'=>'required|in:private,public','ai_processing'=>'accepted','image_processing'=>'sometimes|accepted','website'=>'prohibited']);}
  private function dispatch(PositiveMoment $m):void {try{ReviewMoment::dispatch($m->id,$m->revision);}catch(\Throwable $e){$m->update(['status'=>'doubt','reason'=>['nl'=>'De controle kon niet starten. Probeer later opnieuw.','en'=>'Review could not start. Please retry later.']]);}}
  public function heart(Request $r,PositiveMoment $moment){
   $v=$r->validate(['liked'=>'required|boolean']);abort_if($r->user()->id===$moment->user_id,422,'Een hartje is voor iemand anders.');

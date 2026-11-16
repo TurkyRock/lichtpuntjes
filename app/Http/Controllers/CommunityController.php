@@ -40,7 +40,7 @@ class CommunityController extends Controller {
  }
  public function store(Request $r,Article $article,CommentModerator $moderator){
   $this->contributor($r);abort_unless(Article::visible()->whereKey($article->id)->exists(),404);
-  $v=$r->validate(['body'=>'required|string|min:3|max:1000','website'=>'prohibited','parent_id'=>'nullable|integer|min:1']);$body=trim($v['body']);abort_if(mb_strlen($body)<3,422,'Schrijf een iets langere reactie.');
+  \App\Services\ContributionConsent::validate($r);$v=$r->validate(['body'=>'required|string|min:3|max:1000','website'=>'prohibited','parent_id'=>'nullable|integer|min:1']);$body=trim($v['body']);abort_if(mb_strlen($body)<3,422,'Schrijf een iets langere reactie.');
   $c=DB::transaction(function()use($r,$article,$body,$v){
    \App\Models\User::whereKey($r->user()->id)->lockForUpdate()->firstOrFail();
    abort_if(Comment::where('user_id',$r->user()->id)->where('created_at','>=',now()->subDay())->count()>=20,429,'Vandaag even genoeg glimlachen verstuurd. Probeer morgen weer.');
@@ -50,7 +50,7 @@ class CommunityController extends Controller {
    $root=$parentId?app(\App\Services\CommentConversations::class)->root($parent):null;
    return Comment::create(['parent_id'=>$parentId,'thread_root_id'=>$root?->id,'user_id'=>$r->user()->id,'article_id'=>$article->id,'body'=>$body,'status'=>'pending']);
   },3);
-  $moderator->review($c);$c->refresh();return response()->json(['status'=>$c->status,'message'=>match($c->status){'approved'=>'Je glimlach staat erbij! Een goedgekeurde reactie verdient één lichtpunt (maximaal vijf per dag).','rejected'=>'Deze reactie past niet bij onze huisregels en is niet geplaatst. Probeer een vriendelijke, positieve bijdrage.',default=>'Je reactie wacht op een menselijke blik. Hij verschijnt na goedkeuring.'}],201);
+  \App\Services\ContributionConsent::record($r,'comment',$c->id);$moderator->review($c);$c->refresh();return response()->json(['status'=>$c->status,'message'=>match($c->status){'approved'=>'Je glimlach staat erbij! Een goedgekeurde reactie verdient één lichtpunt (maximaal vijf per dag).','rejected'=>'Deze reactie past niet bij onze huisregels en is niet geplaatst. Probeer een vriendelijke, positieve bijdrage.',default=>'Je reactie wacht op een menselijke blik. Hij verschijnt na goedkeuring.'}],201);
  }
  public function appeal(Request $r,Comment $comment){
   abort_unless($comment->user_id===$r->user()->id,403);
@@ -58,7 +58,7 @@ class CommunityController extends Controller {
  }
  public function revise(Request $r,Comment $comment,CommentModerator $moderator,Lightpoints $points){
   $this->contributor($r);abort_unless($comment->user_id===$r->user()->id,403);
-  $v=$r->validate(['body'=>'required|string|min:3|max:1000']);$body=trim($v['body']);
+  \App\Services\ContributionConsent::validate($r);$v=$r->validate(['body'=>'required|string|min:3|max:1000']);$body=trim($v['body']);
   abort_if(mb_strlen($body)<3,422,'Schrijf een iets langere reactie.');
   $lock=\Illuminate\Support\Facades\Cache::lock('lichtpunt-comment-'.$comment->id,90);
   if(!$lock->get())return back()->withErrors(['body'=>'Deze reactie wordt al verwerkt. Probeer het over een moment opnieuw.'])->onlyInput('body','revise_id');
@@ -75,7 +75,7 @@ class CommunityController extends Controller {
     $c->update(['body'=>$body,'status'=>'pending','translations'=>null,'translation_hash'=>null,'translation_state'=>'pending','source_language'=>null,'ai_reason'=>null,'ai_confidence'=>null,'ai_error'=>false,'ai_model'=>null,'moderated_by'=>null,'moderator_note'=>null,'approved_at'=>null,'appealed_at'=>null]);
    },3);
   } finally {$lock->release();}
-  $moderator->review($comment);$comment->refresh();
+  \App\Services\ContributionConsent::record($r,'comment',$comment->id);$moderator->review($comment);$comment->refresh();
   $en=app()->getLocale()==='en';
   $message=match($comment->status){'approved'=>$en?'Your revised comment was approved and is published.':'Je aangepaste reactie is goedgekeurd en staat erbij!','rejected'=>$en?'This version was not published. See the feedback below.':'Deze versie is niet geplaatst. Bekijk hieronder de feedback.',default=>$en?'Your revised comment is awaiting a human review.':'Je aangepaste reactie wacht op een menselijke blik.'};
   return redirect('/profiel?'.http_build_query(['lang'=>app()->getLocale(),'section'=>'comments']))->with('status',$message);

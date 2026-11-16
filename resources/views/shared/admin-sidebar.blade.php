@@ -28,7 +28,7 @@
 @endif
 </svg><span>{{ $adminLabel }}</span></a>
 @endforeach
-</nav></aside>
+<a href="/beheer/meldingen">Meldingen van bijdragen</a></nav></aside>
 
 @php($storageAlert=\Illuminate\Support\Facades\Cache::get('site-storage-report'))
 @if($storageAlert && ($storageAlert['warning'] || $storageAlert['paused']))<p class="errors" role="alert"><a href="/beheer/opslag">Opslag: {{ $storageAlert['percent'] }}% gebruikt{{ $storageAlert['paused']?' · nieuwsimport gepauzeerd':'' }}</a></p>@endif

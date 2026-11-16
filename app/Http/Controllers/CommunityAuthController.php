@@ -12,12 +12,13 @@ use Illuminate\Auth\Events\PasswordReset;
 class CommunityAuthController extends Controller {
  public function register(Request $r){
   $r->merge(['name'=>trim((string)$r->input('name')),'email'=>strtolower(trim((string)$r->input('email')))]);
-  $v=$r->validate(['name'=>\App\Rules\FriendlyDisplayName::rules(),'email'=>'required|email|max:254|unique:users,email','password'=>\App\Support\AccountPasswords::rules(),'intentions'=>'accepted','website'=>'prohibited','invite'=>'nullable|string|size:32']);
+  $v=$r->validate(['name'=>\App\Rules\FriendlyDisplayName::rules(),'email'=>'required|email|max:254|unique:users,email','password'=>\App\Support\AccountPasswords::rules(),'adult'=>'accepted','intentions'=>'accepted','website'=>'prohibited','invite'=>'nullable|string|size:32']);
+  $r->validate(NewsPreferencesController::rules());
   $u=User::create(['name'=>trim($v['name']),'email'=>strtolower($v['email']),'password'=>$v['password']]);
-  $u->forceFill(['community_accepted_at'=>now(),'community_version'=>'2026-10-10','invite_code'=>bin2hex(random_bytes(16)),'referred_by'=>isset($v['invite'])?User::where('invite_code',$v['invite'])->where('is_suspended',false)->value('id'):null])->save();
-  Auth::login($u);$r->session()->regenerate();
+  $u->forceFill(['adult_confirmed_at'=>now(),'community_accepted_at'=>now(),'community_version'=>'2026-11-16','invite_code'=>bin2hex(random_bytes(16)),'referred_by'=>isset($v['invite'])?User::where('invite_code',$v['invite'])->where('is_suspended',false)->value('id'):null])->save();
+  NewsPreferencesController::save($r,$u);Auth::login($u);$r->session()->regenerate();
   try {event(new Registered($u));$message='Welkom! Bevestig je e-mailadres en breng je eerste glimlach.';}catch(\Throwable $e){$message='Je account is aangemaakt. De bevestigingsmail kon nog niet worden verstuurd; probeer dit straks opnieuw.';}
-  return redirect('/mijn-interesses?welcome=1&lang='.app()->getLocale())->with('status',$message);
+  return redirect('/profiel')->with('status',$message);
  }
  public function login(Request $r){
   $v=$r->validate(['email'=>'required|email','password'=>'required|string|max:128']);

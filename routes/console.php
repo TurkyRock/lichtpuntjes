@@ -49,3 +49,5 @@ Schedule::command('local-ai:tick')->everyMinute()->withoutOverlapping(5);
 \Illuminate\Support\Facades\Artisan::command('local-ai:token',function(){
  $token=bin2hex(random_bytes(32));$this->line('Laptop worker.json / local_ai_token: '.$token);$this->line('Server .env: LOCAL_AI_TOKEN_HASH='.hash('sha256',$token));$this->warn('Bewaar de sleutel privé; deel hem niet via chat of git.');
 })->purpose('Maak een afzonderlijke sleutel voor de lokale tekstworker');
+
+Schedule::command('privacy:cleanup --apply')->dailyAt('03:40')->withoutOverlapping();

@@ -2,7 +2,7 @@
 namespace App\Support;
 use Illuminate\Http\Request;
 class CookieChoice {
- const VERSION='v2';
+ const VERSION='v3';
  const MINUTES=259200;
  public static function value(Request $r):?string {
   $parts=explode('|',(string)$r->cookie('lichtpunt_consent'));

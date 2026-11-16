@@ -4,7 +4,7 @@
 @push('page-styles')@include('shared.processing-styles')@endpush
 @section('content')
 @php($en=app()->getLocale()==='en')
-@php($momentImageProvider=app(\App\Services\LaptopImages::class)->enabled()?'ComfyUI op onze beeldencomputer':'Cloudflare')
+@php($momentImageProvider=app(\App\Services\LaptopImages::class)->enabled()?'ComfyUI op onze beeldencomputer':'ComfyUI')
 <div class="moments-studio">
 <div class="moments-page-heading"><div><h1>{{ $en?'My moments':'Mijn momentjes' }}</h1></div><span class="moments-heading-sun" aria-hidden="true"></span></div>
 @include('community.publication-revisions',['revisionScope'=>'moments'])
@@ -27,7 +27,7 @@
 @elseif($moment->status!=='approved' && $moment->reason)<p class="small">{{ $moment->reason[$en?'en':'nl']??$moment->reason['nl']??'' }}</p>@endif
 
 <details class="moment-edit"><summary>{{ $moment->status==='rejected'?($en?'Edit moment and resubmit':'Momentje aanpassen en opnieuw insturen'):($en?'Edit or manage':'Aanpassen of beheren') }}</summary>@include('community.moment-form',['editing'=>$moment])
-@if($moment->status==='approved' && !$moment->hasMomentImage() && !in_array($moment->image_state,['queued','processing','waiting'],true))<form method="post" action="/momentjes/{{ $moment->id }}/afbeelding?lang={{ app()->getLocale() }}">@csrf<label class="moment-consent"><input type="checkbox" name="image_processing" value="1" required><span>{{ $en?'I agree to Gemini choosing a subject and '.(app(\App\Services\LaptopImages::class)->enabled()?'ComfyUI on our image computer':'Cloudflare').' creating a small image, including when private.':'Ik ga akkoord dat Gemini een onderwerp kiest en '.$momentImageProvider.' een klein beeld maakt, ook als ik privé kies.' }}</span></label><button class="moment-cut-button" type="submit">{{ $en?'Create a little image':'Maak een klein beeld' }}</button></form>@endif
+@if($moment->status==='approved' && !$moment->hasMomentImage() && !in_array($moment->image_state,['queued','processing','waiting'],true))<form method="post" action="/momentjes/{{ $moment->id }}/afbeelding?lang={{ app()->getLocale() }}">@csrf<label class="moment-consent"><input type="checkbox" name="image_processing" value="1" required><span>{{ $en?'I agree to lokale AI choosing a subject and '.(app(\App\Services\LaptopImages::class)->enabled()?'ComfyUI on our image computer':'ComfyUI').' creating a small image, including when private.':'Ik ga akkoord dat lokale AI een onderwerp kiest en '.$momentImageProvider.' een klein beeld maakt, ook als ik privé kies.' }}</span></label><button class="moment-cut-button" type="submit">{{ $en?'Create a little image':'Maak een klein beeld' }}</button></form>@endif
 <form class="moment-delete-form" method="post" action="/momentjes/{{ $moment->id }}?lang={{ app()->getLocale() }}" data-confirm-moment="{{ $en?'Delete this moment?':'Dit momentje verwijderen?' }}">@csrf @method('DELETE')<button class="moment-delete-button" type="submit">{{ $en?'Delete moment':'Momentje verwijderen' }}</button></form></details>
 </article>
 @empty

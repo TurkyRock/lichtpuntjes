@@ -5,6 +5,7 @@ use RuntimeException;
 class GeminiJson {
  public function ask(string $system,array $data,array $schema,?array $image=null):array {
   if(config('local-ai.enabled'))return app(LocalAi::class)->ask($system,$data,$schema,$image);
+  if(config('privacy.local_ai_only')&&!app()->environment('testing'))throw new NewsServiceException('Alleen lokale AI is toegestaan. Zet LOCAL_AI_ENABLED aan; er wordt niets naar Gemini gestuurd.');
   app(AiAvailability::class)->check();
   $key=config('news.gemini_key');$model=config('news.gemini_model');
   if(!$key||!preg_match('~^[a-zA-Z0-9._-]+$~',(string)$model))throw new NewsServiceException('AI-configuratie ontbreekt: controleer GEMINI_API_KEY en GEMINI_MODEL.');

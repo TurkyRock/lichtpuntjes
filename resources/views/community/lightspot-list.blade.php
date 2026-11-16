@@ -42,7 +42,7 @@ $statusLabel=['pending'=>$en?'Awaiting review':'Wacht op controle','doubt'=>$en?
 @elseif($s->moderator_note||$s->reason)<p class="story-review-note">{{ $s->moderator_note?:($s->reason[$en?'en':'nl']??'') }}</p>@endif
 @if($s->ai_error)<p class="story-review-note">{{ $en?'A service is temporarily unavailable. This is not a rejection of your story.':'Een dienst is tijdelijk niet beschikbaar. Dat is geen afwijzing van je verhaal.' }}</p>@endif
 @if($s->status==='published'&&$s->article_id)<a class="story-view-link" href="/?story={{ $s->article_id }}&amp;lang={{ app()->getLocale() }}">{{ $en?'View story':'Bekijk verhaal' }} <span aria-hidden="true">→</span></a>@endif
-@if($s->status==='rejected')<div class="story-revision-actions"><a class="story-view-link" href="/mijn-lichtpuntjes/{{ $s->id }}/aanpassen?lang={{ app()->getLocale() }}">{{ $en?'Revise my story':'Verhaal aanpassen' }}</a>@if(!$s->appealed_at)<form method="post" action="/mijn-lichtpuntjes/{{ $s->id }}/herbeoordeling?lang={{ app()->getLocale() }}">@csrf<button class="story-text-button">{{ $en?'Ask for human review':'Vraag een menselijke blik' }}</button></form>@endif</div>@endif
+@if($s->status==='rejected')<div class="story-revision-actions"><a class="story-view-link" href="/mijn-lichtpuntjes/{{ $s->id }}/aanpassen?lang={{ app()->getLocale() }}">{{ $en?'Revise my story':'Verhaal aanpassen' }}</a></div>@endif
 </div></article>
 @empty
 @if($needsAttention??false)<div class="story-empty"><h3>{{ $en?'All caught up':'Alles bijgewerkt' }}</h3><p>{{ $en?'No stories need changes.':'Er zijn geen verhalen die je hoeft aan te passen.' }}</p></div>@else

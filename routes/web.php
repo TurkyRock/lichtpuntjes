@@ -57,11 +57,6 @@ Route::post('/uitloggen',[Accounts::class,'logout'])->middleware('auth');
 Route::middleware(['auth',CommunityActive::class])->group(function(){
  Route::post('/lichtpuntjes/meldingen',[\App\Http\Controllers\LightpointNoticeController::class,'collect'])->middleware(['verified','throttle:12,1,lightpoint-notice:']);
  Route::get('/profiel',[Community::class,'profile']);
- Route::get('/mijn-interesses',[\App\Http\Controllers\NewsPreferenceController::class,'edit']);
- Route::put('/mijn-interesses',[\App\Http\Controllers\NewsPreferenceController::class,'update'])->middleware('throttle:20,1');
- Route::post('/mijn-interesses/overslaan',[\App\Http\Controllers\NewsPreferenceController::class,'skip']);
- Route::delete('/mijn-interesses',[\App\Http\Controllers\NewsPreferenceController::class,'destroy']);
- Route::post('/mijn-interesses/minder',[\App\Http\Controllers\NewsPreferenceController::class,'less'])->middleware('throttle:30,1');
  Route::get('/lichtpuntje/delen',[\App\Http\Controllers\MomentController::class,'choose']);
  Route::get('/mijn-momentjes',[\App\Http\Controllers\MomentController::class,'index']);
  Route::post('/momentjes/{moment}/hart',[\App\Http\Controllers\MomentController::class,'heart'])->whereNumber('moment')->middleware(['verified','throttle:30,1']);
@@ -82,12 +77,10 @@ Route::middleware(['auth',CommunityActive::class])->group(function(){
  Route::post('/lichtpuntje/schrijven',[\App\Http\Controllers\LightspotController::class,'store'])->middleware(['verified','throttle:3,60,lightspot-create:']);
  Route::get('/mijn-lichtpuntjes/{submission}/aanpassen',[\App\Http\Controllers\LightspotController::class,'edit'])->whereNumber('submission');
  Route::post('/mijn-lichtpuntjes/{submission}/aanpassen',[\App\Http\Controllers\LightspotController::class,'update'])->whereNumber('submission')->middleware(['verified','throttle:3,60,lightspot-edit:']);
- Route::post('/mijn-lichtpuntjes/{submission}/herbeoordeling',[\App\Http\Controllers\LightspotController::class,'appeal'])->whereNumber('submission')->middleware(['verified','throttle:3,60,lightspot-appeal:']);
  Route::get('/beheer/lichtpuntjes',[\App\Http\Controllers\LightspotController::class,'admin'])->middleware('verified');
  Route::post('/beheer/lichtpuntjes/{submission}',[\App\Http\Controllers\LightspotController::class,'decide'])->whereNumber('submission')->middleware(['verified','throttle:30,1,lightspot-admin:']);
 
  Route::post('/comments/{comment}/revise',[Community::class,'revise'])->whereNumber('comment')->middleware(['verified','throttle:4,1,comment-revise:']);
- Route::post('/comments/{comment}/appeal',[Community::class,'appeal'])->whereNumber('comment')->middleware('throttle:5,1');
  Route::post('/huisregels/accepteren',[Community::class,'accept']);
  Route::get('/email/verify',fn()=>view(\App\Support\CommunityViews::name('verify')))->name('verification.notice');
  Route::get('/email/verify/{id}/{hash}',function(EmailVerificationRequest $r){$r->fulfill();return redirect('/profiel')->with('status','E-mail bevestigd. Laat het zonnetje maar schijnen!');})->middleware(['signed','throttle:6,1'])->name('verification.verify');
@@ -129,3 +122,5 @@ Route::middleware(['auth','verified',\App\Http\Middleware\CommunityActive::class
 });
 
 require __DIR__.'/social-publishing.php';
+
+require __DIR__.'/privacy-controls.php';
