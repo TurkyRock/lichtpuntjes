@@ -10,7 +10,7 @@ use Illuminate\Support\Sleep;
 
 class HourlyNewsCollection extends Command
 {
-    protected $signature='news:hourly {--per-category= : Nieuwe artikelen per nieuwscategorie; standaard 3}';
+    protected $signature='news:hourly {--per-category= : Nieuwe artikelen per nieuwscategorie; standaard 3} {--resume : Hervat alleen een bestaande onafgeronde ronde}';
     protected $description='Vul een hervatbare uurronde met drie nieuwe, gecontroleerde artikelen met beeld per nieuwscategorie';
     private array $state=[];
     private float $deadline;
@@ -41,6 +41,7 @@ class HourlyNewsCollection extends Command
         $retry=0;
         while(true){
             try{$importer->assess($article,true,'news_ready');return;}
+            catch(\App\Services\LocalAiPending $e){throw $e;}
             catch(GeminiTemporaryException $e){
                 $seconds=$retry++===0?60:300;
                 $this->warn((config('local-ai.enabled')?'Lokale laptop-AI':'Gemini').' tijdelijk niet beschikbaar; nieuwe poging over '.$seconds.' seconden.');
@@ -53,12 +54,19 @@ class HourlyNewsCollection extends Command
         }
     }
     public function handle(NewsImporter $importer,ArticlePhotoFinder $photos):int {
+        if($this->option('resume')){
+            $path=(string)config('news_hourly.state_file');
+            if(!File::exists($path))return self::SUCCESS;
+            $saved=json_decode(File::get($path),true,512,JSON_THROW_ON_ERROR);
+            if(is_array($saved)&&($saved['finished']??false))return self::SUCCESS;
+            if(is_array($saved)&&is_int($saved['target']??null)&&$saved['target']>=1&&$saved['target']<=20)$this->input->setOption('per-category',$saved['target']);
+        }
         if(!app(\App\Services\Maintenance\StorageUsage::class)->importsAllowed()){$this->warn('Nieuwsimport gepauzeerd: opslag bijna vol. Zie /beheer/opslag.');return self::SUCCESS;}
 
         $raw=(string)($this->option('per-category')??config('news_hourly.per_category',3));
         if(!ctype_digit($raw)||(int)$raw<1||(int)$raw>20){$this->error('--per-category moet tussen 1 en 20 liggen.');return self::INVALID;}
         $this->target=(int)$raw;$this->path=(string)config('news_hourly.state_file');
-        $seconds=max(60,(int)config('news_hourly.max_seconds',3300));$this->deadline=microtime(true)+$seconds;
+        $seconds=max(60,(int)config('news_hourly.max_seconds',3300));if(config('local-ai.enabled'))$seconds=min($seconds,45);$this->deadline=microtime(true)+$seconds;
         $lock=Cache::lock('lichtpunt-import',$seconds+900);
         if(!$lock->get()){$this->warn('Er loopt al een import. Deze uurronde wordt niet tegelijk gestart.');return self::SUCCESS;}
         try {
@@ -88,7 +96,8 @@ class HourlyNewsCollection extends Command
                         $ready->update(['photo'=>array_merge($ready->photo??[],['requested_style'=>LichtpuntIllustrationPrompt::PHOTO_STYLE])]);
                         if(!$photos->attach($ready)){$imageFailed[]=$ready->id;continue;}
                         $ready->refresh();if(!$photos->current($ready)){$imageFailed[]=$ready->id;continue;}
-                    }catch(ImageBudgetException $e){return $this->paused($e->getMessage());}
+                    }catch(\App\Services\LocalAiPending|\App\Services\ImagePendingException $e){return $this->paused('Lokale tekst-/beeldopdracht staat in de wachtrij. Voortgang bewaard.',self::SUCCESS);}
+                    catch(ImageBudgetException $e){return $this->paused($e->getMessage());}
                     catch(\Throwable $e){Log::warning('Hourly news image deferred',['article_id'=>$ready->id,'exception'=>get_class($e)]);$imageFailed[]=$ready->id;$this->warn('#'.$ready->id.' beeld nog niet geschikt/beschikbaar; ander artikel zoeken.');continue;}
                     // Persist the selection BEFORE publishing: a crash between DB update and file save cannot double the quota.
                     $this->state['selected'][(string)$ready->id]=$ready->category;$this->save();
@@ -101,8 +110,14 @@ class HourlyNewsCollection extends Command
                 $candidate=Article::where('origin','news')->whereNull('hidden_at')->whereIn('status',['pending','error'])->where('attempts','<',3)
                     ->where(fn($q)=>$q->whereIn('category',$missing)->orWhereNull('category'))->latest('published_at')->latest('id')->first();
                 if($candidate){
-                    if($assessed)Sleep::for(max(0,(int)config('news_hourly.assessment_delay',8)))->seconds();$assessed=true;
-                    $this->line('#'.$candidate->id.' positief nieuws beoordelen');$this->assess($importer,$candidate);
+                    if($assessed&&!config('local-ai.enabled'))Sleep::for(max(0,(int)config('news_hourly.assessment_delay',8)))->seconds();$assessed=true;
+                    $this->line('#'.$candidate->id.' positief nieuws beoordelen');
+                    try{$this->assess($importer,$candidate);}
+                    catch(\App\Services\NewsServiceException $e){
+                        if(!config('local-ai.enabled')||!str_starts_with($e->getMessage(),'Lokale AI-opdracht mislukt')&&!str_starts_with($e->getMessage(),'Lokaal antwoord heeft een ongeldig formaat'))throw $e;
+                        $candidate->update(['status'=>'error','attempts'=>3,'reason'=>'Lokale AI leverde na de beschikbare pogingen geen geldig antwoord. Technisch overgeslagen, niet inhoudelijk afgekeurd.']);
+                        $this->warn('#'.$candidate->id.' technisch overgeslagen; een andere kandidaat wordt gezocht.');continue;
+                    }
                     $this->line('#'.$candidate->id.' '.$candidate->fresh()->status);continue;
                 }
                 $sources=array_values(array_diff($missing,$exhausted));
@@ -113,6 +128,8 @@ class HourlyNewsCollection extends Command
                 if(empty($page['next'])||$page['next']===($cursors[$cat]??null))$exhausted[]=$cat;
                 $cursors[$cat]=$page['next']??null;$this->line(StorySeo::CATEGORIES[$cat][0].': '.count($page['created']).' nieuwe kandidaten opgehaald.');
             }
+        }catch(\App\Services\LocalAiPending $e){
+            return $this->paused('Lokale AI-opdracht staat klaar. Wachten is normaal; de minuutplanning hervat de ronde automatisch.',self::SUCCESS);
         }catch(\Throwable $e){
             if($e->getMessage()==='De uitvoeringstijd van deze ronde is voorbij.')return $this->paused('Uitvoeringstijd bereikt. De volgende uitvoering gaat verder met deze ronde.');
             Log::warning('Hourly news paused',['exception'=>get_class($e)]);
