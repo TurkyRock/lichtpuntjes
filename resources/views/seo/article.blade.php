@@ -22,7 +22,7 @@
 </figure>
 @endif
 <div class="newspaper-copy">@foreach($storyText['body'] as $paragraph)<p>{{ $paragraph }}</p>@endforeach
-@if(!$own && \App\Support\StorySeo::safeUrl($seoArticle->source_url))<div class="sourcebox"><a class="primary" href="{{ $seoArticle->source_url }}" target="_blank" rel="noopener noreferrer">{{ $en?'Read more at the source ↗':'Lees verder bij de bron ↗' }}</a></div>@endif
+@if(!$own && \App\Support\StorySeo::safeUrl($seoArticle->source_url))<div class="sourcebox"><a class="primary" href="{{ $seoArticle->source_url }}" target="_blank" rel="noopener noreferrer">{{ $en?'Read more at the source ↗':'Lees verder bij de bron ↗' }}</a><span class="sourcebox-name">{{ $en?'Source: ':'Bron: ' }}{{ $seoArticle->source_name }}</span></div>@endif
 </div></div>
 <div class="newspaper-ribbon"><div class="newspaper-engagement" data-engagement="{{ $seoArticle->id }}">
 <button type="button" class="like-button newspaper-like" data-newspaper-like data-like="{{ $seoArticle->id }}" aria-pressed="{{ $isLiked?'true':'false' }}" aria-label="{{ $isLiked?($en?'Remove heart':'Hartje verwijderen'):($en?'Give a heart':'Geef een hartje') }}"><span class="newspaper-like-inner"><span class="newspaper-heart" aria-hidden="true">{{ $isLiked?'♥':'♡' }}</span><span>{{ $isLiked?($en?'Heart given':'Hartje gegeven'):($en?'Give a heart':'Geef een hartje') }}</span><span class="newspaper-number">{{ number_format((int)$seoArticle->likes_count,0,$en?'.':',',$en?',':'.') }}</span></span></button>

@@ -12,3 +12,17 @@
 @media(max-width:950px){.newspaper-story .newspaper-related-grid{grid-template-columns:1fr}.newspaper-story .newspaper-related-card{padding:14px}.newspaper-related-card>img{width:85px;height:70px}}
 @media(prefers-reduced-motion:reduce){.newspaper-story *{scroll-behavior:auto!important}}
 @media(forced-colors:active){.newspaper-story :is(button,.button,.primary,.reply-button,.answers-toggle,.share-story){border:1px solid ButtonText;filter:none}.newspaper-story :is(button,.button,.primary,.reply-button,.answers-toggle,.share-story)::before{background:Canvas;mask:none;-webkit-mask:none}.newspaper-story .newspaper-ribbon{background:Canvas;color:CanvasText;border:1px solid CanvasText}.newspaper-story .newspaper-views{color:CanvasText}.newspaper-article{background:Canvas;border:1px solid CanvasText}}
+
+/* Source attribution next to the action, and compact comment permissions. */
+.newspaper-story .sourcebox{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px}
+.newspaper-story .sourcebox-name{font:600 14px/1.5 system-ui,sans-serif;color:#365b50;overflow-wrap:anywhere;min-width:0}
+.newspaper-story .comment-processing-note,.newspaper-story .comment-privacy-details{font:400 13px/1.6 system-ui,sans-serif;color:#4d6557;margin:14px 0}
+.newspaper-story .comment-sensitive{border:0;margin:16px 0;padding:0;min-width:0}
+.newspaper-story .comment-sensitive legend{font:600 14px/1.5 system-ui,sans-serif;margin-bottom:8px}
+.newspaper-story .comment-sensitive-options{display:flex;flex-wrap:wrap;gap:22px}
+.newspaper-story .comment-sensitive-options label{display:inline-flex;align-items:center;gap:7px;margin:0;min-height:36px}
+.newspaper-story .comment-sensitive input[type="radio"]{width:18px;height:18px;flex:0 0 18px;padding:0;accent-color:#00786e}
+.newspaper-story .comment-sensitive:not(:has(input[value="self"]:checked)) .comment-sensitive-confirm{display:none}
+.newspaper-story .comment-sensitive-confirm label{display:flex;align-items:flex-start;gap:9px;font:400 14px/1.6 system-ui,sans-serif}
+.newspaper-story .comment-sensitive-confirm input{flex:0 0 18px;margin-top:3px}
+.newspaper-story .comment-sensitive-confirm p{font:400 13px/1.6 system-ui,sans-serif}

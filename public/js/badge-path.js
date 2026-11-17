@@ -15,7 +15,7 @@
    if(Math.abs(a.top-b.top)<3)segment=`M${a.x},${a.y}H${b.x}`;
    else{const mid=(a.bottom+b.top)/2,right=box.width-3,left=3,r=7;segment=`M${a.x},${a.y}H${right-r}Q${right},${a.y} ${right},${a.y+r}V${mid-r}Q${right},${mid} ${right-r},${mid}H${left+r}Q${left},${mid} ${left},${mid+r}V${b.y-r}Q${left},${b.y} ${left+r},${b.y}H${b.x}`;}
    const measure=document.createElementNS(ns,'path');measure.setAttribute('d',segment);svg.append(measure);const length=measure.getTotalLength();measure.remove();
-   segments.push({from:Number(steps[i-1].dataset.badgePoints),to:Number(steps[i].dataset.badgePoints),start:totalLength,length});totalLength+=length;d+=segment;
+   segments.push({from:Number(steps[i-1].dataset.badgePoints),to:Number(steps[i].dataset.badgePoints),start:totalLength,length});totalLength+=length;d+=i===1?segment:segment.slice(segment.indexOf('H'));
   }
   [base,old,glow].forEach(p=>p.setAttribute('d',d));
   if(pending){if(completed)paint(1);else if(animationStarted)paint(Math.min(1,(performance.now()-animationStarted)/2400));}
@@ -33,12 +33,13 @@
    if(step){let badge=target.querySelector('.paper-badge');if(!badge){badge=document.createElement('span');target.prepend(badge);}badge.className='paper-badge paper-badge--'+step.dataset.badgeId;badge.setAttribute('aria-hidden','true');let copy=target.querySelector('div');if(!copy){copy=document.createElement('div');target.append(copy);}const label=document.createElement('span');label.textContent=selector.includes('current')?(en?'Your current badge':'Jouw huidige badge'):(en?'Next badge':'Volgende badge');const name=document.createElement('strong');name.textContent=step.dataset.badgeName;copy.replaceChildren(label,name);if(step===next){const remain=document.createElement('span');remain.textContent=(en?'Another ':'Nog ')+(Number(step.dataset.badgePoints)-total)+(en?' bright points':' lichtpunten');copy.append(remain);}}
    else{target.replaceChildren(document.createTextNode(en?'Every badge earned!':'Alle badges behaald!'));}
   }
-  const progress=summary.querySelector('progress');if(progress)progress.value=next?100*(total-Number(current.dataset.badgePoints))/(Number(next.dataset.badgePoints)-Number(current.dataset.badgePoints)):100;
+  const progress=summary.querySelector('progress');if(progress){const percent=next?100*(total-Number(current.dataset.badgePoints))/(Number(next.dataset.badgePoints)-Number(current.dataset.badgePoints)):100;progress.value=percent;progress.setAttribute('aria-valuetext',Math.round(percent)+(en?'% towards your next badge':'% op weg naar je volgende badge'));}
  }
  function paint(fraction){
   if(!pending||!segments.length)return;
-  const previous=Math.min(pending.total,Math.max(0,pending.previous_total)),priorBadge=[...steps].reverse().find(s=>Number(s.dataset.badgePoints)<=previous)||steps[0];
-  const start=distance(Number(priorBadge.dataset.badgePoints)),end=distance(pending.total),before=distance(previous),ease=1-Math.pow(1-Math.max(0,Math.min(1,fraction)),2),position=start+(end-start)*ease;
+  const previous=Math.min(pending.total,Math.max(0,pending.previous_total));
+  const start=distance(previous),end=distance(pending.total),ease=1-Math.pow(1-Math.max(0,Math.min(1,fraction)),2),position=start+(end-start)*ease;
+  const active=segments.find(s=>position<s.start+s.length-.01)||segments[segments.length-1],before=active.start;
   old.style.display=glow.style.display=orb.style.display='';old.style.strokeDasharray=before+' '+(totalLength+1);
   glow.style.strokeDasharray=Math.max(0,position-before)+' '+(totalLength+1);glow.style.strokeDashoffset=String(-before);
   const point=base.getPointAtLength(position);orb.setAttribute('cx',point.x);orb.setAttribute('cy',point.y);
@@ -53,6 +54,8 @@
   animationStarted=performance.now();
   const tick=time=>{const t=Math.min(1,(time-animationStarted)/2400);paint(t);if(t<1)animationFrame=requestAnimationFrame(tick);else finish();};animationFrame=requestAnimationFrame(tick);
  }
+ const initial=Number(document.querySelector('.badge-path-total strong')?.textContent.trim());
+ if(Number.isFinite(initial)){pending={event_id:0,total:initial,previous_total:initial,new_badges:[]};completed=true;}
  function schedule(){cancelAnimationFrame(frame);frame=requestAnimationFrame(geometry);}
  document.addEventListener('lichtpunt:badge-attention',e=>animate(e.detail));
  if('ResizeObserver'in window)new ResizeObserver(schedule).observe(grid);

@@ -290,11 +290,19 @@ async function loadReplies(id,parentId,page=1){
  try{const r=await fetch('/news/'+encodeURIComponent(id)+'/comments?parent_id='+encodeURIComponent(parentId)+'&page='+page,{headers:{Accept:'application/json'}});if(!r.ok)throw Error();const result=await r.json();if(!Array.isArray(result.comments))throw Error();Object.assign(branch,{comments:result.comments,page:result.page,last_page:result.last_page});}
  catch(e){branch.error=true;}finally{branch.loading=false;if(opened===id)renderArticle();}
 }
+const commentConsentDrafts={};
+function compactCommentConsent(id){
+ const el=document.createElement('div'),state=commentConsentDrafts[id]||{};
+ el.innerHTML=lang==='nl'?@json(view('community.comment-consent',['en'=>false])->render()):@json(view('community.comment-consent',['en'=>true])->render());
+ el.querySelectorAll('[name="sensitive_content"]').forEach(input=>{if(input.value===state.content)input.setAttribute('checked','');});
+ const permission=el.querySelector('[name="sensitive_consent"]');if(state.content==='self')permission.required=true;if(state.content==='self'&&state.consent)permission.setAttribute('checked','');
+ return el.innerHTML;
+}
 function communityMarkup(id){
  const nl=lang==='nl',s=threadState[id]||{},items=s.comments||[],statusLabels=nl?{pending:'Wacht op keuring',doubt:'De beheerder kijkt mee',rejected:'Niet geplaatst'}:{pending:'Awaiting review',doubt:'Waiting for a human review',rejected:'Not published'};
  let out='<section class="community-thread newspaper-community" aria-label="'+(nl?'Vriendelijke reacties':'Friendly comments')+'"><div class="community-layout"><div class="community-compose"><div class="community-heading"><h3>'+(nl?'Geef een glimlach door':'Pass on a smile')+'</h3></div><p class="community-intro">'+(nl?'Een compliment, een vriendelijke vraag of gewoon iets leuks: je bent welkom.':'A compliment, a friendly question or a little kindness: you are welcome.')+'</p>';
  if(signedIn&&s.can_comment&&replyTargets[id])out+='<div class="reply-target">'+(nl?'Je antwoordt op de reactie van ':'Replying to ')+esc(replyTargets[id].name)+' <button type="button" data-cancel-reply>'+ (nl?'Annuleren':'Cancel')+'</button></div>';
- if(signedIn&&s.can_comment)out+='<form id="commentForm" data-comment="'+esc(id)+'"><label for="commentBody">'+(replyTargets[id]?(nl?'Jouw vriendelijke antwoord':'Your friendly reply'):(nl?'Jouw positieve bijdrage':'Your positive contribution'))+'</label><textarea id="commentBody" name="body" minlength="3" maxlength="1000" required'+(commentSending?' disabled':'')+' placeholder="'+(nl?'Wat maakt jou blij aan dit verhaal?':'What makes you smile about this story?')+'">'+esc(commentDrafts[id]||'')+'</textarea>'+@json(view('community.contribution-consent')->render())+'<div class="community-honeypot" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div><button class="primary comment-submit"'+(commentSending?' disabled':'')+'>'+(commentSending?(nl?'Je glimlach wordt gekeurd…':'Reviewing your smile…'):(nl?'Verstuur je glimlach ☀':'Send your smile ☀'))+'</button></form>';
+ if(signedIn&&s.can_comment)out+='<form id="commentForm" data-comment="'+esc(id)+'"><label for="commentBody">'+(replyTargets[id]?(nl?'Jouw vriendelijke antwoord':'Your friendly reply'):(nl?'Jouw positieve bijdrage':'Your positive contribution'))+'</label><textarea id="commentBody" name="body" minlength="3" maxlength="1000" required'+(commentSending?' disabled':'')+' placeholder="'+(nl?'Wat maakt jou blij aan dit verhaal?':'What makes you smile about this story?')+'">'+esc(commentDrafts[id]||'')+'</textarea>'+compactCommentConsent(id)+'<div class="community-honeypot" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div><button class="primary comment-submit"'+(commentSending?' disabled':'')+'>'+(commentSending?(nl?'Je glimlach wordt gekeurd…':'Reviewing your smile…'):(nl?'Verstuur je glimlach ☀':'Send your smile ☀'))+'</button></form>';
  else out+='<p class="community-login"><a href="'+(signedIn?'/profiel':'/inloggen')+'?lang='+lang+'">'+(signedIn?(nl?'Bevestig je e-mail en huisregels om te reageren.':'Confirm your email and community rules to comment.'):(nl?'Log in om een hartje of reactie achter te laten.':'Log in to leave a like or a comment.'))+'</a></p>';
  out+='<p class="comment-message" role="status">'+esc(s.message||'')+'</p>';
  (s.own||[]).forEach(c=>{out+='<div class="comment-item"><small>'+(nl?'Alleen voor jou zichtbaar · ':'Visible only to you · ')+esc(statusLabels[c.status]||'')+'</small><p>'+esc(c.body)+'</p></div>'});
@@ -311,12 +319,18 @@ async function loadComments(id,page=1){
  try{const r=await fetch('/news/'+encodeURIComponent(id)+'/comments?page='+page,{headers:{Accept:'application/json'}});if(!r.ok)throw Error();const result=await r.json();if(!Array.isArray(result.comments)||!Array.isArray(result.own))throw Error();Object.assign(state,result)}catch(e){state.message=lang==='nl'?'Reacties konden niet worden geladen. Open het bericht opnieuw om het nog eens te proberen.':'Comments could not be loaded. Reopen this story to try again.';}finally{state.loading=false;if(opened===id)renderArticle();}
 }
 $('article').addEventListener('input',e=>{if(e.target.id==='commentBody'&&opened)commentDrafts[opened]=e.target.value;});
+$('article').addEventListener('change',e=>{
+ const form=e.target.closest('[data-comment]');if(!form||!e.target.name.startsWith('sensitive_'))return;
+ const yes=form.elements.sensitive_content.value==='self',consent=form.elements.sensitive_consent;
+ consent.required=yes;if(!yes)consent.checked=false;
+ commentConsentDrafts[form.dataset.comment]={content:form.elements.sensitive_content.value,consent:consent.checked};
+});
 $('article').addEventListener('submit',async e=>{
  const form=e.target.closest('[data-comment]');if(!form)return;e.preventDefault();if(commentSending)return;
  const id=form.dataset.comment,body=commentDrafts[id]||form.querySelector('textarea').value;
  const consentFields={sensitive_content:form.elements.sensitive_content.value,sensitive_consent:form.elements.sensitive_consent.checked?'1':'0'};
  commentSending=true;renderArticle();const state=threadState[id]||(threadState[id]={});
- try{const result=await postEngagement(id,'comments',{body,parent_id:replyTargets[id]?.id||null,...consentFields});state.message=lang==='nl'?result.message:({approved:'Your smile has been published! Approved comments earn one bright point, up to five per day.',rejected:'This comment does not fit our friendly community rules and was not published.',doubt:'Your comment is waiting for a human review.',pending:'Your comment is awaiting review.'}[result.status]||'Your comment has been received.');commentDrafts[id]='';delete replyTargets[id];await loadComments(id);}catch(e){state.message=lang==='nl'?e.message:'Your comment could not be sent. Check your account and try again.';}finally{commentSending=false;if(opened===id)renderArticle();}
+ try{const result=await postEngagement(id,'comments',{body,parent_id:replyTargets[id]?.id||null,...consentFields});state.message=lang==='nl'?result.message:({approved:'Your smile has been published! Approved comments earn one bright point, up to five per day.',rejected:'This comment does not fit our friendly community rules and was not published.',doubt:'Your comment is waiting for a human review.',pending:'Your comment is awaiting review.'}[result.status]||'Your comment has been received.');commentDrafts[id]='';delete commentConsentDrafts[id];delete replyTargets[id];await loadComments(id);}catch(e){state.message=lang==='nl'?e.message:'Your comment could not be sent. Check your account and try again.';}finally{commentSending=false;if(opened===id)renderArticle();}
 });
 function sharedStoryUrl(id){if(id==='site')return window.location.origin+homePath('all');const d=shareTarget(id);return window.location.origin+storyPath(d);}
 function shareTarget(id){return id==='site'?{nl:{title:'Jouw Lichtpuntjes — Goed nieuws voor je dagelijkse portie positiviteit'},en:{title:'Jouw Lichtpuntjes — Good news for your daily dose of positivity'}}:data.find(x=>x.id===id)||openedStory;}
