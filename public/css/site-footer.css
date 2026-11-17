@@ -1,0 +1,27 @@
+/* One compact paper footer for the homepage, articles, accounts and forms. */
+body:has(>.site-footer-paper){min-height:100dvh;display:flex;flex-direction:column}
+body:has(>.site-footer-paper)>main{flex:1 0 auto;width:100%;box-sizing:border-box}
+body>.site-footer.site-footer-paper{display:block;position:relative;box-sizing:border-box;flex:none;width:100%;max-width:1180px;margin:8px auto 0;padding:0 32px 22px;border:0;background:transparent;color:#244b3d;font:13px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+.site-footer-paper,.site-footer-paper *{box-sizing:border-box}
+.site-footer-paper .footer-paper{padding:20px 24px;background:#f0eddf url('/images/button-paper-grain.svg');border-radius:22px;box-shadow:0 2px 5px #36523b12}
+.site-footer-paper .footer-top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:13px}
+.site-footer-paper .footer-brand{display:inline-flex;align-items:center;gap:10px;min-width:0;text-decoration:none;color:#244b3d}
+.site-footer-paper .footer-brand img{width:34px;height:34px;flex:none}
+.site-footer-paper .footer-brand strong{display:block;font:700 24px/1.2 Georgia,'Times New Roman',serif;letter-spacing:-.5px}
+.site-footer-paper .footer-brand strong span{color:#b3962b}
+.site-footer-paper .footer-brand small{display:block;margin-top:4px;font:400 12px/1.5 system-ui,sans-serif;color:#526b55}
+.site-footer-paper .footer-support{display:inline-flex;align-items:center;justify-content:center;gap:14px;flex:none;min-height:40px;max-width:100%;padding:9px 16px;color:#254d3d;background:#f4d76d url('/images/button-paper-grain.svg');font:650 13px/1.4 system-ui,sans-serif;text-decoration:none;border-radius:9px}
+.site-footer-paper .footer-support>span:last-child{font-size:21px;line-height:1}
+.site-footer-paper .footer-links,.site-footer-paper .footer-legal{max-width:none;margin:0;padding:0;display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:5px 19px;border:0;background:none}
+.site-footer-paper .footer-links a,.site-footer-paper .footer-legal a,.site-footer-paper .footer-cookie-settings{display:inline-flex;align-items:center;min-height:28px;margin:0;padding:0;border:0;background:none;box-shadow:none;color:#365747;text-decoration:none;text-underline-offset:4px;font:400 12px/1.5 system-ui,sans-serif;border-radius:0;overflow-wrap:anywhere}
+.site-footer-paper .footer-cookie-settings{cursor:pointer}
+.site-footer-paper .footer-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px 16px;margin-top:10px;padding-top:10px;border-top:1px solid #cbd3be}
+.site-footer-paper .footer-copyright{color:#526b55;font:400 11px/1.5 system-ui,sans-serif}
+.site-footer-paper .footer-legal{gap:5px 16px}
+.site-footer-paper .footer-legal a,.site-footer-paper .footer-cookie-settings{font-size:11px}
+.site-footer-paper a:hover,.site-footer-paper button:hover{text-decoration:underline}
+.site-footer-paper :is(a,button):focus-visible{outline:3px solid #a27b22;outline-offset:4px}
+@media(max-width:1023px){.home-unified>.site-footer.site-footer-paper{max-width:664px;padding-inline:12px}}
+@media(max-width:600px){body>.site-footer.site-footer-paper{padding:0 20px 18px}.home-unified>.site-footer.site-footer-paper{padding-inline:12px}.site-footer-paper .footer-paper{padding:19px 17px;border-radius:20px}.site-footer-paper .footer-top{flex-wrap:wrap;gap:12px}.site-footer-paper .footer-brand strong{font-size:22px}.site-footer-paper .footer-brand img{width:29px;height:29px}.site-footer-paper .footer-links{gap:4px 16px}.site-footer-paper .footer-legal{gap:4px 13px}.site-footer-paper .footer-copyright{order:2;width:100%}.site-footer-paper .footer-bottom{align-items:flex-start;gap:9px}}
+@media(pointer:coarse){.site-footer-paper .footer-links a,.site-footer-paper .footer-legal a,.site-footer-paper .footer-cookie-settings,.site-footer-paper .footer-support{min-height:44px}}
+@media(forced-colors:active){.site-footer-paper .footer-paper{background:Canvas;border:1px solid CanvasText;box-shadow:none}.site-footer-paper .footer-support{background:Canvas;border:1px solid LinkText}.site-footer-paper a,.site-footer-paper button{color:LinkText}}

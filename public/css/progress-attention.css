@@ -21,3 +21,5 @@
 @keyframes lightpoint-badge-arrive{0%{transform:scale(.93)}65%{transform:scale(1.05)}100%{transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){.site-header a.has-unread-lightpoints::after,.site-header button.has-unread-lightpoints::after,.account-menu-grouped a.has-unread-lightpoints::after,.badge-path-step.badge-path-newly-earned .badge-path-disc{animation:none!important}}
 @media(forced-colors:active){.has-unread-lightpoints{outline:2px solid Highlight}.lightpoint-attention-count,.badge-path-new-label{border:1px solid CanvasText}.badge-path-route .badge-path-progress-route{stroke:Highlight}}
+
+@media(max-width:600px){.lightpoint-notice{left:12px;right:12px;bottom:12px;width:auto;max-width:410px;margin-left:auto;margin-right:auto}.lightpoint-notice-copy>strong{font-size:21px}.lightpoint-glow{width:36px;height:36px}.lightpoint-glow svg{width:36px;height:36px}}

@@ -28,6 +28,7 @@ Maak het leven een stukje <span class="lp-title-word">l<span class="lp-title-i">
 <button type="button" class="daily-yellow" id="openFollowUs" aria-haspopup="dialog" aria-controls="followUsDialog"><span aria-hidden="true">♡</span><span data-nav-nl="Volg ons" data-nav-en="Follow us">{{ $locale==='en'?'Follow us':'Volg ons' }}</span></button>
 <a class="daily-account" href="/lichtpuntje/delen?lang={{ $locale }}" data-account-link><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5-12 12-6 1 1-6Z"/><path d="m14 5 5 5"/></svg><span class="mobile-share-label">{{ $locale==='en'?'Share something lovely':'Deel iets moois' }}</span><span data-i="shareLightspot">{{ $locale==='en'?'Share a bright spot':'Deel een lichtpuntje' }}</span></a>
 </div></div></section>
+<p class="mobile-daily-greeting"><span>{{ $locale==='en'?'A little light for today':'Een beetje licht voor vandaag' }}</span></p>
 @include('homepage.highlights')
 <section id="stories">@include('homepage.category-line')@include('seo.category-intro')<p id="actionNotice" class="action-notice" role="status" aria-live="polite"></p><div class="grid" id="grid">@include('seo.cards')</div><p class="count" id="count" aria-live="polite"></p><nav class="pagination" id="pagination" aria-label="{{ $locale==='en'?'News pages':'Nieuwspagina’s' }}" @if($feed['pagination']['last_page']<=1) hidden @endif>@if($feed['pagination']['current_page']>1)<a href="{{ \App\Support\StorySeo::home($locale,$category,$feed['pagination']['current_page']-1) }}">{{ $locale==='en'?'Previous':'Vorige' }}</a>@endif @if($feed['pagination']['current_page']<$feed['pagination']['last_page'])<a href="{{ \App\Support\StorySeo::home($locale,$category,$feed['pagination']['current_page']+1) }}">{{ $locale==='en'?'Next':'Volgende' }}</a>@endif</nav></section>
 @include('shared.support-note')@include('homepage.our-story')@if(!isset($seoArticle))<div class="mobile-home-ending"><div class="mobile-bottom-cutout" aria-hidden="true"></div><nav class="mobile-bottom-links" aria-label="{{ $locale==='en'?'Website information':'Website-informatie' }}"><span>© Jouw Lichtpuntjes</span><button type="button" class="mobile-about-toggle" aria-controls="about" aria-expanded="false">{{ $locale==='en'?'About us':'Over ons' }}</button><a href="/contact?lang={{ $locale }}">Contact</a><a href="/privacy?lang={{ $locale }}">Privacy</a><button type="button" data-cookie-settings>{{ $locale==='en'?'Cookies':'Cookies' }}</button><a href="/steun?lang={{ $locale }}">{{ $locale==='en'?'Support us':'Steun ons' }}</a><a href="/archief?lang={{ $locale }}">{{ $locale==='en'?'Archive':'Archief' }}</a></nav></div></div>@endif
@@ -166,7 +167,11 @@ async function setLike(id){
     catch(e){actionMessage=lang==='nl'?(e.message==='Engagement unavailable'?'Je like kon niet worden opgeslagen. Probeer opnieuw.':e.message):'Your like could not be saved. Check your account and try again.';$('actionNotice').textContent=actionMessage;const notice=$('article').querySelector('[data-article-notice]');if(notice)notice.textContent=actionMessage}
     finally{pendingLikes.delete(id);paintEngagement(id)}
 }
-$('mobileTopic')?.addEventListener('change',e=>{const next=e.target.value;if(!Object.prototype.hasOwnProperty.call(ui[lang],next)||next===category)return;category=next;currentPage=1;rankDirty=false;updateFeedNavigation();loadFeed();});
+if($('mobileTopic')){
+ document.body.classList.add('daily-light-enhanced');
+ $('mobileTopic').addEventListener('change',e=>{const next=e.target.value;if(!Object.prototype.hasOwnProperty.call(ui[lang],next)||next===category)return;category=next;currentPage=1;rankDirty=false;updateFeedNavigation();loadFeed();});
+}
+$('mobileFollowUs')?.addEventListener('click',()=>$('openFollowUs')?.click());
 $('newsSort').addEventListener('change',e=>{
  const value=e.target.value;if(!['newest','reads','likes'].includes(value)||value===sort)return;
  sort=value;currentPage=1;rankDirty=false;updateFeedNavigation();loadFeed();

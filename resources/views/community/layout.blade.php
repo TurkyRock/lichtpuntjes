@@ -21,8 +21,7 @@ body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.6}mai
 @else
 @include('shared.account-sidebar')
 @endif
-<div class="account-content {{ $adminPage ? 'admin-content' : '' }}">@endif @if(session('status'))<p class="status" role="status">{{ session('status') }}</p>@endif @if($errors->any())<div class="errors" role="alert">@foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach</div>@endif @yield('content')@if($accountPage)</div>@endif</main>@if(request()->is('weer','aanmelden'))@include('shared.footer')@else
-<footer>{{ app()->getLocale() === 'en' ? 'More smiles. Fewer rants.' : 'Meer glimlachen. Minder gemopper.' }} <a href="/huisregels?lang={{ app()->getLocale() }}">{{ app()->getLocale() === 'en' ? 'Our community agreement.' : 'Dit spreken we met elkaar af.' }}</a> · <a href="/privacy?lang={{ app()->getLocale() }}">Privacy</a> · <button type="button" class="lp-cookie-link" data-cookie-settings>Cookie-instellingen</button> · <a href="/steun?lang={{ app()->getLocale() }}">{{ app()->getLocale()==='en'?'Support Jouw Lichtpuntjes':'Steun Jouw Lichtpuntjes' }}</a> · <a href="/contact">Contact</a> · <a href="/cookies">Cookies</a> · <a href="/steun/beheren">{{ app()->getLocale()==='en'?'Manage support':'Steun beheren' }}</a></footer>@endif
+<div class="account-content {{ $adminPage ? 'admin-content' : '' }}">@endif @if(session('status'))<p class="status" role="status">{{ session('status') }}</p>@endif @if($errors->any())<div class="errors" role="alert">@foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach</div>@endif @yield('content')@if($accountPage)</div>@endif</main>@include('shared.footer')
 @include('shared.cookies')
 @include('shared.lightpoint-notice')
 
