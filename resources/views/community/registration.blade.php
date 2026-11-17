@@ -20,7 +20,7 @@
 @error('adult')<p class="registration-error" id="registrationAdultError" role="alert">{{ $en?'Please confirm that you are 18 or older.':'Bevestig dat je 18 jaar of ouder bent.' }}</p>@enderror
 <details class="registration-preferences" @if(old('personalisation') || $errors->hasAny(['age_group','place','interests','interests.*','geography'])) open @endif>
 <summary>{{ $en?'Choose your news preferences (optional)':'Kies je nieuwsvoorkeuren (vrijwillig)' }}</summary>
-@include('community.news-preferences-fields',['user'=>null])
+@include('community.news-preferences-fields',['user'=>null,'registrationForm'=>true])
 </details>
 <button class="registration-submit" type="submit">{{ $en ? 'Create my account' : 'Maak mijn account' }}</button>
 </form>

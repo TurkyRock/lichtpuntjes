@@ -14,7 +14,6 @@
    ['/mijn-bijdragen', null, $accountEn ? 'My donations' : 'Mijn donaties', request()->is('mijn-bijdragen'), 'donations'],
   ]],
   ['account', 'Account', [
-   ['/mijn-interesses', null, $accountEn ? 'My interests' : 'Mijn interesses', request()->is('mijn-interesses'), 'heart'],
    ['/profiel', 'invite', $accountEn ? 'Invite a friend' : 'Nodig iemand uit', request()->is('profiel') && $sidebarSection === 'invite', 'invite'],
    ['/privacy/verzoeken', null, $accountEn ? 'My data' : 'Mijn gegevens', request()->is('privacy/verzoeken','profiel/email/*','beveiliging','beveiliging/*'), 'settings'],
    ['/mijn-momentjes/prullenbak', null, $accountEn ? 'Trash' : 'Prullenbak', request()->is('mijn-momentjes/prullenbak'), 'trash'],
@@ -23,6 +22,8 @@
  $accountCurrentLabel = $accountEn ? 'Overview' : 'Overzicht';
  foreach ($accountGroups as $accountGroup) foreach ($accountGroup[2] as $accountItem) if ($accountItem[3]) $accountCurrentLabel = $accountItem[2];
 @endphp
+<link rel="stylesheet" href="/css/account-menu.css?v={{ filemtime(public_path('css/account-menu.css')) }}">
+<script src="/js/account-menu.js?v={{ filemtime(public_path('js/account-menu.js')) }}" defer nonce="{{ request()->attributes->get('csp_nonce') }}"></script>
 <aside class="account-sidebar account-menu-grouped" aria-label="{{ $accountEn ? 'My account' : 'Mijn account' }}">
 <div class="account-menu-heading"><span class="account-menu-sun" aria-hidden="true"></span><p class="account-sidebar-title">{{ $accountEn ? 'My account' : 'Mijn account' }}</p></div>
 <button class="account-menu-toggle" type="button" aria-expanded="true" aria-controls="accountGroupedNav" hidden><span>{{ $accountCurrentLabel }}</span><span class="account-menu-toggle-label">Menu</span><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m5 7 5 5 5-5"/></svg></button>

@@ -30,15 +30,17 @@ class SupportController extends Controller {
   catch(\Throwable $e){return back()->withErrors(['payment'=>'Betalen lukt nu niet. Probeer het later opnieuw.'])->withInput();}
  }
  public function thanks(Request $r,string $id,SupportPayments $service){
-  abort_unless(Str::isUuid($id),404);$p=SupportPledge::findOrFail($id);$problem=false;
-  if($p->first_payment_id)try{$service->sync($p->first_payment_id);}catch(\Throwable $e){$problem=true;}
+  abort_unless(Str::isUuid($id),404);$p=SupportPledge::findOrFail($id);$problem=false;$subscriptionProblem=false;
+  if($p->first_payment_id)try{$service->sync($p->first_payment_id);}
+  catch(\App\Services\SupportSubscriptionPending $e){$subscriptionProblem=true;}
+  catch(\Throwable $e){$problem=true;}
   $p->refresh();
   $confirmed=!$problem&&$p->status==='paid'&&$p->payments()->where('provider_id',$p->first_payment_id)->where('status','paid')->whereNotNull('paid_at')->whereRaw('cents > refunded_cents + charged_back_cents')->exists();
   $ownReturn=$r->session()->get('support_attempt_'.$id)||($r->user()&&$p->user_id===$r->user()->id);
   if($confirmed&&$ownReturn&&$p->frequency==='once')app(\App\Services\SupportInvitations::class)->pause($r,180);
   $showThanks=$confirmed&&$ownReturn&&!$r->session()->get('support_thanked_'.$id);
   if($showThanks)$r->session()->put('support_thanked_'.$id,true);
-  return view('support.thanks',['pledge'=>$p,'problem'=>$problem,'showThanks'=>(bool)$showThanks]);
+  return view('support.thanks',['pledge'=>$p,'problem'=>$problem,'subscriptionProblem'=>$subscriptionProblem,'confirmed'=>$confirmed,'showThanks'=>(bool)$showThanks]);
  }
  public function webhook(Request $r,SupportPayments $service){
   $v=$r->validate(['id'=>['required','string','regex:/^tr_[A-Za-z0-9]+$/','max:100']]);

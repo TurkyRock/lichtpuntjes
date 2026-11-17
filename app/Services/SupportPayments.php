@@ -61,6 +61,7 @@ class SupportPayments {
     'refunded_cents'=>(int)round((float)($payment['amountRefunded']['value']??0)*100),
     'charged_back_cents'=>(int)round((float)($payment['amountChargedBack']['value']??0)*100)]);
    if($first)$p->update(['status'=>$status]);
+   try {
    if($first&&$status==='paid'&&$p->frequency==='monthly'&&!$p->subscription_id&&!$p->stopped_at){
     $mandates=$this->call('GET','customers/'.$p->customer_id.'/mandates');
     $mandate=collect($mandates['_embedded']['mandates']??[])->first(fn($m)=>in_array($m['status']??'', ['valid','pending'])&&($m['method']??'')==='directdebit');
@@ -75,6 +76,11 @@ class SupportPayments {
    if($p->subscription_id&&!$p->stopped_at){
     $sub=$this->call('GET','customers/'.$p->customer_id.'/subscriptions/'.$p->subscription_id);
     $p->update(['subscription_status'=>$sub['status']]);
+   }
+   } catch(\Throwable $e) {
+    // Keep a confirmed payment separate from mandate/subscription availability.
+    // Webhooks and support:sync still retry the outstanding setup.
+    throw new SupportSubscriptionPending('De maandelijkse afspraak is nog niet bevestigd.',0,$e);
    }
   });
  }
