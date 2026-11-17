@@ -1,0 +1,119 @@
+JOUW LICHTPUNTJES — GECOMBINEERDE UPDATE — 17 NOVEMBER 2026
+LICHTSPOOR + MELDINGEN + SOCIAAL + ACCOUNT + MAIL + SEO
+
+INSTALLEREN IN PLESK ZONDER TERMINAL
+1. Bewaar vooraf een back-up van de bestanden en database.
+2. Upload deze ZIP via Plesk > Bestanden naar httpdocs.
+3. Pak hem UIT IN httpdocs en vervang dezelfde bestanden.
+   app/, public/, resources/, routes/, database/ en maintenance/ moeten
+   samengaan met je bestaande mappen. Geen tweede httpdocs-map maken.
+4. Gebruik een tijdelijke taak via Plesk > Geplande taken > Run a PHP script.
+   Script: httpdocs/artisan
+   PHP-versie: 8.4
+   Voer onderstaande argumenten APART en IN DEZE VOLGORDE uit met Run Now.
+   Wacht steeds tot de taak geslaagd is voordat je de volgende uitvoert:
+
+   migrate --force
+   optimize:clear
+   seo:prepare
+   seo:check
+   queue:restart
+
+   migrate --force voert alleen nog ontbrekende migraties uit; het maakt
+   de database niet leeg. Gebruik hiervoor geen migrate:fresh.
+5. Verwijder daarna alleen de tijdelijke taak. Laat je bestaande permanente
+   schedule:run iedere minuut actief staan. Je hoeft geen tweede cron te maken.
+6. Vernieuw de website met Ctrl+F5.
+
+DIT ZIT ERIN
+
+A. LICHTSPOOR IN DE BESTAANDE LAY-OUT
+- Mijn account krijgt een warme gouden gloed en een +aantal-label zodra er
+  positieve, ongelezen lichtpunten zijn bijgekomen.
+- Op een telefoon licht ook het gesloten menu op, zodat de verandering
+  zichtbaar blijft wanneer Mijn account nog in het hamburgermenu staat.
+- In het accountmenu licht Lichtpunten & badges op met het label Nieuw.
+- Op je EIGEN bestaande badgepad loopt een lichtbolletje naar je voortgang;
+  de stippellijn volgt de echte posities van alle bestaande papieren badges.
+  De bestaande desktop-/mobiele kolommen blijven behouden.
+- Nieuw behaalde badges lichten kort op en krijgen Nieuw! erbij.
+- De voortgang wordt pas bekeken gemarkeerd wanneer de betreffende badge
+  zichtbaar is geweest en de animatie is afgerond. Een link bovenaan brengt
+  je direct bij die voortgang. Bij minder beweging is er een vaste markering.
+- Bekijken van Mijn account wist alleen de hoofdmenugloed. De badgeverwijzing
+  blijft nieuw totdat de badgevoortgang is bekeken.
+- Een korte melding tonen wist de account-/badge-aandacht niet.
+- De gelezen stand wordt per account opgeslagen, zodat hij over apparaten
+  heen klopt. Nieuwe punten die tijdens bekijken bijkomen blijven ongelezen.
+- Ongelezen voortgang blijft na middernacht bestaan. Oude geschiedenis wordt
+  bij de eerste installatie als gelezen gemarkeerd: geen massa oude meldingen.
+
+B. KLEIN LICHTPUNTJE
+- De gekozen compacte melding met +punten, reden, volgende badge, teller en
+  voortgangsbalk. Bijvoorbeeld 47 / 50 en Nog 3 lichtpunten.
+- Wisselende vriendelijke aanmoedigingen in Nederlands en Engels.
+- Bij een behaalde badge blijft die badge zichtbaar in de melding.
+
+C. SOCIALBERICHTEN
+- Nieuwe conceptbijschriften krijgen de drie goedgekeurde deel-afsluiters.
+- De afsluiters wisselen per dag en publicatiemoment.
+- De artikellink blijft behouden; Instagram/TikTok behouden link in profiel.
+- Al voorbereide of gedeelde berichten worden niet automatisch herschreven.
+  Dit pakket publiceert zelf geen socialberichten.
+
+D. ACCOUNT EN REGISTRATIE
+- Het gekozen papieren accountmenu met alles onder elkaar, Overzicht als geel
+  tabje, en de groepen Delen, Mijn activiteit en Account.
+- Mijn donaties als naam van de donatiepagina in het accountgedeelte.
+- Compact prikbord voor registratie met standaard uitgevinkt, verplicht
+  18-plus-vinkje. Vrijwillige nieuwsvoorkeuren zijn uitklapbaar.
+- De nieuwskop staat binnen het voorkeurenvlak; de inloglink is goed leesbaar.
+- Google en Microsoft staan alvast zichtbaar op de registratiepagina. Je eigen
+  OAuth-instellingen zijn nog nodig om de koppelingen te gebruiken.
+
+E. DONATIES EN MAILS
+- Het bedankje na een bevestigde eerste maandelijkse betaling verschijnt ook
+  als de afzonderlijke abonnementsaanmaak nog niet bevestigd is.
+- De echte abonnementsstatus blijft apart zichtbaar; SEPA-goedkeuring bij
+  Mollie wordt door deze update niet overgeslagen.
+- Nederlandse accountmails in Lichtpuntjes-huisstijl, met tekstalternatief.
+  Een expliciete Engelse websitekeuze wordt ondersteund voor de aanvraagmail.
+- Bedankmails voor NIEUWE bevestigde donaties met een gekoppeld, geverifieerd
+  accountadres. Zonder account is geen e-mailadres beschikbaar; dus geen mail.
+- Testdonaties krijgen [TEST] en uitleg dat geen echt geld is ontvangen.
+- Bestaande donatiegeschiedenis wordt niet achteraf allemaal gemaild.
+- De bestaande losse beheerlinkmail na accountverwijdering blijft platte tekst.
+- De minutely scheduler verwerkt de bedankmails. Bij mailfouten wordt beperkt
+  opnieuw geprobeerd zonder de financiële betaalstatus te veranderen.
+- Je bestaande werkende SMTP-configuratie en andere .env-instellingen blijven
+  van jou: er zit geen .env of geheim in dit pakket.
+
+F. COMPLETE SEO- EN SNELHEIDSUPDATE
+- Canonical-URL's en taalverwijzingen voor Nederlands en Engels.
+- Passende metadata en gestructureerde gegevens voor homepage, categorieën
+  en leesbare, gepubliceerde artikelen; geen verzonnen beoordelingen.
+- Sitemap en robots.txt, correcte artikelwijzigingsdatums, en bescherming
+  tegen indexeren van lege categorieën en onleesbare/ongepubliceerde stukken.
+- Over ons en Werkwijze, plus Engelse versies, met bron- en AI-uitleg.
+- Verbeterde koppenstructuur, categorie-intro's en afbeeldingsprioriteit.
+- Zware papierachtergronden in kleinere WebP-bestanden en cachebare basis-CSS.
+- seo:prepare bewaart een oude statische robots.txt en bestaande .htaccess
+  voordat het zijn eigen cacheblok toevoegt. Hostingregels blijven behouden.
+- seo:check controleert de lokale configuratie; het garandeert geen Google-
+  indexering. Nginx-caching en Search Console controleer je daarna afzonderlijk.
+
+CONTROLE NA INSTALLATIE
+- Open /werkwijze, /over-ons, /robots.txt en /sitemap.xml.
+- Verdien met een geverifieerd account een ECHT nieuw lichtpunt, bijvoorbeeld
+  door een artikel te lezen waarvoor je vandaag nog geen punt hebt gekregen.
+- Bekijk de gloed in het hoofdmenu, dan het accountmenu en je bestaande badgepad.
+- Vraag een NIEUWE wachtwoordherstelmail aan om de huisstijl te controleren.
+- Gebruik voor een donatiebedankmail een nieuwe testbetaling met je account;
+  er wordt bewust geen oude betaalgeschiedenis opnieuw gemaild.
+- Controleer later na Mollies SEPA-goedkeuring of je maandelijkse afspraak
+  actief wordt en of Stopzetten werkt.
+
+Dit pakket bevat de nieuwste lokale versies van overlappende bestanden uit
+alle genoemde updates. De eerdere losse ZIP's hoef je niet opnieuw te uploaden.
+Het is een updatepakket voor je bestaande installatie, geen volledige nieuwe
+website-installatie. De bestanden zijn voorbereid; de live site is niet gewijzigd.

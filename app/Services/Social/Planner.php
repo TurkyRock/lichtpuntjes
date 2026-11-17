@@ -53,6 +53,13 @@ class Planner {
  }
  public function captions(string $kind,array $snapshot):array {
   $intro=config('social-publishing.slots.'.$kind.'.intro');$body=$intro." ☀\n\n".$snapshot['title']."\n".$snapshot['teaser'];$result=[];
+  $closers=[
+   'Een glimlach wordt mooier als je ’m deelt. Stuur dit lichtpuntje door en maak iemand om je heen een beetje blij ☀️',
+   'Ken je iemand die vandaag een opkikker kan gebruiken? Deel dit lichtpuntje met diegene. Een klein gebaar kan veel betekenen 💛',
+   'Goed nieuws mag verder reizen. Deel onze lichtpuntjes en geef een glimlach door aan de mensen om je heen ☀️',
+  ];
+  $slot=array_search($kind,array_keys(config('social-publishing.slots')),true);
+  $body.="\n\n".$closers[((int)now('Europe/Amsterdam')->format('z')+($slot===false?0:$slot))%count($closers)];
   foreach(array_keys(config('social-publishing.channels')) as $channel)$result[$channel]=$body."\n\n".(in_array($channel,['instagram','tiktok'])?'Haal meer lichtpuntjes uit je dag. Lees verder via de link in ons profiel.':'Benieuwd naar nog meer lichtpuntjes? '.$snapshot['url']);
   return $result;
  }

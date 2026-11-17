@@ -1,0 +1,23 @@
+.site-header a.has-unread-lightpoints,.site-header button.has-unread-lightpoints,.account-menu-grouped a.has-unread-lightpoints{position:relative;isolation:isolate;background-color:#fff1bb!important;box-shadow:0 0 14px 3px #e7be5c60!important;border-radius:5px;overflow:visible}
+.site-header a.has-unread-lightpoints::after,.site-header button.has-unread-lightpoints::after,.account-menu-grouped a.has-unread-lightpoints::after{content:'';position:absolute;bottom:0;left:0;width:27%;height:3px;background:linear-gradient(90deg,transparent,#d3a638,#fff1ad,transparent);box-shadow:0 0 8px #e2b443;animation:lightpoint-nav-trail 1.8s ease-in-out 2;pointer-events:none;opacity:0}
+.lightpoint-attention-count{display:inline-block!important;flex:none;min-width:20px;padding:3px 5px;margin:0 0 0 4px!important;border-radius:10px;background:#f4d379;color:#29452f!important;font:650 10px/1.25 system-ui,sans-serif;white-space:nowrap}
+.site-header .lightpoint-attention-count{position:absolute;top:-4px;right:-4px}
+.account-menu-grouped a.has-unread-lightpoints{flex-wrap:wrap}
+.badge-progress-update{margin:12px 0 18px;padding:17px 20px;background:#fff7dc;border-left:3px solid #d7b954;color:#294a37}
+.badge-progress-update strong{display:block;font:400 24px/1.25 Georgia,serif}.badge-progress-update p{margin:8px 0 0;font-size:14px}
+.badge-path-route .badge-path-earned-route{stroke:#bdad69;stroke-width:1.8;opacity:.65}
+.badge-path-route .badge-path-progress-route{stroke:#dfb448;stroke-width:2.8;stroke-linecap:round;filter:drop-shadow(0 0 4px #e4bd55b0)}
+.badge-path-route .badge-path-light-orb{fill:#fff4c9;stroke:#d0a43b;stroke-width:1.5;filter:drop-shadow(0 0 6px #e6bb43)}
+.badge-path-step.badge-path-newly-earned .badge-path-disc{filter:drop-shadow(0 0 13px #dfb53b99);animation:lightpoint-badge-arrive 1s ease-out 1}
+.badge-path-new-label{display:table;position:absolute;right:0;top:-12px;z-index:2;background:#f4d777;color:#314c33;padding:4px 8px;transform:rotate(7deg);font:650 12px/1.2 Georgia,serif}
+.lightpoint-notice{width:min(410px,calc(100vw - 32px));align-items:flex-start;padding-top:19px;padding-bottom:18px;background:#fffdf3;border-radius:12px}
+.lightpoint-notice-copy{flex:1}.lightpoint-notice-copy>small{display:block;color:#476e55;font:700 10px/1.4 system-ui,sans-serif;letter-spacing:1px;margin-bottom:4px}
+.lightpoint-notice-copy>strong{font:700 22px/1.2 Georgia,serif}.lightpoint-notice-copy>span{font-size:12px;margin-top:9px}
+.lightpoint-next-progress[hidden]{display:none}.lightpoint-next-progress>p:first-child{display:flex;justify-content:space-between;gap:10px;margin:15px 0 7px;font:12px/1.4 system-ui,sans-serif}
+.lightpoint-next-progress>p:first-child span{display:inline;margin:0;color:#3d5f45}.lightpoint-next-progress b{font-weight:650;white-space:nowrap}
+.lightpoint-progress-track{height:7px;background:#e0e7d7;border-radius:8px;overflow:hidden}.lightpoint-progress-track>span{display:block;height:100%;margin:0;background:#5a8264;border-radius:8px}
+.lightpoint-next-progress .lightpoint-motivation{margin:12px 0 0;font:italic 15px/1.45 Georgia,serif;color:#526b51}
+@keyframes lightpoint-nav-trail{0%{opacity:0;transform:translateX(0)}15%,80%{opacity:1}100%{opacity:0;transform:translateX(270%)}}
+@keyframes lightpoint-badge-arrive{0%{transform:scale(.93)}65%{transform:scale(1.05)}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.site-header a.has-unread-lightpoints::after,.site-header button.has-unread-lightpoints::after,.account-menu-grouped a.has-unread-lightpoints::after,.badge-path-step.badge-path-newly-earned .badge-path-disc{animation:none!important}}
+@media(forced-colors:active){.has-unread-lightpoints{outline:2px solid Highlight}.lightpoint-attention-count,.badge-path-new-label{border:1px solid CanvasText}.badge-path-route .badge-path-progress-route{stroke:Highlight}}

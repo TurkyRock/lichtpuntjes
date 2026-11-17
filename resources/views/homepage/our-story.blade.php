@@ -33,3 +33,4 @@
 </article>
 </div>
 </section>
+<p class="seo-editorial-links"><a href="{{ $locale==='en'?'/en/about':'/over-ons' }}">{{ $locale==='en'?'About Jouw Lichtpuntjes':'Over Jouw Lichtpuntjes' }}</a> · <a href="{{ $locale==='en'?'/en/how-we-work':'/werkwijze' }}">{{ $locale==='en'?'Sources, AI and corrections':'Bronnen, AI en correcties' }}</a></p>

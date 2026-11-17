@@ -56,10 +56,16 @@ class SupportPayments {
    if(!$first&&(!$p->subscription_id||($payment['subscriptionId']??null)!==$p->subscription_id))throw new \RuntimeException('Onbekende betaling.');
    if($p->customer_id&&($payment['customerId']??null)!==$p->customer_id)throw new \RuntimeException('Onbekende betaler.');
    $status=$payment['status'];
-   SupportPayment::updateOrCreate(['provider_id'=>$id],['pledge_id'=>$p->id,'cents'=>$cents,'status'=>$status,
+   $receipt=SupportPayment::updateOrCreate(['provider_id'=>$id],['pledge_id'=>$p->id,'cents'=>$cents,'status'=>$status,
     'paid_at'=>isset($payment['paidAt'])?Carbon::parse($payment['paidAt']):null,
     'refunded_cents'=>(int)round((float)($payment['amountRefunded']['value']??0)*100),
     'charged_back_cents'=>(int)round((float)($payment['amountChargedBack']['value']??0)*100)]);
+   if($status==='paid' && $receipt->paid_at && ($receipt->wasRecentlyCreated || $receipt->wasChanged(['status','paid_at']))
+      && $receipt->cents>$receipt->refunded_cents+$receipt->charged_back_cents
+      && $p->user_id && \Illuminate\Support\Facades\Schema::hasColumn('support_payments','thanks_requested_at')) {
+    // Only newly confirmed payments request mail. Existing history is not backfilled.
+    SupportPayment::whereKey($receipt->id)->whereNull('thanks_requested_at')->whereNull('thanks_sent_at')->update(['thanks_requested_at'=>now()]);
+   }
    if($first)$p->update(['status'=>$status]);
    try {
    if($first&&$status==='paid'&&$p->frequency==='monthly'&&!$p->subscription_id&&!$p->stopped_at){

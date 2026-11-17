@@ -1,0 +1,5 @@
+.seo-list-intro{margin:16px 0 20px;color:#536862;max-width:850px}.seo-list-intro h2{font:700 24px/1.2 Georgia,serif;color:#153e39;letter-spacing:-.3px;margin:0 0 6px}.seo-list-intro p{font-size:14px;line-height:1.55;margin:0}.seo-detail .seo-list-intro{display:none}.seo-editorial-note{margin:20px 0 28px;padding:14px 18px;border-top:1px solid #d3ded3;color:#536862;font-size:13px;line-height:1.6}.seo-editorial-note p{margin:3px 0}.seo-editorial-note a{text-underline-offset:3px}.seo-list-intro a{color:inherit}.seo-editorial-links{font-size:14px;line-height:1.6;margin:16px 0}
+@media(max-width:1023px){.home-unified .seo-list-intro{margin:9px 3px 12px}.home-unified .seo-list-intro h2{font-size:19px}.home-unified .seo-list-intro p{font-size:13px;line-height:1.4}.seo-editorial-note{padding:12px 4px}}
+
+/* Category chips already offer the same control at every viewport. */
+#stories .mobile-topic-control{display:none}

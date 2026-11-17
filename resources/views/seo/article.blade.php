@@ -13,10 +13,11 @@
 @else<strong>{{ $seoArticle->source_name }}</strong>
 @endif
 @if($seoArticle->published_at)<span aria-hidden="true">·</span><time datetime="{{ $seoArticle->published_at->toIso8601String() }}">{{ $seoArticle->published_at->format('d-m-Y') }}</time>@endif
+@if($seoArticle->content_updated_at)<span>{{ $en?'Updated':'Bijgewerkt' }} <time datetime="{{ $seoArticle->content_updated_at->toIso8601String() }}">{{ $seoArticle->content_updated_at->format('d-m-Y') }}</time></span>@endif
 </div>
 <div class="newspaper-lead {{ $hasPhoto?'':'news-without-photo' }}">
 @if($hasPhoto)
-<figure class="article-photo newspaper-photo"><img src="{{ $seoArticle->photo['url'] }}" alt="{{ $seoArticle->photo['description']??$storyText['title'] }}" width="1024" height="576" data-article-photo>
+<figure class="article-photo newspaper-photo"><img src="{{ $seoArticle->photo['url'] }}" alt="{{ $seoArticle->photo['description']??$storyText['title'] }}" width="1024" height="576" fetchpriority="high" decoding="async" data-article-photo>
 @if(($seoArticle->photo['generated']??false)&&($seoArticle->photo['style']??'')!==\App\Services\LichtpuntIllustrationPrompt::STYLE)<figcaption class="photo-credit">{{ ($seoArticle->photo['style']??'')===\App\Services\LichtpuntIllustrationPrompt::PHOTO_STYLE?($en?'AI-generated atmosphere image · Not a photo of the reported event.':'AI-gegenereerd sfeerbeeld · Geen foto van de beschreven gebeurtenis.'):($en?'AI-generated illustration · Not a photo of the reported event.':'AI-gegenereerde illustratie · Geen foto van de beschreven gebeurtenis.') }}</figcaption>@endif
 </figure>
 @endif

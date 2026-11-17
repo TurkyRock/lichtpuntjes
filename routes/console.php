@@ -57,3 +57,5 @@ Schedule::command('local-ai:tick')->everyMinute()->withoutOverlapping(5);
 })->purpose('Maak een afzonderlijke sleutel voor de lokale tekstworker');
 
 Schedule::command('privacy:cleanup --apply')->dailyAt('03:40')->withoutOverlapping();
+
+Schedule::command('support:thank --limit=5')->everyMinute()->withoutOverlapping(10);

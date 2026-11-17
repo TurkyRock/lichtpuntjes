@@ -1,0 +1,15 @@
+CONTROLE — 17 NOVEMBER 2026
+65 gerichte PHP-tests slagen, met 444 assertions.
+Getest: onafhankelijke toast/account/badge-status, races bij nieuwe punten,
+privacy tussen accounts, toegang, middernacht, ingetrokken punten, migratie-
+baseline en accountverwijdering, SEO, socialpublicaties, registratie, mail-
+opmaak, donatiebedankmails, Mollie-validatie en maandelijkse terugkoppeling.
+Een bestaande test had verouderde verwachtingen over de beheer-zijbalkklasse
+ en beheerwelkomsttekst; die controle volgt nu de werkelijke zijbalk en het
+betreffende testdoel (meldingen voor ingelogde leden).
+Live controle: canonical/taalverwijzingen/robots/sitemap waren aanwezig;
+/werkwijze gaf 404 en de nieuwe SEO-/basis-CSS was niet geladen.
+Browsercontrole geslaagd op 390 en 1280 pixels: homepage, accountmenu,
+nieuwe punten en nieuwe badge. Geen ontbrekende lokale assets, JavaScript-
+fouten of horizontale overflow. Account- en badgebevestigingen zijn apart
+gecontroleerd; een nieuwe badge licht alleen op wanneer die is verdiend.

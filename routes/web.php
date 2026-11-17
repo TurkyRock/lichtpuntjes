@@ -56,6 +56,7 @@ Route::middleware('guest')->group(function(){
 Route::post('/uitloggen',[Accounts::class,'logout'])->middleware('auth');
 Route::middleware(['auth',CommunityActive::class])->group(function(){
  Route::post('/lichtpuntjes/meldingen',[\App\Http\Controllers\LightpointNoticeController::class,'collect'])->middleware(['verified','throttle:12,1,lightpoint-notice:']);
+ Route::post('/lichtpuntjes/voortgang/bekeken',[\App\Http\Controllers\LightpointNoticeController::class,'acknowledge'])->middleware(['verified','throttle:30,1,lightpoint-progress:']);
  Route::get('/profiel',[Community::class,'profile']);
  Route::get('/lichtpuntje/delen',[\App\Http\Controllers\MomentController::class,'choose']);
  Route::get('/mijn-momentjes',[\App\Http\Controllers\MomentController::class,'index']);
@@ -113,7 +114,7 @@ require __DIR__.'/comment-conversations.php';
 Route::get('/mijn-verwerking/{kind}/{id}',[\App\Http\Controllers\ContributionProgressController::class,'show'])->whereIn('kind',['story','moment'])->whereNumber('id')->middleware(['auth',\App\Http\Middleware\CommunityLocale::class,'throttle:120,1,contribution-progress:']);
 
 // Retention views use the same account and administrator protections as the rest of the site.
-Route::get('/archief',function(\Illuminate\Http\Request $r){app()->setLocale($r->query('lang')==='en'?'en':'nl');return view('community.news-archive',['articles'=>\App\Models\Article::visible()->where('origin','news')->where('published_at','<',now()->subDays(config('retention.archive_days',90)))->latest('published_at')->paginate(20)->withQueryString()]);});
+Route::get('/archief',[\App\Http\Controllers\PublicStoryController::class,'archive']);
 Route::middleware(['auth','verified',\App\Http\Middleware\CommunityActive::class,\App\Http\Middleware\CommunityLocale::class,\App\Http\Middleware\CookiePrivacy::class])->group(function(){
  Route::get('/beheer/opslag',[\App\Http\Controllers\StorageMaintenanceController::class,'index']);
  Route::post('/beheer/opslag',[\App\Http\Controllers\StorageMaintenanceController::class,'run'])->middleware('throttle:6,1,storage-maintenance:');
@@ -124,3 +125,5 @@ Route::middleware(['auth','verified',\App\Http\Middleware\CommunityActive::class
 require __DIR__.'/social-publishing.php';
 
 require __DIR__.'/privacy-controls.php';
+
+require __DIR__.'/seo.php';

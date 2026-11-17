@@ -19,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        \Illuminate\Auth\Notifications\ResetPassword::toMailUsing(fn($user,$token)=>\App\Support\AccountMail::reset($user,$token));
+        \Illuminate\Auth\Notifications\VerifyEmail::toMailUsing(fn($user,$url)=>\App\Support\AccountMail::verify($url));
         \App\Models\User::observe(\App\Observers\UserSecurityObserver::class);
         \Illuminate\Support\Facades\Event::listen(\Illuminate\Auth\Events\Login::class, function ($event) {
             if (app()->bound('request') && request()->hasSession()) {
