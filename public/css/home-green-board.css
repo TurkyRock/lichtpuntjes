@@ -90,3 +90,18 @@
 @media(prefers-reduced-motion:reduce){.home-unified .grid>.card{transition:none}}
 .home-unified .moment-washing-line::before{border:0;border-image:none;background:none;filter:none}
 .home-unified #about .story-paper{box-shadow:none;filter:drop-shadow(0 3px 3px #43593622)}
+
+/* Desktop: the right-hand cards determine the shared height, not the hero image. */
+@media(min-width:1024px){
+ .home-unified .daily-highlights:has(.highlight-secondary){grid-template-rows:minmax(0,1fr)}
+ .home-unified .daily-highlights:has(.highlight-small)>.highlight-main{contain:size;min-height:0;grid-template-rows:minmax(0,1fr) auto}
+ .home-unified .daily-highlights:has(.highlight-secondary)>.highlight-main{grid-row:1}
+ .home-unified .daily-highlights>.highlight-secondary{grid-column:2;grid-row:1;display:grid;grid-template-rows:auto repeat(2,minmax(0,1fr));gap:12px;min-width:0}
+ .home-unified .highlight-secondary>.mobile-highlight-heading{margin:0;font:400 30px/1.15 Georgia,serif;color:#193f37}
+ .home-unified .daily-highlights .highlight-main .highlight-art{min-height:0;height:auto;aspect-ratio:auto}
+ .home-unified .daily-highlights .highlight-main .highlight-art>a{position:absolute;inset:7px;width:auto;height:auto;min-height:0;max-height:none;aspect-ratio:auto}
+}
+@media(max-width:1023px){
+ .home-unified .daily-highlights>.highlight-secondary{display:contents}
+ .home-unified .highlight-secondary>.mobile-highlight-heading{display:none}
+}

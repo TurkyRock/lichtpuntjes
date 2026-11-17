@@ -2,6 +2,9 @@
  'use strict';
  document.querySelectorAll('.moment-write-form').forEach(form=>{
   const input=form.querySelector('textarea[name="body"]'), counter=form.querySelector('[data-moment-count]');
+  const sensitive=form.querySelector('.moment-sensitive-choice'), consent=form.querySelector('[name="sensitive_consent"]');
+  if(sensitive&&consent){const sync=()=>{const yes=sensitive.querySelector('[value="self"]').checked;consent.required=yes;sensitive.querySelector('.moment-sensitive-confirm').hidden=!yes;if(!yes)consent.checked=false;};sensitive.addEventListener('change',sync);sync();}
+
   if(input&&counter){const update=()=>counter.textContent=`${Array.from(input.value).length} / 500`;input.addEventListener('input',update);update();}
  });
  document.addEventListener('submit',event=>{const form=event.target.closest('[data-confirm-moment]');if(form&&!window.confirm(form.dataset.confirmMoment))event.preventDefault();});

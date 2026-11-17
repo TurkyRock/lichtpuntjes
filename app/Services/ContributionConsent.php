@@ -10,6 +10,6 @@ class ContributionConsent {
  public static function record(Request $r,string $kind,int $id,int $revision=1,string $visibility='public'):void {
   // The same contribution may be edited to remove sensitive data; consent records expire with it.
   DB::table('contribution_consents')->where('kind',$kind)->where('target_id',$id)->delete();
-  if($r->input('sensitive_content')==='self')DB::table('contribution_consents')->insert(['user_id'=>$r->user()->id,'kind'=>$kind,'target_id'=>$id,'revision'=>$revision,'visibility'=>$visibility,'version'=>self::VERSION,'created_at'=>now()]);
+  if($r->input('sensitive_content')==='self')DB::table('contribution_consents')->insert(['user_id'=>$r->user()->id,'kind'=>$kind,'target_id'=>$id,'revision'=>$revision,'visibility'=>$visibility,'version'=>$kind==='moment'?'2026-11-17':self::VERSION,'created_at'=>now()]);
  }
 }
