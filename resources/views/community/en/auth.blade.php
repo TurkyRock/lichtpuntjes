@@ -1,5 +1,8 @@
 @extends('community.en.layout')
 @section('content')
+@if($mode === 'register')
+@include('community.registration')
+@else
 @include('shared.privacy-note')<section class="panel auth-panel"><h1>{{ ['register'=>'Come on in. Bring your smile.','login'=>'Welcome back, sunshine.','forgot'=>'Forgot your password?','reset'=>'A fresh start.'][$mode] }}</h1>
 @if($mode==='register')@include('community.en.intentions')@include('community.points-explained')@endif
 @if(in_array($mode, ['register','login']))
@@ -14,4 +17,5 @@
 @if($mode==='register')<label><input type="checkbox" name="intentions" value="1" required> I share happy stories and respond kindly. I accept the <a href="/huisregels?lang=en" target="_blank" rel="noopener">community rules</a>.</label>@endif
 @if($mode==='login')<label><input type="checkbox" name="remember" value="1"> Remember me on this device</label>@endif
 <p><button>{{ ['register'=>'Yes, I’ll bring some sunshine ☀','login'=>'Log in','forgot'=>'Send a reset link','reset'=>'Save new password'][$mode] }}</button></p></form>
-@if($mode==='login')<p><a href="/wachtwoord-vergeten?lang=en">Forgot your password?</a> · <a href="/aanmelden?lang=en">No account yet? Join us.</a></p>@else<p><a href="/inloggen?lang=en">Back to login</a></p>@endif</section>@endsection
+@if($mode==='login')<p><a href="/wachtwoord-vergeten?lang=en">Forgot your password?</a> · <a href="/aanmelden?lang=en">No account yet? Join us.</a></p>@else<p><a href="/inloggen?lang=en">Back to login</a></p>@endif</section>@endif
+@endsection

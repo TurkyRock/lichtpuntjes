@@ -1,5 +1,8 @@
 @extends('community.layout')
 @section('content')
+@if($mode === 'register')
+@include('community.registration')
+@else
 @include('shared.privacy-note')<section class="panel auth-panel"><h1>{{ ['register'=>'Kom erbij. Breng je glimlach mee.','login'=>'Welkom terug, zonnetje.','forgot'=>'Even je wachtwoord kwijt?','reset'=>'Een frisse start.'][$mode] }}</h1>
 @if($mode==='register')@include('community.intentions')@include('community.points-explained')@endif
 @if(in_array($mode, ['register','login']))
@@ -14,4 +17,5 @@
 @if($mode==='register')<label><input type="checkbox" name="intentions" value="1" required> Ik deel leuke verhalen en reageer vriendelijk. Ik ga akkoord met de <a href="/huisregels" target="_blank" rel="noopener">huisregels</a>.</label>@endif
 @if($mode==='login')<label><input type="checkbox" name="remember" value="1"> Onthoud mij op dit apparaat</label>@endif
 <p><button>{{ ['register'=>'Ja, ik breng een beetje zon ☀','login'=>'Inloggen','forgot'=>'Stuur een herstellink','reset'=>'Bewaar nieuw wachtwoord'][$mode] }}</button></p></form>
-@if($mode==='login')<p><a href="/wachtwoord-vergeten">Wachtwoord vergeten?</a> · <a href="/aanmelden">Nog geen account? Doe mee.</a></p>@else<p><a href="/inloggen">Terug naar inloggen</a></p>@endif</section>@endsection
+@if($mode==='login')<p><a href="/wachtwoord-vergeten">Wachtwoord vergeten?</a> · <a href="/aanmelden">Nog geen account? Doe mee.</a></p>@else<p><a href="/inloggen">Terug naar inloggen</a></p>@endif</section>@endif
+@endsection

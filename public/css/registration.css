@@ -1,0 +1,44 @@
+/* Same 1180px shell and 32px gutters as the homepage; live form over paper artwork. */
+main:has(.registration-board){max-width:1180px;margin:14px auto 22px;padding:0 32px}
+.registration-board{position:relative;isolation:isolate;min-width:0;padding:72px 16% 36px;border-radius:24px;background:#dce9d5 url('/images/registration-board.webp') center/100% 100% no-repeat;color:#153e39}
+.registration-content{position:relative;max-width:760px;margin:auto}
+.registration-board h1{text-align:center;font:700 clamp(28px,3vw,42px)/1.15 Georgia,serif;letter-spacing:-1px;margin:0 0 29px;position:relative}
+.registration-board h1::after{content:'';display:block;background:#ed8c72;width:42%;height:5px;margin:9px auto 0;transform:rotate(-1deg);clip-path:polygon(0 60%,35% 0,80% 25%,100% 70%,80% 100%,25% 70%)}
+.registration-board .social-signin{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0 0 15px}
+.registration-board .social-signin-button{border:1px solid #e8e3ce;border-radius:9px;padding:13px 10px;min-height:54px;background:#fffdf3 url('/images/button-paper-grain.svg');box-shadow:0 3px 3px #25492b20;font:650 15px/1.3 system-ui,sans-serif;gap:12px;text-align:center}
+.registration-board .provider-mark{width:26px;height:26px}
+.registration-board .social-signin-button:hover{background-color:#fff0be}
+.registration-board .signin-divider{margin:0 0 15px;font:italic 18px/1.3 Georgia,serif;gap:18px;color:#315744}
+.registration-board .signin-divider::before,.registration-board .signin-divider::after{background:#829b7d}
+.registration-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px 26px}
+.registration-fields>div{min-width:0}
+.registration-board .registration-fields label{font:650 15px/1.35 system-ui,sans-serif;margin:0 0 5px}
+.registration-board .registration-fields input{display:block;width:100%;min-width:0;border:1px solid #8da38b;border-radius:6px;padding:9px 12px;background:#fffdf4;color:#153e39;height:43px;font:16px/1.4 system-ui,sans-serif;box-shadow:inset 0 1px 2px #25492b0b}
+.registration-hint{font:12px/1.4 system-ui,sans-serif;color:#3b5c49;margin:9px 0 0;text-align:center}
+.registration-board .registration-consent{display:flex;align-items:flex-start;justify-content:center;gap:10px;margin:19px 0;font:14px/1.5 system-ui,sans-serif;font-weight:400}
+.registration-board input[type=checkbox]{flex:none;width:21px;height:21px;margin:0;accent-color:#346b5b}
+.registration-board a{color:#153e39;text-underline-offset:3px}
+.registration-board .registration-submit{display:block;position:relative;isolation:isolate;min-height:52px;width:72%;margin:auto;padding:11px 18px;border:0;border-radius:0;background:transparent;color:#fffef4;font:700 25px/1.2 Georgia,serif;filter:drop-shadow(0 3px 2px #25492b25)}
+.registration-submit::before{content:'';position:absolute;inset:0;z-index:-1;background:#39764d url('/images/button-paper-grain.svg');clip-path:polygon(1% 8%,7% 3%,17% 5%,25% 0,37% 4%,48% 1%,61% 4%,73% 0,85% 5%,98% 2%,100% 22%,99% 43%,100% 71%,98% 96%,86% 98%,73% 95%,61% 100%,48% 96%,35% 99%,23% 96%,12% 100%,1% 95%,0 72%,1% 51%,0 25%)}
+.registration-submit:hover::before{background-color:#285c3d}
+.registration-login{text-align:center;margin:16px 0 0;font:16px/1.4 Georgia,serif}
+.registration-board .social-signin{display:grid}
+.registration-board .social-signin-button{display:flex;align-items:center;justify-content:center;text-decoration:none}
+.registration-board .signin-divider{display:flex;align-items:center;justify-content:center}
+.registration-board .signin-divider::before,.registration-board .signin-divider::after{content:'';height:1px;flex:1}
+.registration-board .registration-adult{margin-top:-7px}
+.registration-error{color:#a22c35;font:14px/1.5 system-ui,sans-serif;text-align:center}
+.registration-preferences{margin:16px 0 20px;font:14px/1.5 system-ui,sans-serif}
+.registration-preferences summary{cursor:pointer;text-align:center;text-decoration:underline;text-underline-offset:3px;padding:6px}
+.registration-preferences[open] summary{margin-bottom:12px}
+.registration-preferences fieldset{min-width:0;margin:0;padding:14px;border:1px solid #8da38b;border-radius:8px;background:#fffdf4ed}
+.registration-preferences legend{font-weight:700;padding-inline:5px}
+.registration-preferences label{display:block;margin-block:10px}
+.registration-preferences input:not([type=checkbox]),.registration-preferences select{width:100%;max-width:100%;min-height:42px;padding:8px;border:1px solid #8da38b;border-radius:5px;background:#fffdf4;color:#153e39;font:16px/1.4 system-ui,sans-serif}
+.registration-preferences input[type=checkbox]{vertical-align:middle;margin-right:6px}
+.registration-preferences .small{font-size:13px}
+.registration-board :is(a,button,input):focus-visible{outline:3px solid #996900;outline-offset:3px}
+@media(max-width:1000px){.registration-board{padding:65px 12% 36px}.registration-board .social-signin-button{font-size:14px;gap:8px}.registration-fields{column-gap:18px}}
+@media(max-width:767px){.registration-board{padding:62px 8% 34px}.registration-board h1{font-size:30px}.registration-board .social-signin{gap:10px}.registration-board .social-signin-button{font-size:13px}.registration-board .provider-mark{width:22px;height:22px}}
+@media(max-width:600px){main:has(.registration-board){padding:0 20px}.registration-board{padding:55px 18px 32px;background-size:auto 100%;border-radius:20px}.registration-content{padding:12px;background:#dfefd9ed;border-radius:9px}.registration-board h1{font-size:29px;margin-bottom:22px}.registration-board .social-signin{grid-template-columns:1fr}.registration-board .social-signin-button{font-size:14px}.registration-fields{grid-template-columns:1fr;gap:12px}.registration-board .registration-submit{width:100%;font-size:23px}.registration-board .registration-consent{font-size:13px}.registration-board .signin-divider{font-size:16px;gap:9px}.registration-login{font-size:15px}}
+@media(max-height:800px) and (min-width:1001px){.registration-board{padding-top:50px;padding-bottom:26px}.registration-board h1{margin-bottom:21px}.registration-board .registration-consent{margin-block:14px}.registration-board .registration-login{margin-top:12px}}
