@@ -7,6 +7,7 @@
 <article class="newspaper-article">
 <nav class="story-breadcrumb" aria-label="{{ $en?'Breadcrumb':'Kruimelpad' }}"><a href="{{ \App\Support\StorySeo::home($locale) }}">← {{ $en?'Back to bright spots':'Terug naar lichtpuntjes' }}</a><a class="news-category" href="{{ \App\Support\StorySeo::home($locale,$category) }}">{{ \App\Support\StorySeo::CATEGORIES[$category][$en?1:0] }}</a></nav>
 <h1 class="newspaper-title" id="articleTitle">{{ $storyText['title'] }}</h1>
+@if($seoArticle->story_places)<p class="meta">{{ $en?'Story location: ':'Dit verhaal speelt in: ' }}{{ implode(' · ',array_map(fn($place)=>mb_convert_case($place,MB_CASE_TITLE,'UTF-8'),$seoArticle->story_places)) }}</p>@endif
 <div class="article-source">
 @if($own)<span>{{ $en?'From our community':'Van onze community' }}</span><strong>{{ $seoArticle->source_name }}</strong>
 @elseif(\App\Support\StorySeo::safeUrl($seoArticle->source_url))<a href="{{ $seoArticle->source_url }}" target="_blank" rel="noopener noreferrer">{{ $seoArticle->source_name }} ↗</a>
@@ -15,6 +16,7 @@
 @if($seoArticle->published_at)<span aria-hidden="true">·</span><time datetime="{{ $seoArticle->published_at->toIso8601String() }}">{{ $seoArticle->published_at->format('d-m-Y') }}</time>@endif
 @if($seoArticle->content_updated_at)<span>{{ $en?'Updated':'Bijgewerkt' }} <time datetime="{{ $seoArticle->content_updated_at->toIso8601String() }}">{{ $seoArticle->content_updated_at->format('d-m-Y') }}</time></span>@endif
 </div>
+@include('shared.source-attribution',['attribution'=>$seoArticle->source_attribution,'locale'=>$locale])
 <div class="newspaper-lead {{ $hasPhoto?'':'news-without-photo' }}">
 @if($hasPhoto)
 <figure class="article-photo newspaper-photo"><img src="{{ $seoArticle->photo['url'] }}" alt="{{ $seoArticle->photo['description']??$storyText['title'] }}" width="1024" height="576" fetchpriority="high" decoding="async" data-article-photo>

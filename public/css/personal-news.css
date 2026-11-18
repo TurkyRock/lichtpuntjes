@@ -7,3 +7,5 @@
 .personal-news-switch .news-preference-edit:focus-visible{outline:3px solid #96701f;outline-offset:3px}
 @media(max-width:1023px){.personal-news-switch .news-preference-edit{font-size:12px;padding:9px 13px;min-height:40px}}
 @media(forced-colors:active){.personal-news-switch .news-preference-edit{border:1px solid LinkText;filter:none}.personal-news-switch .news-preference-edit::before{display:none}}
+
+@media(max-width:480px){.personal-news-switch nav{flex-wrap:wrap;max-width:100%;border-radius:18px}.personal-news-switch nav a{padding:7px 8px}}

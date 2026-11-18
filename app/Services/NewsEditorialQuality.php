@@ -7,7 +7,12 @@ use App\Models\Article;
 final class NewsEditorialQuality
 {
     public const POLICY = <<<'POLICY'
-EDITORIAL STANDARD v2026-11-18 (new imported news only):
+EDITORIAL STANDARD v2026-11-18-JOY-INDEPENDENT (new imported news only):
+Write a short independent factual summary in your own wording, not a sentence-by-sentence translation or lightly reworded copy. Do not reproduce long source passages, distinctive narrative phrasing or quotations. Keep numbers and facts accurate. When the source contains few facts, keep the summary short instead of filling gaps.
+Lichtpuntjes is a gentle break from the business-news cycle. The reader should leave with a small smile, warmth, wonder or grounded hope. Prioritise animal rescues and recoveries, species returning, nature restoration and beautiful discoveries; everyday kindness, friendship and community volunteering; play, creativity, accessible cultural enjoyment, joyful shared activities and grassroots sporting achievements. Small, well-sourced stories are valuable; they need not be economically significant.
+Reject a story whose main news value is commercial success: corporate partnerships, contracts, financing rounds, executive appointments, turnover, sales records, market forecasts, share performance, business awards or a new commercial product/service. A sustainability/innovation label or speculative 'could improve lives' ending does not turn a business announcement into a human or nature story. Keep a business-related story only when the supplied source clearly centres a specific delivered benefit for people, animals or their environment (for example reliable power now installed at a hospital, volunteers restoring a habitat, or an accessible community activity). Name companies only when necessary to understand that benefit; never replace their sales pitch with invented joy.
+Nature includes animals, seasonal experiences and restoration, not only climate threats and policy. Science should offer understandable wonder or a tangible benefit, not a software/enterprise launch. Sport should feature participants, inclusion, play or achievement, not betting or commercial deals. Media should offer creativity, cultural pleasure or a meaningful joyful milestone, not routine publicity or celebrity drama. Community stories should focus on people doing something kind or enjoyable together.
+Use a warm, concrete, lightly written tone without hype, compulsory happiness or telling readers how they must feel. Let the sourced event evoke the emotion. Never add an imagined reaction, rescue, happy ending or benefit. A short story about a garden or a small act of kindness can outrank a multimillion-euro announcement. Prefer fewer strong stories to filling a category quota with weak business news.
 Select a concrete benefit, genuine achievement, helpful initiative or joyful milestone that is explicitly supported by the supplied source. A cheerful adjective does not make a story good news.
 Reject gambling/betting/casino product promotions, market-size forecasts, stock tips, supplier sales pitches, routine product/TV guest announcements and celebrity photo updates with no meaningful positive development. Do not reject a genuine public benefit merely because a business is involved; distinguish an actual community/environment/health benefit from marketing claims.
 Write idiomatic, professionally edited Dutch (B1/B2, adult readers) and natural English. Dutch titles use sentence case, never English Title Case. Translate ordinary English phrases, but preserve personal names, official programme/product names and titles of works. Avoid literal calques and invented words. Examples of errors to avoid: 'binnenkantehuiskunst', 'voertuigengeleidelijke', 'voetdenkbaar', 'milieuweters', 'EU-gebackte', 'een vaste tarief vooraf gekeken'. In a solar subsidy application, 'applications' means 'aanvragen', not 'toepassingen'. A sportsbook is a betting service, not a Dutch 'sportboek'. When a term is uncertain, use an accurate plain phrase or choose insufficient; never guess.
@@ -25,6 +30,8 @@ POLICY;
         $promotion=preg_match('/\b(launch\w*|introduc\w*|deploy\w*|reopen\w*|heropen\w*|lance\w*|nul.marge|zero.margin)\b/u',$title);
         if($gambling&&$promotion)return 'Gokproductpromotie is geen positief sportnieuws.';
         if(preg_match('/\b(cagr|compound annual growth rate)\b/iu',$article->source_description??'')&&preg_match('/\b(market|markt)\b/u',$title))return 'Marktprognose of commerciële marktanalyse zonder concreet lichtpuntje.';
+        if(preg_match('/\b(market size|market forecast|market report|share price|stock picks|stock market|aandelentips|aandelenkoers|beurskoers)\b/u',$title))return 'Zakelijke markt- of beleggingsanalyse past niet bij een dagelijks lichtpuntje.';
+        if(preg_match('/\b(oem|odm)\b/u',$title)&&preg_match('/\b(solutions|manufacturer\w*|manufacturing|oplossingen|fabrikant\w*)\b/u',$title))return 'Commerciële leverancierpromotie zonder concreet menselijk of natuurvoordeel.';
         return null;
     }
 
@@ -58,4 +65,17 @@ POLICY;
         }
         return array_values(array_unique($issues));
     }
+    /** Conservative copying signal, not a legal assessment or a safe-word-count rule. */
+    public function sourceOverlap(string $source,array $result):array {
+        $words=function(string $text):array {preg_match_all('/[\pL\pN]+/u',mb_strtolower($text),$m);return $m[0];};
+        $original=$words($source);$phrases=[];
+        for($i=0;$i<=count($original)-16;$i++)$phrases[implode(' ',array_slice($original,$i,16))]=true;
+        if(!$phrases)return [];
+        foreach(['nl','en'] as $locale)foreach($result[$locale]['body']??[] as $paragraph){
+            $w=$words($paragraph);
+            for($i=0;$i<=count($w)-16;$i++)if(isset($phrases[implode(' ',array_slice($w,$i,16))]))return ['lange letterlijke passage uit de brontekst; eigen samenvatting controleren'];
+        }
+        return [];
+    }
+
 }

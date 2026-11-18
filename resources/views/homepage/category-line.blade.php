@@ -6,11 +6,14 @@
 <div class="personal-news-switch">
 <nav aria-label="{{ $locale==='en'?'News selection':'Nieuwsselectie' }}">
 @php($personalView=($feed['personalized']??false))
+@php($nearbyView=($feed['nearby']??false))
+@php($hasLocation=$hasNewsPreferences && \App\Support\StoryLocation::places(auth()->user()->news_preferences['place']??null,auth()->user()->news_preferences['region']??null))
 <a href="{{ $hasNewsPreferences ? \App\Support\StorySeo::home($locale,$category).'?view=for-you' : '/mijn-interesses?welcome=1&lang='.$locale }}" data-news-view="for-you" @if($personalView) aria-current="page" @endif>{{ $locale==='en'?'For you':'Voor jou' }}</a>
-<a href="{{ \App\Support\StorySeo::home($locale,$category) }}?view=all" data-news-view="all" @if(!$personalView) aria-current="page" @endif>{{ $locale==='en'?'All bright spots':'Alle lichtpuntjes' }}</a>
+<a href="{{ \App\Support\StorySeo::home($locale,$category) }}?view=all" data-news-view="all" @if(!$personalView && !$nearbyView) aria-current="page" @endif>{{ $locale==='en'?'All bright spots':'Alle lichtpuntjes' }}</a>
+<a href="{{ $hasLocation ? \App\Support\StorySeo::home($locale,$category).'?view=nearby' : '/mijn-interesses?lang='.$locale.'#preferencePlace' }}" data-news-view="nearby" @if($nearbyView) aria-current="page" @endif>{{ $locale==='en'?'Nearby':'Uit de buurt' }}</a>
 </nav>
 <a class="news-preference-edit" href="/mijn-interesses?lang={{ $locale }}">{{ $locale==='en'?'My interests':'Mijn interesses' }}</a>
-<p id="personalNewsExplanation">{{ $personalView ? ($locale==='en'?'Your interests first, with room for discoveries.':'Jouw interesses voorop, met ruimte voor verrassing.') : (!$hasNewsPreferences ? ($locale==='en'?'Choose your interests to make “For you” personal.':'Kies je interesses om ‘Voor jou’ persoonlijk te maken.') : ($locale==='en'?'All topics, in the selected order.':'Alle onderwerpen, in de gekozen volgorde.')) }}</p>
+<p id="personalNewsExplanation">{{ $nearbyView ? ($locale==='en'?'News and community stories from your chosen town or province.':'Nieuws en zelfgeschreven verhalen uit jouw gekozen plaats of provincie.') : ($personalView ? ($locale==='en'?'Your interests and nearby stories, with room for discoveries.':'Jouw interesses en verhalen uit de buurt, met ruimte voor verrassing.') : (!$hasNewsPreferences ? ($locale==='en'?'Choose your interests to make “For you” personal.':'Kies je interesses om ‘Voor jou’ persoonlijk te maken.') : ($locale==='en'?'All topics, in the selected order.':'Alle onderwerpen, in de gekozen volgorde.'))) }}</p>
 </div>
 @endif
 @php($selectedSort=in_array(request('sort'),['reads','likes'],true)?request('sort'):'newest')

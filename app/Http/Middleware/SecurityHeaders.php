@@ -7,7 +7,7 @@ class SecurityHeaders {
   $nonce=base64_encode(random_bytes(24));$request->attributes->set('csp_nonce',$nonce);
   $response=$next($request);
   if(!$request->isMethod('GET')||$request->is('api','api/*','mijn-*','mijn-*/*','beveiliging','beveiliging/*','mijn-bijdragen','steun/bedankt/*','news/*','beheer','beheer/*','profiel','mijn-momentjes','mijn-momentjes/*','profiel/*','profielfotos/*','mijn-lichtpuntjes','mijn-lichtpuntjes/*','auth/*','inloggen','aanmelden','aanmelden/*','lichtpuntje/*','email/*','reset-password/*','wachtwoord-vergeten','privacy/verzoeken','melden/*','steun/beheren','steun/beheren/*')||$response->getStatusCode()>=400)$response->headers->set('X-Robots-Tag','noindex');
-  if(($request->query('q')!==null&&$request->query('q')!=='')||$request->query('view')==='for-you')$response->headers->set('X-Robots-Tag','noindex, follow');
+  if(($request->query('q')!==null&&$request->query('q')!=='')||in_array($request->query('view'),['for-you','nearby'],true))$response->headers->set('X-Robots-Tag','noindex, follow');
   if(config('beta.closed_site')||$request->is('testgroep','testgroep/*')){$response->headers->set('X-Robots-Tag','noindex, nofollow');$response->headers->set('Referrer-Policy','no-referrer');}
   $response->headers->set('X-Content-Type-Options','nosniff');
   $response->headers->set('X-Frame-Options','DENY');

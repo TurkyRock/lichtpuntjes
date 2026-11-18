@@ -9,11 +9,12 @@ class LightspotController extends Controller {
  private function author(Request $r):void {abort_unless($r->user()->community_accepted_at,403,'Bevestig eerst de huisregels in je account.');}
  private function fields(Request $r):array {
   \App\Services\ContributionConsent::validate($r);
-  $v=$r->validate(['title'=>'required|string|min:5|max:140','body'=>'required|string|min:120|max:6000','language'=>'required|in:nl,en','intentions'=>'accepted','website'=>'prohibited']);
+  $v=$r->validate(['title'=>'required|string|min:5|max:140','body'=>'required|string|min:120|max:6000','language'=>'required|in:nl,en','intentions'=>'accepted','website'=>'prohibited','story_place'=>'nullable|string|max:100|regex:/^[\pL\pM\pN\s.\x{2019}\x{0027}()\-]+$/u','story_region'=>'nullable|string|max:100|regex:/^[\pL\pM\pN\s.\x{2019}\x{0027}()\-]+$/u']);
   $v['category']='community';$v['title']=trim($v['title']);$v['body']=trim($v['body']);
   if(mb_strlen($v['title'])<5||mb_strlen($v['body'])<120)throw \Illuminate\Validation\ValidationException::withMessages(['body'=>'Schrijf minstens 120 tekens en een duidelijke titel.']);
   if(preg_match('~https?://|www\.|[\w.+-]+@[\w.-]+\.[a-z]{2,}~iu',$v['title'].' '.$v['body']))throw \Illuminate\Validation\ValidationException::withMessages(['body'=>'Laat links, e-mailadressen en contactgegevens weg.']);
-  return array_intersect_key($v,array_flip(['title','body','language','category']));
+  foreach(['story_place','story_region'] as $key)$v[$key]=trim(preg_replace('/\s+/u',' ', $v[$key]??''))?:null;
+  return array_intersect_key($v,array_flip(['title','body','language','category','story_place','story_region']));
  }
  public function create(Request $r){return redirect('/mijn-lichtpuntjes?lang='.app()->getLocale().'#new-story');}
  public function index(Request $r){$r->validate(['needs_attention'=>'sometimes|boolean']);$needsAttention=$r->boolean('needs_attention');return view('community.lightspot-list',['needsAttention'=>$needsAttention,'submissions'=>LightspotSubmission::where('user_id',$r->user()->id)->when($needsAttention,fn($q)=>$q->where('status','rejected'))->with('article')->latest()->paginate(6)->withQueryString()]);}

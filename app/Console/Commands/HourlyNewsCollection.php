@@ -92,6 +92,7 @@ class HourlyNewsCollection extends Command
                 if(microtime(true)>=$this->deadline)return $this->paused('Uitvoeringstijd bereikt. De volgende uitvoering gaat verder met deze ronde.');
                 $ready=Article::where('origin','news')->whereNull('hidden_at')->where('status','news_ready')->whereIn('category',$missing)->whereNotIn('id',$imageFailed)->latest('published_at')->latest('id')->first();
                 if($ready){
+                    if(!app(\App\Services\NewsFeeds\Rights::class)->permitted($ready)){$ready->update(['status'=>'draft','reason'=>'Bronrechten niet vastgesteld; geen nieuw beeld of publicatie.']);continue;}
                     if(app(NewsDuplicates::class)->hideIfDuplicate($ready)){$ready->save();continue;}
                     try {
                         $this->line('#'.$ready->id.' passende afbeelding maken/controleren');
@@ -125,7 +126,13 @@ class HourlyNewsCollection extends Command
                     $this->line('#'.$candidate->id.' '.$candidate->fresh()->status);continue;
                 }
                 $sources=array_values(array_diff($missing,$exhausted));
-                if(!$sources)return $this->paused('De beschikbare bronpaginas bevatten nu onvoldoende geschikte artikelen voor alle categorieen.');
+                if(!$sources){
+                    if(config('news-feeds.strict_publisher_rights',true)){
+                        $this->state['finished']=true;$this->state['limited_supply']=true;$this->state['finished_at']=now()->toIso8601String();$this->save();$this->report();
+                        $this->info('Uurronde afgesloten met beschikbaar toegelaten aanbod; de volgende uurronde probeert opnieuw.');return self::SUCCESS;
+                    }
+                    return $this->paused('De beschikbare bronpaginas bevatten nu onvoldoende geschikte artikelen voor alle categorieen.');
+                }
                 if((int)config('news_hourly.max_pages',0)>0&&$pages>=(int)config('news_hourly.max_pages'))return $this->paused('Bronpaginalimiet voor deze uitvoering bereikt. De ronde is nog niet compleet.');
                 usort($sources,fn($a,$b)=>(($visits[$a]??0)<=>($visits[$b]??0))?:($counts[$a]<=>$counts[$b]));$cat=$sources[0];
                 $page=$importer->fetchPage($cursors[$cat]??null,$cat);$pages++;$visits[$cat]=($visits[$cat]??0)+1;

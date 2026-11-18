@@ -25,3 +25,5 @@ Route::middleware([\App\Http\Middleware\CommunityLocale::class,\App\Http\Middlew
   Route::delete('/mijn-momentjes/prullenbak/{id}',function(\Illuminate\Http\Request $r,int $id){$m=\App\Models\PositiveMoment::withTrashed()->where('user_id',$r->user()->id)->findOrFail($id);\Illuminate\Support\Facades\DB::table('contribution_consents')->where('kind','moment')->where('target_id',$id)->delete();\App\Models\LocalAiJob::query()->delete();\App\Models\LaptopImageJob::where('target_type','moment')->where('target_id',$id)->delete();$m->forceDelete();return back()->with('status','Momentje definitief verwijderd.');})->whereNumber('id')->middleware('throttle:10,1,erase-moment:');
  });
 });
+
+Route::get('/beheer/nieuwsbronnen',[\App\Http\Controllers\NewsSourceController::class,'index'])->middleware(['auth',\App\Http\Middleware\CommunityActive::class,\App\Http\Middleware\CommunityLocale::class,'verified']);

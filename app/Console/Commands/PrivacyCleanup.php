@@ -6,6 +6,7 @@ class PrivacyCleanup extends Command {
  protected $signature='privacy:cleanup {--apply}';protected $description='Controleer of verwijder verlopen afgehandelde privacy- en moderatieregistraties';
  public function handle():int {
   $queries=[
+   'user_news_signals'=>DB::table('user_news_signals')->where('created_at','<',now()->subDays(\App\Services\NewsReadingInterests::DAYS)),
    'privacy_requests'=>DB::table('privacy_requests')->whereNotNull('resolved_at')->where('resolved_at','<',now()->subDays(config('privacy.request_days'))),
    'content_reports'=>DB::table('content_reports')->whereNotNull('resolved_at')->where('resolved_at','<',now()->subDays(config('privacy.report_days'))),
    'account_security_events'=>DB::table('account_security_events')->where('created_at','<',now()->subDays(config('privacy.security_days'))),

@@ -23,6 +23,9 @@ class NewsImporter {
         }return $count;
     }
     public function fetchPage(?string $cursor=null,?string $category=null):array {
+        $fromFeed=$cursor==='lp-feed:'.($category??'all');
+        if($fromFeed)$cursor=null;
+        if(!$fromFeed && !$cursor && config('news-feeds.enabled') && ($extra=app(\App\Services\NewsFeeds\Pool::class)->select(false,$category)))return ['created'=>[$extra->id],'next'=>'lp-feed:'.($category??'all')];
         if(!config('news.newsdata_key'))throw new RuntimeException('NEWSDATA_API_KEY ontbreekt.');
         $sources=['media'=>'entertainment','sport'=>'sports','nature'=>'environment','energy'=>'environment','science'=>'science,technology','people'=>'lifestyle,education,health'];
         if($category!==null&&!isset($sources[$category]))throw new RuntimeException('Ongeldige nieuwscategorie.');
@@ -39,7 +42,7 @@ class NewsImporter {
         }
         $query=['apikey' =>config('news.newsdata_key'),'language'=>'en,nl,es,fr,de','category'=>$category===null?'entertainment,sports,environment,science,technology':$sources[$category],'size'=>10];
         // Environment covers both wildlife and sustainability. A keyword narrows these two feeds.
-        if($category==='nature')$query['q']='wildlife OR biodiversity OR conservation OR natuur OR especies';
+        if($category==='nature')$query['q']='wildlife OR animals OR biodiversity OR conservation OR natuur OR dieren OR especies';
         if($category==='energy')$query['q']='renewable OR solar OR recycling OR sustainability OR duurzaamheid';
         if($dutch){
             $query['country']='nl';$query['language']='nl,en';
@@ -55,7 +58,9 @@ class NewsImporter {
             $url=$item['link']??'';$title=trim(strip_tags($item['title']??''));
             if(!filter_var($url,FILTER_VALIDATE_URL)||!in_array(parse_url($url,PHP_URL_SCHEME),['http','https'],true)||$title==='')continue;
             $date=null;try{if(!empty($item['pubDate']))$date=Carbon::parse($item['pubDate'],'UTC');}catch(\Throwable $e){}
-            $values=['source_title'=>mb_substr($title,0,1000),'source_description'=>mb_substr(trim(strip_tags($item['description']??'')),0,12000),'source_name'=>mb_substr(strip_tags($item['source_name']??$item['source_id']??'Bron'),0,200),'source_url'=>$url,'published_at'=>$date];
+            $creator=is_array($item['creator']??null)?implode(', ',array_filter($item['creator'],'is_string')):null;
+            $attribution=app(\App\Services\NewsFeeds\Rights::class)->attribution($url,$creator);
+            $values=['source_attribution'=>$attribution,'source_title'=>mb_substr($title,0,1000),'source_description'=>mb_substr(trim(strip_tags($item['description']??'')),0,12000),'source_name'=>mb_substr(strip_tags($item['source_name']??$item['source_id']??'Bron'),0,200),'source_url'=>$url,'published_at'=>$date];
             if($category!==null)$values['category']=$category;
             $values['source_countries']=array_slice(array_values(array_filter(is_array($item['country']??null)?$item['country']:[],fn($s)=>is_string($s)&&mb_strlen($s)<=80)),0,10);
             $values['source_language']=is_string($item['language']??null)?mb_substr($item['language'],0,40):null;
@@ -70,9 +75,28 @@ class NewsImporter {
         if($next && $dutch)$next='lp2.'.base64_encode(json_encode(['category'=>$category,'dutch'=>true,'token'=>$next],JSON_THROW_ON_ERROR));
         return ['created'=>$created,'next'=>$next];
     }
+    private function metadata(Article $article,array $result):array {
+        $meta=NewsPreferences::metadata($result);
+        $source=$article->source_attribution??[];
+        if(!empty($source['places']))$meta['story_places']=array_values(array_unique([...$meta['story_places'],...$source['places']]));
+        if(!empty($source['regions'])){
+            $meta['story_places']=array_values(array_unique([...$meta['story_places'],...$source['regions']]));
+            $meta['story_country']='NL';
+        }
+        return $meta;
+    }
     public function assess(Article $a,bool $stage=false,string $stagedStatus='replacement'): void {
         if(!in_array($stagedStatus,['replacement','news_ready'],true))throw new RuntimeException('Ongeldige verwerkingsstatus.');
         if($a->hidden_at)return;
+        if(!app(\App\Services\NewsFeeds\Rights::class)->permitted($a)){
+            $a->update(['status'=>'draft','reason'=>'Bronrechten niet vastgesteld voor openbare samenvatting en vertaling. Niet automatisch publiceren.']);return;
+        }
+        if($sourceKey=$a->source_attribution['source_key']??null){
+            $source=config('news-feeds.sources.'.$sourceKey);
+            if(!$source || !app(\App\Services\NewsFeeds\Pool::class)->approved($source)){
+                $a->update(['status'=>'draft','reason'=>'Bronrechten vragen een nieuwe controle.']);return;
+            }
+        }
         if(app(NewsDuplicates::class)->hideIfDuplicate($a)){$a->save();return;}
         if($reason=app(NewsEditorialQuality::class)->sourceRejection($a)){
             $a->update(['status'=>'rejected','reason'=>$reason]);return;
@@ -158,7 +182,7 @@ PROMPT;
         if ($validator->fails()) throw new RuntimeException('AI-formaatfout: '.$validator->errors()->toJson());
         if ($result['decision']==='suitable') {
             foreach (['nl','en'] as $l) if (empty($result[$l]['title'])||empty($result[$l]['teaser'])||empty($result[$l]['body'])) throw new RuntimeException('Vertaling ontbreekt.');
-            $issues=app(NewsEditorialQuality::class)->issues($result);
+            $issues=[...app(NewsEditorialQuality::class)->issues($result),...app(NewsEditorialQuality::class)->sourceOverlap($a->source_description??'',$result)];
             if($issues){
                 // Keep the draft for editorial review; never queue images or auto-publish it.
                 $a->update(['status'=>'draft','category'=>$result['category'],'reason'=>'Redactiecontrole nodig: '.implode('; ',$issues).'.','nl'=>$result['nl'],'en'=>$result['en']]);
@@ -166,7 +190,7 @@ PROMPT;
             }
         }
         $daily=$result['decision']==='suitable'?DailyStoryScore::optionalFields($result):['daily_score'=>null,'daily_reason'=>null,'daily_scored_at'=>null];
-        $a->update($daily+NewsPreferences::metadata($result)+[
+        $a->update($daily+$this->metadata($a,$result)+[
             'status'=>$result['decision']==='suitable'?($stage?$stagedStatus:(app(NewsCategoryBalance::class)->allowed($result['category'])?'published':'news_ready')):$result['decision'],
             'category'=>$result['category'], 'reason'=>trim($result['reason']??'')?:'Geen toelichting ontvangen van AI.',
             'nl'=>$result['decision']==='suitable'?$result['nl']:null,

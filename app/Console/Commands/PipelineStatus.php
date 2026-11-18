@@ -17,6 +17,7 @@ class PipelineStatus extends Command
         if($status['batch_retry_at'])$this->line('Opgeslagen hervatmoment batch: '.$status['batch_retry_at'].' Nederlandse tijd.');
         foreach($status['alerts'] as $alert)$this->warn($alert);
         $this->line('Dit is een momentopname. Lang wachten is een signaal om te controleren, geen bewijs dat een taak definitief vastzit.');
+        $this->line('Regionale bakken en aanvullende bronnen: news:sources --status');
         return self::SUCCESS;
     }
 }

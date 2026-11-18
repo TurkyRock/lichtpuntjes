@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\Article;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class NewsPreferences
 {
@@ -18,6 +19,18 @@ class NewsPreferences
     public function enabled(?User $user): bool
     {
         return $user && !$user->is_suspended && ($user->news_preferences['enabled'] ?? false);
+    }
+
+    public function save(User $user, ?array $preferences): void
+    {
+        DB::transaction(function () use ($user, $preferences) {
+            $current = User::whereKey($user->id)->lockForUpdate()->firstOrFail();
+            if (empty($preferences['enabled']) || empty($preferences['learn_from_reading'])) {
+                app(NewsReadingInterests::class)->forget($current->id);
+            }
+            $current->forceFill(['news_preferences'=>$preferences, 'news_preferences_answered_at'=>now()])->save();
+            $user->forceFill(['news_preferences'=>$preferences, 'news_preferences_answered_at'=>$current->news_preferences_answered_at]);
+        });
     }
 
     /** SQL expressions use the connection's JSON grammar, for both MySQL and SQLite. */
@@ -46,13 +59,27 @@ class NewsPreferences
                 foreach ($muted as $topic) $q->orWhereJsonContains('interest_topics', $topic);
                 $q->orWhere(fn($q)=>$q->whereNull('interest_topics')->whereIn('category',array_unique(array_map(fn($t)=>self::TOPICS[$t][2],$muted))));
             });
-            $condition($q, -40);
+            $condition($q, -80);
         }
         $geography = $p['geography'] ?? 'mixed';
         if ($geography !== 'world') $condition(Article::query()->where('story_country','NL'), $geography === 'netherlands' ? 24 : 8);
-        if (!empty($p['place'])) $condition(Article::query()->where('story_country','NL')->whereJsonContains('story_places', mb_strtolower($p['place'])), 10);
+        // Region and town are separate explicit choices; no GPS, address or inferred writer location.
+        $places = \App\Support\StoryLocation::places($p['place']??null,$p['region']??null);
+        if ($places) {
+            $q = Article::query()->where(function($q)use($places){
+                foreach($places as $place) $q->orWhereJsonContains('story_places',$place);
+            });
+            $regions=\App\Services\NewsFeeds\Regions::selected($user);
+            if($regions)$q->orWhereIn('articles.id',DB::table('article_regions')->whereIn('region',$regions)->select('article_id'));
+            $condition($q, 28);
+        }
         // Only explicit life-stage topics are tagged; no inferred age stereotypes or exclusions.
         if (in_array($p['age_group'] ?? '', self::AGES, true)) $condition(Article::query()->whereJsonContains('audience_groups',$p['age_group']), 3);
+        $profile = app(NewsReadingInterests::class)->profile($user);
+        foreach ($profile['scores'] as $category=>$weight) {
+            $condition(Article::query()->where('origin','news')->where('category',$category), $weight);
+        }
+        if ($profile['read_ids']) $condition(Article::query()->whereIn('articles.id',$profile['read_ids']), -12);
         return [implode(' + ', $parts), $bindings];
     }
 

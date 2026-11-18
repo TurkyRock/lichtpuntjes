@@ -63,3 +63,9 @@ Schedule::command('local-ai:tick')->everyMinute()->withoutOverlapping(5);
 Schedule::command('privacy:cleanup --apply')->dailyAt('03:40')->withoutOverlapping();
 
 Schedule::command('support:thank --limit=5')->everyMinute()->withoutOverlapping(10);
+
+// Shared public feed stock; no user preferences are sent to publishers.
+if(config('news-feeds.enabled')){
+ Schedule::command('news:sources --collect')->cron('5 6-21 * * *')->timezone('Europe/Amsterdam')->withoutOverlapping(10)->runInBackground()->appendOutputTo(storage_path('logs/news-sources.log'));
+ Schedule::command('news:sources --tick')->everyMinute()->when(fn()=>\App\Support\NewsImportWindow::isOpen())->withoutOverlapping(5)->runInBackground()->appendOutputTo(storage_path('logs/news-sources.log'));
+}

@@ -8,8 +8,9 @@ class AccountPrivacyController extends Controller {
   $data=['exported_at'=>now()->toIso8601String(),'account'=>['name'=>$u->name,'email'=>$u->email,'created_at'=>$u->created_at,'preferences'=>$u->news_preferences],
    'moments'=>\App\Models\PositiveMoment::withTrashed()->where('user_id',$u->id)->get()->map(fn($m)=>['id'=>$m->id,'body'=>$m->body,'visibility'=>$m->visibility,'status'=>$m->status,'date'=>$m->moment_date,'deleted_at'=>$m->deleted_at]),
    'comments'=>$u->comments()->get()->map(fn($c)=>['id'=>$c->id,'body'=>$c->body,'status'=>$c->status,'created_at'=>$c->created_at]),
-   'stories'=>$u->submissions()->get()->map(fn($s)=>['id'=>$s->id,'title'=>$s->title,'body'=>$s->body,'status'=>$s->status]),
+   'stories'=>$u->submissions()->get()->map(fn($s)=>['id'=>$s->id,'title'=>$s->title,'body'=>$s->body,'story_place'=>$s->story_place,'story_region'=>$s->story_region,'status'=>$s->status]),
    'support'=>\App\Models\SupportPledge::where('user_id',$u->id)->with('payments')->get()->map(fn($p)=>['amount_cents'=>$p->cents,'frequency'=>$p->frequency,'status'=>$p->status,'stopped_at'=>$p->stopped_at,'payments'=>$p->payments->map(fn($p)=>['amount_cents'=>$p->cents,'status'=>$p->status,'paid_at'=>$p->paid_at])]),
+   'recommendation_signals'=>DB::table('user_news_signals')->where('user_id',$u->id)->get(['article_id','kind','category','created_at']),
    'activity'=>DB::table('lightpoint_events')->where('user_id',$u->id)->get(),
    'privacy_requests'=>DB::table('privacy_requests')->where('user_id',$u->id)->get()];
   return response()->streamDownload(fn()=>print(json_encode($data,JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR)),'mijn-lichtpuntjes.json',['Content-Type'=>'application/json','Cache-Control'=>'private, no-store','X-Content-Type-Options'=>'nosniff']);
