@@ -1,5 +1,9 @@
 <?php
 use Illuminate\Support\Facades\Schedule;
+\Illuminate\Support\Facades\Artisan::command('pipeline:heartbeat',function(){
+ \Illuminate\Support\Facades\Cache::put('lichtpunt-pipeline-scheduler-seen',now()->timestamp,now()->addDays(2));
+})->purpose('Bevestig dat de minuutplanner actief is');
+Schedule::command('pipeline:heartbeat')->everyMinute();
 if(config('news_hourly.enabled')) {
  Schedule::exec(\Illuminate\Console\Application::phpBinary().' -d memory_limit=512M '.\Illuminate\Console\Application::artisanBinary().' news:hourly --per-category='.(int)config('news_hourly.per_category',3))->cron('0 6-21 * * *')->timezone('Europe/Amsterdam')->withoutOverlapping(70)->appendOutputTo(storage_path('logs/news-hourly.log'));
 }

@@ -22,6 +22,33 @@ class NewsDuplicates
         ]))));
     }
 
+    private function eventWords(string $title): array
+    {
+        // Only compare the headline before a quote/subtitle, not broad person names alone.
+        $title=preg_split('/[:：]/u',$title,2)[0];
+        $words=explode(' ',self::titleKey($title));
+        $stop=['de','het','een','en','van','voor','met','als','is','wordt','worden','nieuwe','nieuw','zijn','haar','the','a','an','and','of','for','with','as','is','becomes','new'];
+        return array_values(array_unique(array_diff($words,$stop,[''])));
+    }
+
+    private function sameRecentHeadline(Article $article,Article $other): bool
+    {
+        // Do not retrospectively hide published articles when this policy is installed.
+        if($article->status==='published')return false;
+        $at=$article->published_at??$article->created_at??now();
+        $otherAt=$other->published_at??$other->created_at;
+        if(!$otherAt||abs($at->diffInHours($otherAt,false))>72)return false;
+        foreach([$article->source_title,$article->nl['title']??'',$article->en['title']??''] as $title){
+            $left=$this->eventWords($title??'');if(count($left)<4)continue;
+            foreach([$other->source_title,$other->nl['title']??'',$other->en['title']??''] as $candidate){
+                $right=$this->eventWords($candidate??'');if(count($right)<4)continue;
+                $shared=count(array_intersect($left,$right));$union=count(array_unique(array_merge($left,$right)));
+                if($shared>=4&&$shared/$union>=.85)return true;
+            }
+        }
+        return false;
+    }
+
     public function find(Article $article): ?Article
     {
         $keys = $this->keys($article);
@@ -35,7 +62,7 @@ class NewsDuplicates
             });
         }
         foreach ($query->orderByRaw("CASE WHEN status = 'published' THEN 0 ELSE 1 END")->orderBy('id')->cursor() as $other) {
-            if (array_intersect($keys, $this->keys($other))) return $other;
+            if (array_intersect($keys, $this->keys($other))||$this->sameRecentHeadline($article,$other)) return $other;
         }
         return null;
     }
