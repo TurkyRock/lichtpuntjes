@@ -36,6 +36,7 @@ class LaptopNewsBatch extends Command {
   catch(ArticleImageRejected $e){$a->update(['status'=>'draft','reason'=>'Twee beeldkandidaten onvoldoende passend; handmatige controle nodig.']);unset($this->state['selected'][$a->id]);$this->save();$this->warn('#'.$a->id.' wacht op handmatige beeldcontrole; een andere kandidaat vult de ronde.');}
  }
  public function handle(NewsImporter $importer,ArticlePhotoFinder $photos):int {
+  if(!$this->option('status')&&!\App\Support\NewsImportWindow::isOpen()){$this->info(\App\Support\NewsImportWindow::PAUSED);return self::SUCCESS;}
         if(!app(\App\Services\Maintenance\StorageUsage::class)->importsAllowed()){$this->warn('Nieuwsimport gepauzeerd: opslag bijna vol. Zie /beheer/opslag.');return self::SUCCESS;}
 
   $this->path=(string)config('laptop-images.news_batch_file',storage_path('app/laptop-news-batch.json'));
@@ -60,6 +61,7 @@ class LaptopNewsBatch extends Command {
    $this->state['retry_at']=null;$this->deadline=microtime(true)+max(10,min(120,(int)config('laptop-images.news_batch_seconds',75)));
    $steps=max(1,min(100,(int)config('laptop-images.news_batch_steps',12)));$seen=[];$assessed=false;
    for($step=0;$step<$steps&&microtime(true)<$this->deadline;$step++){
+    if(!\App\Support\NewsImportWindow::isOpen()){$this->info(\App\Support\NewsImportWindow::PAUSED);break;}
     $published=$this->counts();if(min($published)>=$this->state['target']){$this->state['finished']=true;$this->state['finished_at']=now()->toIso8601String();$this->save();$this->report();$this->info('Ronde compleet. Er wordt niet automatisch nog een ronde gestart.');return self::SUCCESS;}
     // Finish only reserved articles whose upload has returned; waiting images do not
     // trigger more generation requests or consume the remaining category slots again.

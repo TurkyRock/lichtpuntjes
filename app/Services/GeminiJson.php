@@ -3,8 +3,8 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 class GeminiJson {
- public function ask(string $system,array $data,array $schema,?array $image=null):array {
-  if(config('local-ai.enabled'))return app(LocalAi::class)->ask($system,$data,$schema,$image);
+ public function ask(string $system,array $data,array $schema,?array $image=null,array $jobContext=[]):array {
+  if(config('local-ai.enabled'))return app(LocalAi::class)->ask($system,$data,$schema,$image,$jobContext['kind']??null,$jobContext['article_id']??null);
   if(config('privacy.local_ai_only')&&!app()->environment('testing'))throw new NewsServiceException('Alleen lokale AI is toegestaan. Zet LOCAL_AI_ENABLED aan; er wordt niets naar Gemini gestuurd.');
   app(AiAvailability::class)->check();
   $key=config('news.gemini_key');$model=config('news.gemini_model');

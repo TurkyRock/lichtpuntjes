@@ -20,7 +20,7 @@ class DailyStoryScore {
   try {
   $data=app(GeminiJson::class)->ask('Score this already approved story for daily-feature suitability. '.self::POLICY,
    ['title'=>$article->nl['title']??$article->source_title,'paragraphs'=>$article->nl['body']??[]],
-   ['type'=>'OBJECT','properties'=>self::schema(),'required'=>array_keys(self::schema())]);
+   ['type'=>'OBJECT','properties'=>self::schema(),'required'=>array_keys(self::schema())],null,['kind'=>$article->origin==='community'?'story':'news','article_id'=>$article->id]);
   $fields=self::fields($data);if($fields['daily_score']===null)throw new NewsServiceException('AI-dagverhaalscore ontbreekt.');
   $article->update($fields);
   }catch(AiWaitException $e){$article->decrement('daily_score_attempts');throw $e;}

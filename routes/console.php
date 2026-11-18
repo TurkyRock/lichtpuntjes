@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Schedule;
 if(config('news_hourly.enabled')) {
- Schedule::exec(\Illuminate\Console\Application::phpBinary().' -d memory_limit=512M '.\Illuminate\Console\Application::artisanBinary().' news:hourly --per-category='.(int)config('news_hourly.per_category',3))->hourly()->timezone('Europe/Amsterdam')->withoutOverlapping(70)->appendOutputTo(storage_path('logs/news-hourly.log'));
+ Schedule::exec(\Illuminate\Console\Application::phpBinary().' -d memory_limit=512M '.\Illuminate\Console\Application::artisanBinary().' news:hourly --per-category='.(int)config('news_hourly.per_category',3))->cron('0 6-21 * * *')->timezone('Europe/Amsterdam')->withoutOverlapping(70)->appendOutputTo(storage_path('logs/news-hourly.log'));
 }
 if(config('news_cycle.enabled')) {
  if(!config('news_hourly.enabled')) Schedule::command('news:cycle')->cron('0 7,10,13,16,19 * * *')->timezone('Europe/Amsterdam')->withoutOverlapping(180);
@@ -22,14 +22,14 @@ Schedule::command('news:daily')->dailyAt('07:00')->timezone('Europe/Amsterdam')-
 // Local AI is asynchronous: resume only unfinished rounds, never create a new round between hours.
 if(config('news_hourly.enabled')&&config('local-ai.enabled')) {
  Schedule::command('news:hourly --resume --per-category='.(int)config('news_hourly.per_category',3))
-  ->everyMinute()->withoutOverlapping(5)->runInBackground()->appendOutputTo(storage_path('logs/news-hourly.log'));
+  ->everyMinute()->when(fn()=>\App\Support\NewsImportWindow::isOpen())->withoutOverlapping(5)->runInBackground()->appendOutputTo(storage_path('logs/news-hourly.log'));
 }
 
 // Also resumes quota-paused text checks, even when the laptop is offline.
 Schedule::command('laptop:tick --limit=5')->everyMinute()->withoutOverlapping(10);
 
 // Resume an explicitly started one-off news batch; never start a new round here.
-Schedule::command('news:laptop-batch --resume')->everyMinute()->withoutOverlapping(5);
+Schedule::command('news:laptop-batch --resume')->everyMinute()->when(fn()=>\App\Support\NewsImportWindow::isOpen())->withoutOverlapping(5);
 
 // Repair missing feature scores before the 07:00 edition and throughout the day.
 Schedule::command('news:spotlight-score --limit=5')->hourlyAt(40)->timezone('Europe/Amsterdam')

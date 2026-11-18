@@ -3,15 +3,16 @@ namespace App\Services;
 use App\Models\LocalAiJob;
 use Illuminate\Support\Facades\DB;
 class LocalAi {
- public function ask(string $system,array $data,array $schema,?array $image=null):array {
+ public function ask(string $system,array $data,array $schema,?array $image=null,?string $kind=null,?int $articleId=null):array {
   if(isset($data['__privacy_owner_id'])){
    $owners=array_unique(array_merge([(int)$data['__privacy_owner_id']],$data['__privacy_related_user_ids']??[]));sort($owners);
    $subjects=$data['__privacy_subjects']??[];
+   $kind=$subjects[0]['kind']??$kind;
    unset($data['__privacy_owner_id'],$data['__privacy_related_user_ids'],$data['__privacy_subjects']);
-   $answer=DB::transaction(function()use($owners,$subjects,$system,$data,$schema,$image){
+   $answer=DB::transaction(function()use($owners,$subjects,$system,$data,$schema,$image,$kind,$articleId){
     foreach($owners as $owner)if(!\App\Models\User::whereKey($owner)->lockForUpdate()->first(['id']))throw new NewsServiceException('Account bestaat niet meer; geen AI-opdracht opgeslagen.');
     foreach($subjects as $subject){$class=match($subject['kind']){'comment'=>\App\Models\Comment::class,'moment'=>\App\Models\PositiveMoment::class,'story'=>\App\Models\LightspotSubmission::class,default=>throw new NewsServiceException('Onbekende bijdrage.')};if(!$class::whereKey($subject['id'])->lockForUpdate()->first(['id']))throw new NewsServiceException('Bijdrage is verwijderd; geen AI-opdracht opgeslagen.');}
-    try{return $this->ask($system,$data,$schema,$image);}catch(LocalAiPending $pending){return $pending;}
+    try{return $this->ask($system,$data,$schema,$image,$kind,$articleId);}catch(LocalAiPending $pending){return $pending;}
    });
    if($answer instanceof LocalAiPending)throw $answer;
    return $answer;
@@ -24,8 +25,12 @@ class LocalAi {
   if($image!==null){if(!in_array($image['mime']??'', ['image/jpeg','image/png'],true)||!is_string($image['bytes']??null)||strlen($image['bytes'])>2000000)throw new NewsServiceException('Lokale beeldcontrole: afbeelding te groot of ongeldig.');$payload['image']=['mime'=>$image['mime'],'base64'=>base64_encode($image['bytes'])];}$json=json_encode($payload,JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE);
   if(strlen($json)>3000000)throw new NewsServiceException('Lokale AI-opdracht te groot; handmatige controle nodig.');
   $key=hash_hmac('sha256',$model."\n".$json,(string)config('app.key'));
+  // Metadata is encrypted with the payload, excluded from the request key and model input.
+  $payload['job_kind']=$kind;
+  $payload['article_id']=$articleId;
   LocalAiJob::where('request_key',$key)->where('expires_at','<=',now())->delete();
   $job=LocalAiJob::firstOrCreate(['request_key'=>$key],['model'=>$model,'payload'=>$payload,'available_at'=>now(),'expires_at'=>now()->addHours((int)config('local-ai.retention_hours',24))]);
+  if($articleId&&!($job->payload['article_id']??null))$job->update(['payload'=>array_merge($job->payload,['job_kind'=>$kind,'article_id'=>$articleId])]);
   if($job->status==='completed'){
    $result=$job->result;
    if(!is_array($result)||!LocalAiSchema::valid($result,$schema))throw new NewsServiceException('Lokaal antwoord heeft een ongeldig formaat.');
@@ -48,7 +53,7 @@ class LocalAi {
    if($job->claims>=(int)config('local-ai.max_claims',3)){$job->update(['status'=>'failed','lease_hash'=>null,'lease_until'=>null]);return null;}
    $lease=bin2hex(random_bytes(32));$job->update(['status'=>'processing','claims'=>$job->claims+1,'lease_hash'=>hash('sha256',$lease),'lease_until'=>now()->addSeconds((int)config('local-ai.lease_seconds',180))]);
    $payload=$job->payload;
-   return ['id'=>$job->id,'lease'=>$lease,'model'=>$job->model,'system'=>$payload['system'],'data'=>$payload['data'],'schema'=>LocalAiSchema::convert($payload['schema']),'image'=>$payload['image']??null];
+   return ['id'=>$job->id,'lease'=>$lease,'model'=>$job->model,'system'=>$payload['system'],'data'=>$payload['data'],'schema'=>LocalAiSchema::convert($payload['schema']),'image'=>$payload['image']??null]+\App\Support\LocalAiJobLabel::metadata($payload);
   });
  }
  private function locked(int $id,string $lease,bool $completed=false):LocalAiJob {

@@ -54,6 +54,7 @@ class HourlyNewsCollection extends Command
         }
     }
     public function handle(NewsImporter $importer,ArticlePhotoFinder $photos):int {
+        if(!\App\Support\NewsImportWindow::isOpen()){$this->info(\App\Support\NewsImportWindow::PAUSED);return self::SUCCESS;}
         if($this->option('resume')){
             $path=(string)config('news_hourly.state_file');
             if(!File::exists($path))return self::SUCCESS;
@@ -85,6 +86,7 @@ class HourlyNewsCollection extends Command
             $this->info('Doel: '.$this->target.' nieuwe artikelen met beeld per categorie, '.($this->target*6).' in totaal. Bestaande artikelen blijven behouden.');
             $cursors=[];$exhausted=[];$visits=[];$imageFailed=[];$pages=0;$assessed=false;
             while(true){
+                if(!\App\Support\NewsImportWindow::isOpen())return $this->paused(\App\Support\NewsImportWindow::PAUSED,self::SUCCESS);
                 $counts=$this->counts();$missing=array_keys(array_filter($counts,fn($count)=>$count<$this->target));
                 if(!$missing){$this->state['finished']=true;$this->state['finished_at']=now()->toIso8601String();$this->save();$this->report();$this->info('Uurronde compleet: '.($this->target*6).' nieuwe artikelen met beeld.');return self::SUCCESS;}
                 if(microtime(true)>=$this->deadline)return $this->paused('Uitvoeringstijd bereikt. De volgende uitvoering gaat verder met deze ronde.');
