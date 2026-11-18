@@ -19,7 +19,7 @@ class SocialAuthController extends Controller
         abort_unless($oauth->available($provider), 404);
         if (!$oauth->sameOrigin($r, $provider)) return $this->failure('Open Lichtpunt op hetzelfde adres als de ingestelde callback.', 'Open Lichtpunt at the same address as the configured callback.');
         $r->session()->forget(['social.pending', 'social.flow']);
-        $r->session()->put('social.flow', ['provider' => $provider, 'started' => time(), 'locale' => app()->getLocale(), 'invite' => preg_match('/^[a-f0-9]{32}$/', (string) $r->query('invite')) ? $r->query('invite') : null]);
+        $r->session()->put('social.flow', ['provider' => $provider, 'started' => time(), 'locale' => app()->getLocale(), 'remember'=>$r->boolean('remember'), 'invite' => preg_match('/^[a-f0-9]{32}$/', (string) $r->query('invite')) ? $r->query('invite') : null]);
         try { return $oauth->redirect($provider); }
         catch (\Throwable $e) {
             $r->session()->forget('social.flow');
@@ -41,9 +41,9 @@ class SocialAuthController extends Controller
         catch (\Throwable $e) { return $this->failure('De inlogcontrole is niet gelukt. Begin opnieuw.', 'Sign-in could not be verified. Please start again.'); }
         if (($identity['provider'] ?? '') !== $provider || empty($identity['subject']) || strlen($identity['subject']) > 191) return $this->failure('Dit account kon niet worden gecontroleerd.', 'This account could not be verified.');
         $account = SocialAccount::where('provider', $provider)->where('provider_user_id', $identity['subject'])->first();
-        if ($account) return $this->signIn($r, $account->user);
+        if ($account) return $this->signIn($r, $account->user,(bool)($flow['remember']??false));
         $r->session()->regenerate();
-        $r->session()->put('social.pending', $identity + ['expires' => time() + 600, 'invite' => $flow['invite'] ?? null]);
+        $r->session()->put('social.pending', array_merge($identity,['expires' => time() + 600, 'invite' => $flow['invite'] ?? null,'remember'=>(bool)($flow['remember']??false)]));
         return redirect('/aanmelden/afronden');
     }
 
@@ -103,7 +103,7 @@ class SocialAuthController extends Controller
             try { event(new Registered($u)); }
             catch (\Throwable $e) { $r->session()->flash('status', $this->text('Je account is aangemaakt. Verstuur de bevestigingsmail opnieuw vanuit je profiel.', 'Your account was created. Resend the confirmation email from your profile.')); }
         }
-        return $this->signIn($r, $u);
+        return $this->signIn($r, $u,(bool)($p['remember']??false));
     }
 
     private function pending(Request $r): array
@@ -116,12 +116,14 @@ class SocialAuthController extends Controller
         return $p;
     }
 
-    private function signIn(Request $r, ?User $u)
+    private function signIn(Request $r, ?User $u,bool $remember=false)
     {
         if (!$u || $u->is_suspended) return $this->failure('Dit account is gepauzeerd.', 'This account is paused.');
-        Auth::login($u);
+        Auth::guard('web')->setRememberDuration(60*24*30);
+        Auth::login($u,$remember);
         $r->session()->regenerate();
-        return redirect('/profiel');
+        $r->session()->forget('url.intended');
+        return redirect('/');
     }
 
     private function failure(string $nl, string $en)

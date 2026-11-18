@@ -21,13 +21,14 @@ class CommunityAuthController extends Controller {
   return redirect('/profiel')->with('status',$message);
  }
  public function login(Request $r){
-  $v=$r->validate(['email'=>'required|email','password'=>'required|string|max:128']);
+  $v=$r->validate(['email'=>'required|email','password'=>'required|string|max:128','remember'=>'sometimes|boolean']);
   $key='login-account:'.hash_hmac('sha256',strtolower(trim($v['email'])),(string)config('app.key'));
   if(\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($key,10))return back()->withErrors(['email'=>'Te veel inlogpogingen. Probeer over een kwartier opnieuw.'])->onlyInput('email');
   \Illuminate\Support\Facades\RateLimiter::hit($key,900);
-  if(!Auth::attempt(['email'=>strtolower($v['email']),'password'=>$v['password'],'is_suspended'=>false],$r->boolean('remember')))return back()->withErrors(['email'=>'Deze combinatie klopt niet of je account is gepauzeerd.'])->onlyInput('email');
+  Auth::guard('web')->setRememberDuration(60*24*30);
+  if(!Auth::attempt(['email'=>strtolower($v['email']),'password'=>$v['password'],'is_suspended'=>false],$r->boolean('remember')))return back()->withErrors(['email'=>'Deze combinatie klopt niet of je account is gepauzeerd.'])->onlyInput('email','remember');
   \Illuminate\Support\Facades\RateLimiter::clear($key);
-  $r->session()->regenerate();return redirect()->intended('/profiel');
+  $r->session()->regenerate();$r->session()->forget('url.intended');return redirect('/');
  }
  public function logout(Request $r){Auth::logout();$r->session()->invalidate();$r->session()->regenerateToken();return redirect('/');}
  public function forgot(Request $r){$r->validate(['email'=>'required|email']);try{Password::sendResetLink(['email'=>strtolower($r->email)]);}catch(\Throwable $e){}return back()->with('status','Als dit adres bij ons bekend is, ontvang je een link om je wachtwoord te herstellen.');}
