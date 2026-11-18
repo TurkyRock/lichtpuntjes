@@ -37,3 +37,12 @@
 @media(max-width:760px){.story-board{grid-template-columns:1fr;padding:18px 12px;gap:25px;border-radius:23px;margin-top:23px}.story-writing-paper{padding:22px 16px 17px}.story-inspiration{margin-bottom:23px}.story-write-form textarea{height:240px}.story-inspiration>img{width:65px;height:70px}.story-steps{padding:13px 10px}.story-keepsake{padding:18px 15px}.story-edit-paper{margin-top:23px}.story-edit-paper .story-writing-paper{padding:22px 16px}}
 @media(max-width:380px){.story-board{padding:17px 9px}.story-writing-paper{padding:20px 12px 16px}.account-content .story-yellow-label{font-size:21px}.story-polaroid{flex-basis:65px;width:65px}.story-polaroid img{height:76px}.story-keepsake{gap:10px;padding:15px 12px}.story-steps{grid-template-columns:1fr;gap:10px}.story-steps small{display:inline;margin-left:5px}}
 @media(forced-colors:active){.story-writing-paper,.story-inspiration,.story-keepsake,.story-empty,.story-steps{background:Canvas;border:1px solid CanvasText}.story-writing-paper::before,.story-inspiration::before,.story-keepsake::before,.story-empty::before,.story-steps::before{display:none}.account-scrapbook .account-content .story-cut-button{background:ButtonFace;color:ButtonText;border:1px solid ButtonText}.account-scrapbook .account-content .story-cut-button::before{display:none}}
+
+.story-write-form .story-consent{align-items:flex-start;font-weight:400;font-size:12px;line-height:1.55;margin:12px 0}
+.story-write-form .story-consent input{flex:none;margin-top:2px}
+.story-sensitive-choice:not(:has(#story-sensitive:checked)) .story-sensitive-confirm{display:none}
+.story-sensitive-confirm{background:#f4efdc;padding:3px 12px 10px;border-radius:7px;margin:8px 0}
+.story-write-form textarea{height:auto;min-height:180px;resize:vertical}
+.story-writing-paper>.story-agreement{font-size:12px;margin:10px 0}
+.story-agreement summary{cursor:pointer;padding-block:7px}
+.story-options .story-language{margin-top:8px}.story-options label{font-size:12px}

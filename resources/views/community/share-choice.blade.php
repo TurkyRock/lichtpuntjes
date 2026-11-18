@@ -21,7 +21,7 @@
                 <div>
                     <p>{{ $en?'A few sentences about something that made your day a little brighter.':'Een paar zinnen over iets dat je dag lichter maakte.' }}</p>
                     <ul class="choice-points">
-                        <li>{{ $en?'Keep it private or share it':'Privé bewaren of om te delen' }}</li>
+                        <li>{{ $en?'A little joy to pass on':'Een klein gelukje om door te geven' }}</li>
                         <li>{{ $en?'Short and simple, with an optional small image':'Klein en eenvoudig, met een optioneel klein beeld' }}</li>
                     </ul>
                 </div>

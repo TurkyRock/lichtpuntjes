@@ -14,9 +14,9 @@ $en=app()->getLocale()==='en';
 <section class="story-writing-paper" id="new-story" aria-labelledby="story-write-heading">
 <span class="story-clothespin" aria-hidden="true"></span>
 <h2 id="story-write-heading" class="story-yellow-label">{{ $en?'Your next bright spot':'Jouw volgende lichtpuntje' }}</h2>
-<p class="story-write-intro">{{ $en?'Tell us about something that stayed with you. What made it special? Which smile would you like to pass on?':'Vertel over iets dat je bijbleef. Wat maakte het bijzonder? Welke glimlach wil je doorgeven?' }}</p>
+<p class="story-write-intro">{{ $en?'Share something you would like to pass on.':'Schrijf wat je graag wilt doorgeven.' }}</p>
 @if(auth()->user()->hasVerifiedEmail()&&auth()->user()->community_accepted_at)
-@include('community.story-form')@include('community.processing-explanation')
+@include('community.story-form')<details class="story-agreement"><summary>{{ $en?'How long does review take?':'Hoelang duurt de controle?' }}</summary>@include('community.processing-explanation')</details>
 @else
 <p>{{ $en?'Confirm your email address and accept the community rules in your account before submitting.':'Bevestig je e-mailadres en accepteer de huisregels in je account voordat je een verhaal instuurt.' }}</p><a class="story-cut-button" href="/profiel?lang={{ app()->getLocale() }}">{{ $en?'Go to my account':'Naar mijn account' }}</a>
 @endif

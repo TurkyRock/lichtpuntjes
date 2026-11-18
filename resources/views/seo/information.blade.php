@@ -1,7 +1,7 @@
 @extends('community.layout')
 @section('content')
 @php($en=$locale==='en')
-<article class="panel" style="max-width:800px;margin-inline:auto">
+<article class="panel information-page">
 <h1>{{ $seo['heading'] }}</h1>
 @if($page==='about')
 <p class="intro">{{ $en?'Good news, small joys and a little more room for hope. That is what Jouw Lichtpuntjes is here for.':'Goed nieuws, kleine gelukjes en een beetje meer ruimte voor hoop. Daar is Jouw Lichtpuntjes voor.' }}</p>

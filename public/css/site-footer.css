@@ -1,6 +1,6 @@
 /* One compact paper footer for the homepage, articles, accounts and forms. */
 body:has(>.site-footer-paper){min-height:100dvh;display:flex;flex-direction:column}
-body:has(>.site-footer-paper)>main{flex:1 0 auto;width:100%;box-sizing:border-box}
+body:has(>.site-footer-paper)>main{flex:0 0 auto;width:100%;box-sizing:border-box}
 body>.site-footer.site-footer-paper{display:block;position:relative;box-sizing:border-box;flex:none;width:100%;max-width:1180px;margin:8px auto 0;padding:0 32px 22px;border:0;background:transparent;color:#244b3d;font:13px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
 .site-footer-paper,.site-footer-paper *{box-sizing:border-box}
 .site-footer-paper .footer-paper{padding:20px 24px;background:#f0eddf url('/images/button-paper-grain.svg');border-radius:22px;box-shadow:0 2px 5px #36523b12}
@@ -25,3 +25,14 @@ body>.site-footer.site-footer-paper{display:block;position:relative;box-sizing:b
 @media(max-width:600px){body>.site-footer.site-footer-paper{padding:0 20px 18px}.home-unified>.site-footer.site-footer-paper{padding-inline:12px}.site-footer-paper .footer-paper{padding:19px 17px;border-radius:20px}.site-footer-paper .footer-top{flex-wrap:wrap;gap:12px}.site-footer-paper .footer-brand strong{font-size:22px}.site-footer-paper .footer-brand img{width:29px;height:29px}.site-footer-paper .footer-links{gap:4px 16px}.site-footer-paper .footer-legal{gap:4px 13px}.site-footer-paper .footer-copyright{order:2;width:100%}.site-footer-paper .footer-bottom{align-items:flex-start;gap:9px}}
 @media(pointer:coarse){.site-footer-paper .footer-links a,.site-footer-paper .footer-legal a,.site-footer-paper .footer-cookie-settings,.site-footer-paper .footer-support{min-height:44px}}
 @media(forced-colors:active){.site-footer-paper .footer-paper{background:Canvas;border:1px solid CanvasText;box-shadow:none}.site-footer-paper .footer-support{background:Canvas;border:1px solid LinkText}.site-footer-paper a,.site-footer-paper button{color:LinkText}}
+
+/* Shared outer frame: equal visible edges on every page. Inner reading columns stay readable. */
+body:has(>.site-footer-paper){--site-frame:1180px;--site-gutter:32px}
+body:has(>.site-footer-paper)>main{width:100%;max-width:var(--site-frame);padding-inline:var(--site-gutter);margin:20px auto 18px;min-height:0;flex:0 0 auto}
+body:has(>.site-footer-paper)>.site-footer.site-footer-paper{width:100%;max-width:var(--site-frame);padding-inline:var(--site-gutter);margin-top:0}
+body:has(>.site-footer-paper)>main.shell{margin-top:0}
+body:has(>.site-footer-paper)>main .news-preferences{max-width:none}
+body:has(>.site-footer-paper)>main .information-page{max-width:none;margin-inline:0}
+body:has(>.site-footer-paper)>main .information-page :is(p,ul,ol){max-width:78ch}
+body.admin-paper:has(>.site-footer-paper)>main.account-shell{max-width:calc(var(--site-frame) - 2 * var(--site-gutter));width:calc(100% - 2 * var(--site-gutter));padding:22px;margin:20px auto 18px}
+@media(max-width:1023px){body:has(>.site-footer-paper){--site-frame:664px;--site-gutter:12px}body:has(>.site-footer-paper)>main{margin-top:16px;margin-bottom:16px}body.admin-paper:has(>.site-footer-paper)>main.account-shell{padding:16px}}

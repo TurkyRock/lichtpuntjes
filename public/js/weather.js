@@ -165,13 +165,19 @@
         const updated = new Intl.DateTimeFormat(en() ? 'en-GB' : 'nl-NL', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit', timeZone:'Europe/Amsterdam' }).format(new Date(data.fetched_at * 1000));
         write('weatherUpdated', text('Opgehaald ', 'Fetched ') + updated);
         page.querySelector('#weatherContent').hidden = false;
+        page.querySelector('#weatherForecastDetails').hidden = false;
         page.querySelector('#weatherStatus').classList.toggle('weather-status-notice', Boolean(data.stale));
         write('weatherStatus', data.stale ? text('De weerbron is tijdelijk niet bereikbaar. Je ziet de laatst opgehaalde verwachting; controleer de ophaaltijd onderaan.', 'The weather provider is temporarily unavailable. Showing the last forecast; check the fetch time below.') : text('Verwachting voor ', 'Forecast for ') + data.name + text(' · tijden in Nederland.', ' · Netherlands local time.'));
     }
     async function load() {
         const request = ++generation;
         if (page) {
+            const option = select.selectedOptions[0];
+            page.dispatchEvent(new CustomEvent('weather:placechange', {detail: locationPoint ? {...locationPoint,name:text('Jouw omgeving','Your area')} : {latitude:option.dataset.latitude,longitude:option.dataset.longitude,name:option.textContent}}));
+        }
+        if (page) {
             page.querySelector('#weatherContent').hidden = true;
+            page.querySelector('#weatherForecastDetails').hidden = true;
             page.querySelector('#weatherStatus').classList.remove('weather-status-notice');
             write('weatherStatus', text('De weersverwachting wordt opgehaald…', 'Fetching the forecast…'));
         }

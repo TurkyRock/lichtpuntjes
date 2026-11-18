@@ -2,20 +2,24 @@
 <link rel="stylesheet" href="/css/personal-news.css?v={{ filemtime(public_path('css/personal-news.css')) }}">
 @endonce
 @php($hasNewsPreferences=app(\App\Services\NewsPreferences::class)->enabled(auth()->user()))
-@if(auth()->check())
 <div class="personal-news-switch">
+@if(auth()->check())
+@php($needsNewsPreferences=!$hasNewsPreferences && !auth()->user()->news_preferences_answered_at)
+<div class="personal-news-choices">
 <nav aria-label="{{ $locale==='en'?'News selection':'Nieuwsselectie' }}">
 @php($personalView=($feed['personalized']??false))
 @php($nearbyView=($feed['nearby']??false))
 @php($hasLocation=$hasNewsPreferences && \App\Support\StoryLocation::places(auth()->user()->news_preferences['place']??null,auth()->user()->news_preferences['region']??null))
 <a href="{{ $hasNewsPreferences ? \App\Support\StorySeo::home($locale,$category).'?view=for-you' : '/mijn-interesses?welcome=1&lang='.$locale }}" data-news-view="for-you" @if($personalView) aria-current="page" @endif>{{ $locale==='en'?'For you':'Voor jou' }}</a>
-<a href="{{ \App\Support\StorySeo::home($locale,$category) }}?view=all" data-news-view="all" @if(!$personalView && !$nearbyView) aria-current="page" @endif>{{ $locale==='en'?'All bright spots':'Alle lichtpuntjes' }}</a>
 <a href="{{ $hasLocation ? \App\Support\StorySeo::home($locale,$category).'?view=nearby' : '/mijn-interesses?lang='.$locale.'#preferencePlace' }}" data-news-view="nearby" @if($nearbyView) aria-current="page" @endif>{{ $locale==='en'?'Nearby':'Uit de buurt' }}</a>
+<a href="{{ \App\Support\StorySeo::home($locale,$category) }}?view=all" data-news-view="all" @if(!$personalView && !$nearbyView) aria-current="page" @endif>{{ $locale==='en'?'All bright spots':'Alle lichtpuntjes' }}</a>
+<a class="news-preference-edit{{ $needsNewsPreferences?' interests-unset':'' }}" href="/mijn-interesses?{{ $needsNewsPreferences?'welcome=1&':'' }}lang={{ $locale }}"><span aria-hidden="true">✦</span> {{ !$needsNewsPreferences?($locale==='en'?'My interests':'Mijn interesses'):($locale==='en'?'Choose your interests':'Kies je interesses') }}</a>
 </nav>
-<a class="news-preference-edit" href="/mijn-interesses?lang={{ $locale }}">{{ $locale==='en'?'My interests':'Mijn interesses' }}</a>
-<p id="personalNewsExplanation">{{ $nearbyView ? ($locale==='en'?'News and community stories from your chosen town or province.':'Nieuws en zelfgeschreven verhalen uit jouw gekozen plaats of provincie.') : ($personalView ? ($locale==='en'?'Your interests and nearby stories, with room for discoveries.':'Jouw interesses en verhalen uit de buurt, met ruimte voor verrassing.') : (!$hasNewsPreferences ? ($locale==='en'?'Choose your interests to make “For you” personal.':'Kies je interesses om ‘Voor jou’ persoonlijk te maken.') : ($locale==='en'?'All topics, in the selected order.':'Alle onderwerpen, in de gekozen volgorde.'))) }}</p>
+<p id="personalNewsExplanation">{{ $needsNewsPreferences ? ($locale==='en'?'Choose what makes you happy.':'Kies wat jou blij maakt.') : ($nearbyView ? ($locale==='en'?'News and community stories from your chosen town or province.':'Nieuws en zelfgeschreven verhalen uit jouw gekozen plaats of provincie.') : ($personalView ? ($locale==='en'?'Your interests and nearby stories, with room for discoveries.':'Jouw interesses en verhalen uit de buurt, met ruimte voor verrassing.') : ($locale==='en'?'All topics, in the selected order.':'Alle onderwerpen, in de gekozen volgorde.'))) }}</p>
 </div>
 @endif
+<a class="home-weather-invitation" href="/weer?lang={{ $locale }}"><img src="/images/site-paper-sun.svg" width="44" height="44" alt=""><span><strong>{{ $locale==='en'?'Heading outside?':'Even naar buiten?' }}</strong><span>{{ $locale==='en'?'Find your sunny moment →':'Vind jouw zonnige moment →' }}</span></span></a>
+</div>
 @php($selectedSort=in_array(request('sort'),['reads','likes'],true)?request('sort'):'newest')
 <div class="news-toolbar category-clothesline" role="region" aria-label="{{ $locale==='en'?'Choose a category and sort the news':'Kies een categorie en sorteer het nieuws' }}">
 <h2 class="mobile-news-heading">{{ $locale==='en'?'Discover bright spots':'Ontdek lichtpuntjes' }}</h2>
