@@ -49,7 +49,7 @@ POLICY.'\n'.DailyStoryScore::POLICY,['__privacy_owner_id'=>$s->user_id,'__privac
  private function schema():array {
   $scoreProperties=DailyStoryScore::schema();
   $text=['type'=>'OBJECT','properties'=>['title'=>['type'=>'STRING'],'teaser'=>['type'=>'STRING'],'body'=>['type'=>'ARRAY','items'=>['type'=>'STRING']]],'required'=>['title','teaser','body']];
-  return ['type'=>'OBJECT','properties'=>['decision'=>['type'=>'STRING','enum'=>['approve','reject','doubt']],'confidence'=>['type'=>'NUMBER'],'reason_nl'=>['type'=>'STRING'],'reason_en'=>['type'=>'STRING'],'nl'=>$text,'en'=>$text]+$scoreProperties,'required'=>['decision','confidence','reason_nl','reason_en','nl','en','daily_score','daily_reason_nl','daily_reason_en']];
+  return ['type'=>'OBJECT','properties'=>['decision'=>['type'=>'STRING','enum'=>['approve','reject','doubt']],'confidence'=>['type'=>'NUMBER'],'reason_nl'=>['type'=>'STRING'],'reason_en'=>['type'=>'STRING'],'nl'=>$text,'en'=>$text]+$scoreProperties,'required'=>array_merge(['decision','confidence','reason_nl','reason_en','nl','en'],array_keys($scoreProperties))];
  }
  private function translations(LightspotSubmission $s,array $r):array {
   $v=[];foreach(['nl','en'] as $lang){$v[$lang]=Validator::make($r[$lang]??[],['title'=>'required|string|max:180','teaser'=>'required|string|max:350','body'=>'required|array|min:1|max:50','body.*'=>'required|string|max:8000'])->validate();if(mb_strlen(implode(' ',$v[$lang]['body']))>12000)throw new NewsServiceException('Vertaling te lang.');}

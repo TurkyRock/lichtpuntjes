@@ -9,6 +9,7 @@ class Planner {
  public function day(?string $date=null):CarbonImmutable {return $date?CarbonImmutable::createFromFormat('!Y-m-d',$date,'Europe/Amsterdam'):CarbonImmutable::now('Europe/Amsterdam')->startOfDay();}
  public function due(string $date,string $kind):CarbonImmutable {return $this->day($date)->setTimeFromTimeString(config('social-publishing.slots.'.$kind.'.time'));}
  public function usable(?Article $a):bool {return $a&&Article::visible()->whereKey($a->id)->exists()&&StorySeo::readable($a)&&app(ArticlePhotoFinder::class)->available($a);}
+ public function dailyUsable(?Article $a,string $kind):bool {return $this->usable($a)&&($kind!=='daily'||\App\Services\DailyFeaturePolicy::allows($a));}
  public function ranked(string $date,string $kind):\Illuminate\Database\Eloquent\Builder {
   $day=$this->day($date);$q=Article::visible()->where('published_at','<=',now())->select('articles.*');
   if($kind==='daily'){
@@ -22,7 +23,7 @@ class Planner {
  }
  public function candidates(string $date,string $kind,?SocialPublication $current=null,array $extra=[]):array {
   $claimed=SocialPublication::whereNotNull('article_id')->when($current,fn($q)=>$q->whereKeyNot($current->id))->pluck('article_id')->merge($extra)->all();$result=[];$rank=0;
-  foreach($this->ranked($date,$kind)->cursor() as $a){$rank++;if(in_array($a->id,$claimed)||!$this->usable($a))continue;$result[]=['article'=>$a,'rank'=>$rank];if(count($result)>=20)break;}
+  foreach($this->ranked($date,$kind)->cursor() as $a){$rank++;if(in_array($a->id,$claimed)||!$this->dailyUsable($a,$kind))continue;$result[]=['article'=>$a,'rank'=>$rank];if(count($result)>=20)break;}
   return $result;
  }
  public function board(string $date):array {
@@ -30,7 +31,7 @@ class Planner {
   foreach(config('social-publishing.slots') as $kind=>$slot){$p=$rows->get($kind);$a=$p?->article;
    $candidates=$this->candidates($date,$kind,$p,$extra);$candidate=$p?null:($candidates[0]??null);$selected=$p?$a:($candidate['article']??null);
    if($selected)$extra[]=$selected->id;
-   $cards[$kind]=['kind'=>$kind,'slot'=>$slot,'publication'=>$p,'article'=>$selected,'rank'=>$p?->selection_rank??($candidate['rank']??null),'candidates'=>$candidates,'usable'=>$this->usable($selected)];
+   $cards[$kind]=['kind'=>$kind,'slot'=>$slot,'publication'=>$p,'article'=>$selected,'rank'=>$p?->selection_rank??($candidate['rank']??null),'candidates'=>$candidates,'usable'=>$this->dailyUsable($selected,$kind)];
   }return $cards;
  }
  public function prepare(string $date,string $kind,?int $manual=null):?SocialPublication {
@@ -41,10 +42,10 @@ class Planner {
    SocialPublication::whereDate('edition_date','<',now('Europe/Amsterdam')->toDateString())->whereNull('first_shared_at')->whereNotNull('article_id')->update(['article_id'=>null,'status'=>'cancelled']);
    $p=SocialPublication::whereDate('edition_date',$date)->where('kind',$kind)->lockForUpdate()->first();
    abort_if($p?->first_shared_at,409,'Deze publicatieronde is al gedeeld en blijft ongewijzigd.');
-   if($p&&$manual===null&&$this->usable($p->article))return $p;
+   if($p&&$manual===null&&$this->dailyUsable($p->article,$kind))return $p;
    $candidates=$this->candidates($date,$kind,$p);$choice=$manual?collect($candidates)->first(fn($c)=>$c['article']->id===$manual):($candidates[0]??null);
    if($manual)abort_unless($choice,422,'Kies een geschikt artikel dat nog niet is gedeeld of gereserveerd.');
-   if(!$choice)return null;
+   if(!$choice){if($p&&!$this->dailyUsable($p->article,$kind))$p->update(['article_id'=>null,'snapshot'=>null,'captions'=>null,'status'=>'cancelled']);return null;}
    $a=$choice['article'];$snapshot=['title'=>$a->nl['title'],'teaser'=>mb_substr(strip_tags($a->nl['teaser']??''),0,350),'url'=>StorySeo::absolute(StorySeo::path($a)),'photo'=>$a->photo,'template'=>'paper-v1'];
    $p??=new SocialPublication(['edition_date'=>$date,'kind'=>$kind]);$p->fill(['article_id'=>$a->id,'status'=>'ready','due_at'=>$this->due($date,$kind)->utc(),'snapshot'=>$snapshot,'captions'=>$this->captions($kind,$snapshot),'selection_rank'=>$choice['rank'],'selection_note'=>$choice['rank']>1?'Hogere kandidaten zijn al gedeeld, gereserveerd of niet geschikt.':'Hoogste geschikte kandidaat die nog niet is gedeeld.']);$p->save();
    foreach(array_keys(config('social-publishing.channels')) as $channel)SocialDelivery::firstOrCreate(['publication_id'=>$p->id,'channel'=>$channel]);
@@ -60,7 +61,7 @@ class Planner {
   ];
   $slot=array_search($kind,array_keys(config('social-publishing.slots')),true);
   $body.="\n\n".$closers[((int)now('Europe/Amsterdam')->format('z')+($slot===false?0:$slot))%count($closers)];
-  foreach(array_keys(config('social-publishing.channels')) as $channel)$result[$channel]=$body."\n\n".(in_array($channel,['instagram','tiktok'])?'Haal meer lichtpuntjes uit je dag. Lees verder via de link in ons profiel.':'Benieuwd naar nog meer lichtpuntjes? '.$snapshot['url']);
+  foreach(array_keys(config('social-publishing.channels')) as $channel)$result[$channel]=$body."\n\n".(in_array($channel,['instagram','tiktok'])?'Lees verder via de link in ons profiel. Daar kun je ons ook vrijwillig steunen of zelf een lichtpuntje schrijven.':'Lees verder: '.$snapshot['url']."\n\n".'Doe mee op jouwlichtpuntjes.nl: steun ons vrijwillig, deel dit bericht of schrijf jouw eigen lichtpuntje.');
   return $result;
  }
  public function saveCaption(SocialPublication $p,string $channel,string $text):void {
@@ -79,7 +80,7 @@ class Planner {
  public function register(SocialPublication $publication,string $channel,string $url,User $actor):SocialDelivery {
   $clean=$this->postUrl($channel,$url);abort_unless($clean,422,'Gebruik de HTTPS-link van de echte post op dit kanaal, niet de profielpagina.');
   return DB::transaction(function()use($publication,$channel,$clean,$actor){
-   $p=SocialPublication::whereKey($publication->id)->lockForUpdate()->firstOrFail();abort_unless($this->usable($p->article)&&$p->snapshot,422,'Het bronartikel is niet meer openbaar beschikbaar.');
+   $p=SocialPublication::whereKey($publication->id)->lockForUpdate()->firstOrFail();abort_unless(($p->first_shared_at?$this->usable($p->article):$this->dailyUsable($p->article,$p->kind))&&$p->snapshot,422,'Het bronartikel is niet meer openbaar beschikbaar.');
    $d=SocialDelivery::where('publication_id',$p->id)->where('channel',$channel)->lockForUpdate()->firstOrFail();
    if($d->external_url!==$clean){DB::table('social_delivery_events')->insert(['delivery_id'=>$d->id,'user_id'=>$actor->id,'action'=>$d->external_url?'link_corrected':'manual_registered','url'=>$clean,'created_at'=>now()]);$d->fill(['external_url'=>$clean,'source'=>'manual','status'=>'published','published_at'=>$d->published_at??now(),'checked_at'=>null,'checked_by'=>null])->save();}
    $p->first_shared_at??=now();$p->status=$p->deliveries()->where('status','published')->count()===count(config('social-publishing.channels'))?'published':'partial';$p->save();return $d;
