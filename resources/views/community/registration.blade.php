@@ -18,7 +18,7 @@
 <label class="registration-consent"><input type="checkbox" name="intentions" value="1" @checked(old('intentions')) required><span>{{ $en ? 'I agree to the' : 'Ik ga akkoord met de' }} <a href="/huisregels?lang={{ app()->getLocale() }}" target="_blank" rel="noopener">{{ $en ? 'community rules' : 'huisregels' }}</a> {{ $en ? 'and have read the' : 'en heb kennisgenomen van de' }} <a href="/privacy?lang={{ app()->getLocale() }}" target="_blank" rel="noopener">{{ $en ? 'privacy statement' : 'privacyverklaring' }}</a>.</span></label>
 <label class="registration-consent registration-adult"><input type="checkbox" name="adult" value="1" @checked(old('adult') == '1') required @error('adult') aria-invalid="true" aria-describedby="registrationAdultError" @enderror><span>{{ $en?'I am 18 or older.':'Ik ben 18 jaar of ouder.' }}</span></label>
 @error('adult')<p class="registration-error" id="registrationAdultError" role="alert">{{ $en?'Please confirm that you are 18 or older.':'Bevestig dat je 18 jaar of ouder bent.' }}</p>@enderror
-<details class="registration-preferences" @if(old('personalisation') || $errors->hasAny(['age_group','place','interests','interests.*','geography'])) open @endif>
+<details class="registration-preferences" @if(request()->query('interesses') === '1' || old('personalisation') || $errors->hasAny(['age_group','place','interests','interests.*','geography'])) open @endif>
 <summary>{{ $en?'Choose your news preferences (optional)':'Kies je nieuwsvoorkeuren (vrijwillig)' }}</summary>
 @include('community.news-preferences-fields',['user'=>null,'registrationForm'=>true])
 </details>

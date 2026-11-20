@@ -1,7 +1,7 @@
 <?php
 namespace App\Services;
 
-use App\Models\{LocalAiJob,LaptopImageJob};
+use App\Models\{Article,LocalAiJob,LaptopImageJob};
 use Illuminate\Support\Facades\{Cache,File};
 
 final class PipelineStatus
@@ -37,6 +37,19 @@ final class PipelineStatus
             if($q['ready']&&$active===0&&$q['oldest_ready_minutes']>=15)$alerts[]='ACTIE: '.$name.' wacht al '.$q['oldest_ready_minutes'].' minuten zonder actieve verwerking. Controleer de laptopworker, verbinding en ComfyUI; verwijder de wachtrij niet.';
         }
         if($images['generated']&&$images['oldest_generated_minutes']>=10)$alerts[]='LET OP: '.$images['generated'].' beeld(en) wachten op controle; oudste '.$images['oldest_generated_minutes'].' minuten. Controleer minuutplanner en lokale tekst-/beeldcontrole.';
+        if (config('local-ai.enabled')) {
+            $recent=Article::query()->where('origin','news')->where('updated_at','>=',now()->subDay());
+            $rejected=(clone $recent)->where('status','rejected')->where('reason','like',NewsImporter::FINAL_EDIT_REJECTION_PREFIX.'%');
+            $rejectedCount=$rejected->count();
+            if ($rejectedCount) {
+                $ids=$rejected->latest('updated_at')->latest('id')->limit(5)->pluck('id')->map(fn($id)=>'#'.$id)->implode(', ');
+                $alerts[]='LET OP: tweede taalcontrole: '.$rejectedCount.' artikel(en) afgekeurd in de afgelopen 24 uur. Laatste: '.$ids.'.';
+            }
+            $failed=$recent->where('status','error')->where('reason',NewsImporter::FINAL_EDIT_ERROR)->count();
+            if ($failed) {
+                $alerts[]='ACTIE: tweede taalcontrole: '.$failed.' technische mislukking(en) in de afgelopen 24 uur.';
+            }
+        }
         $retry=null;$path=(string)config('laptop-images.news_batch_file',storage_path('app/laptop-news-batch.json'));
         if(File::exists($path)){
             try{$batch=json_decode(File::get($path),true,512,JSON_THROW_ON_ERROR);if(!($batch['finished']??false)&&!empty($batch['retry_at']))$retry=\Carbon\CarbonImmutable::parse($batch['retry_at'])->timezone('Europe/Amsterdam')->format('d-m H:i:s');}

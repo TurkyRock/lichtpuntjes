@@ -21,7 +21,7 @@ final class LocalAiJobLabel
         $stage=match(true) {
             isset($payload['image'])=>'image_review',
             isset($properties['scene'])||isset($properties['subject'],$properties['style'])=>'image_plan',
-            isset($properties['source_language'])=>'translation',
+            isset($properties['source_language']) || ($kind==='news' && isset($properties['verdict'],$properties['review_note']))=>'translation',
             isset($properties['daily_score'])&&!isset($properties['decision'])=>'score',
             default=>'review',
         };

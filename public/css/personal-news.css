@@ -19,10 +19,13 @@
 .personal-news-switch nav .news-preference-edit::before{display:none}
 .personal-news-switch nav .interests-unset{animation:interests-warmth 3.5s ease-in-out infinite}
 .personal-news-choices p{margin:8px 0 0}
-.home-weather-invitation{display:flex;align-items:center;gap:12px;flex:0 1 310px;margin-left:auto;padding:12px 17px;color:#244b3d;text-decoration:none;background:#fff9e9 url('/images/scrap-paper-ivory.webp') center/cover;border-radius:5px 9px 6px 8px;box-shadow:0 3px 5px #36523b18;min-height:70px}
-.home-weather-invitation img{flex:none;width:40px;height:40px}.home-weather-invitation strong{display:block;font:700 19px/1.25 Georgia,serif;margin-bottom:4px}
-.home-weather-invitation>span>span{display:block;font:600 13px/1.4 system-ui,sans-serif;text-decoration:underline;text-underline-offset:3px}.home-weather-invitation:hover{background-color:#fff1c7}
+:is(.home-weather-invitation,.home-interests-invitation){display:flex;align-items:center;gap:12px;flex:0 1 310px;padding:12px 17px;color:#244b3d;text-decoration:none;background:#fff9e9 url('/images/scrap-paper-ivory.webp') center/cover;border-radius:5px 9px 6px 8px;box-shadow:0 3px 5px #36523b18;min-height:70px}
+:is(.home-weather-invitation,.home-interests-invitation) img{flex:none;width:40px;height:40px}:is(.home-weather-invitation,.home-interests-invitation) strong{display:block;font:700 19px/1.25 Georgia,serif;margin-bottom:4px}
+:is(.home-weather-invitation,.home-interests-invitation)>span>span{display:block;font:600 13px/1.4 system-ui,sans-serif;text-decoration:underline;text-underline-offset:3px}:is(.home-weather-invitation,.home-interests-invitation):hover{background-color:#fff1c7}
+.home-weather-invitation{margin-left:auto}
+.home-interests-invitation{flex-basis:350px}
+
 @keyframes interests-warmth{0%,100%{box-shadow:0 0 0 2px #f4d76d22,0 0 7px #f4ce5044}50%{box-shadow:0 0 0 4px #f4d76d33,0 0 16px #f4ce5077}}
-@media(max-width:1023px){.personal-news-choices{flex-basis:100%}.personal-news-switch nav{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-radius:20px;gap:3px}.personal-news-switch nav a{font-size:12px;padding:8px 7px}.personal-news-switch nav .news-preference-edit{grid-column:1/-1;margin:0;font-size:12px}.home-weather-invitation{flex-basis:100%;margin:0;width:100%;min-height:62px;padding:10px 14px}.home-weather-invitation strong{font-size:18px}}
+@media(max-width:1023px){.personal-news-choices{flex-basis:100%}.personal-news-switch nav{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-radius:20px;gap:3px}.personal-news-switch nav a{font-size:12px;padding:8px 7px}.personal-news-switch nav .news-preference-edit{grid-column:1/-1;margin:0;font-size:12px}:is(.home-weather-invitation,.home-interests-invitation){flex-basis:100%;margin:0;width:100%;min-height:62px;padding:10px 14px}:is(.home-weather-invitation,.home-interests-invitation) strong{font-size:18px}}
 @media(prefers-reduced-motion:reduce){.personal-news-switch nav .interests-unset{animation:none;box-shadow:0 0 9px #f4ce5044}}
-@media(forced-colors:active){.home-weather-invitation,.personal-news-switch nav .news-preference-edit{border:1px solid LinkText;box-shadow:none;animation:none}}
+@media(forced-colors:active){:is(.home-weather-invitation,.home-interests-invitation),.personal-news-switch nav .news-preference-edit{border:1px solid LinkText;box-shadow:none;animation:none}}

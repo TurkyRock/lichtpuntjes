@@ -134,13 +134,26 @@
         page.querySelectorAll('#weatherWeek button').forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
         const hours = page.querySelector('#weatherHours');
         hours.replaceChildren();
+        const now = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Europe/Amsterdam', year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: '2-digit', hourCycle: 'h23',
+        }).formatToParts().map(({type, value}) => [type, value]));
+        const currentTime = day.date === `${now.year}-${now.month}-${now.day}` ? now.hour + ':00' : null;
+        let currentCard;
         for (const hour of day.hours) {
             const card = node('div', undefined, 'weather-hour');
-            card.append(node('strong', hour.time), node('b', temperature(hour.temperature)), node('span', '☀ ' + (numeric(hour.sun) ? number(hour.sun / 60) : '—') + ' min'), node('span', '☂ ' + number(hour.rain_probability) + '%'), node('span', number(hour.rain, 1) + ' mm'));
+            const time = node('strong', hour.time);
+            if (!currentCard && hour.time === currentTime) {
+                currentCard = card;
+                card.setAttribute('aria-current', 'time');
+                time.textContent += text(' · Nu', ' · Now');
+            }
+            card.append(time, node('b', temperature(hour.temperature)), node('span', '☀ ' + (numeric(hour.sun) ? number(hour.sun / 60) : '—') + ' min'), node('span', '☂ ' + number(hour.rain_probability) + '%'), node('span', number(hour.rain, 1) + ' mm'));
             hours.append(card);
         }
         if (!day.hours.length) hours.append(node('p', text('Nog geen uurverwachting beschikbaar.', 'Hourly forecast not yet available.')));
         hours.scrollLeft = 0;
+        if (currentCard) hours.scrollLeft = currentCard.getBoundingClientRect().left - hours.getBoundingClientRect().left;
     }
     function render(data) {
         forecast = data;
@@ -161,11 +174,11 @@
             button.addEventListener('click', () => renderDay(index));
             week.append(button);
         });
-        renderDay(0);
         const updated = new Intl.DateTimeFormat(en() ? 'en-GB' : 'nl-NL', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit', timeZone:'Europe/Amsterdam' }).format(new Date(data.fetched_at * 1000));
         write('weatherUpdated', text('Opgehaald ', 'Fetched ') + updated);
         page.querySelector('#weatherContent').hidden = false;
         page.querySelector('#weatherForecastDetails').hidden = false;
+        renderDay(0);
         page.querySelector('#weatherStatus').classList.toggle('weather-status-notice', Boolean(data.stale));
         write('weatherStatus', data.stale ? text('De weerbron is tijdelijk niet bereikbaar. Je ziet de laatst opgehaalde verwachting; controleer de ophaaltijd onderaan.', 'The weather provider is temporarily unavailable. Showing the last forecast; check the fetch time below.') : text('Verwachting voor ', 'Forecast for ') + data.name + text(' · tijden in Nederland.', ' · Netherlands local time.'));
     }
