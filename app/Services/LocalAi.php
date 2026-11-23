@@ -35,7 +35,7 @@ class LocalAi {
    $result=$job->result;
    if(!is_array($result)||!LocalAiSchema::valid($result,$schema))throw new NewsServiceException('Lokaal antwoord heeft een ongeldig formaat.');
    // Model confidence is not calibrated evidence. Test mode requires a human for user moderation.
-   if(config('local-ai.human_review')&&isset($result['confidence'])&&in_array('doubt',$schema['properties']['decision']['enum']??[],true)&&!str_contains($system,'HUMAN-approved')){
+   if(config('local-ai.human_review')&&$kind!=='moment'&&isset($result['confidence'])&&in_array('doubt',$schema['properties']['decision']['enum']??[],true)&&!str_contains($system,'HUMAN-approved')){
     $result['confidence']=0;
     if(isset($result['reason']))$result['reason']='Lokale AI-proefstand: een beheerder beoordeelt deze bijdrage.';
     if(isset($result['reason_nl']))$result['reason_nl']='Lokale AI-proefstand: een beheerder beoordeelt deze bijdrage.';

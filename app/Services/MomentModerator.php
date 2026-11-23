@@ -22,7 +22,8 @@ Personal experiences of recovery from cancer or a joyful church/mosque service a
 Return decision approve/reject/doubt, confidence 0..1, reason_nl and reason_en.
 PROMPT,['__privacy_owner_id'=>$moment->user_id,'__privacy_subjects'=>[['kind'=>'moment','id'=>$moment->id]],'visibility'=>$moment->visibility,'moment'=>$moment->body],['type'=>'OBJECT','properties'=>['decision'=>['type'=>'STRING','enum'=>['approve','reject','doubt']],'confidence'=>['type'=>'NUMBER'],'reason_nl'=>['type'=>'STRING'],'reason_en'=>['type'=>'STRING']],'required'=>['decision','confidence','reason_nl','reason_en']]);
    Validator::make($out,['decision'=>'required|in:approve,reject,doubt','confidence'=>'required|numeric|between:0,1','reason_nl'=>'required|string|max:1000','reason_en'=>'required|string|max:1000'])->validate();
-   $status=$out['decision']==='approve'&&$out['confidence']>=.9?'approved':($out['decision']==='reject'&&$out['confidence']>=.85?'rejected':'doubt');
+   // Publish clear AI approvals automatically; route every non-approval to a person.
+   $status=$out['decision']==='approve'&&$out['confidence']>=.9?'approved':'doubt';
    $reason=['nl'=>$out['reason_nl'],'en'=>$out['reason_en']];
 
   }catch(AiWaitException $e){if($moment->fresh()?->revision===$revision)app(AiAvailability::class)->defer($moment,$e);return;}catch(\Throwable $e){$status='doubt';$reason=['nl'=>'De controle is tijdelijk niet beschikbaar of niet duidelijk. Je momentje blijft privé. Je kunt de controle later opnieuw starten.','en'=>'The review is unavailable or uncertain. Your moment stays private. You can retry later.'];}

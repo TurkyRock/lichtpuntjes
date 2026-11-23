@@ -26,3 +26,10 @@
 .newspaper-story .comment-sensitive-confirm label{display:flex;align-items:flex-start;gap:9px;font:400 14px/1.6 system-ui,sans-serif}
 .newspaper-story .comment-sensitive-confirm input{flex:0 0 18px;margin-top:3px}
 .newspaper-story .comment-sensitive-confirm p{font:400 13px/1.6 system-ui,sans-serif}
+
+/* AI-vermelding naast het fotobijschrift, direct onder de afbeelding. */
+.newspaper-story .newspaper-photo .photo-credit{display:flex;align-items:flex-start;justify-content:space-between;gap:8px 16px}
+.newspaper-story .newspaper-photo .article-photo-caption{flex:1 1 260px;min-width:0}
+.newspaper-story .newspaper-photo .ai-image-label{flex:0 0 auto;margin-left:auto;color:#536862;text-decoration:none;white-space:nowrap;font-size:13px;line-height:1.7}
+.newspaper-story .newspaper-photo .ai-image-label:hover{text-decoration:underline;text-underline-offset:3px}
+@media(max-width:650px){.newspaper-story .newspaper-photo .photo-credit{gap:3px 12px}.newspaper-story .newspaper-photo .article-photo-caption{flex-basis:100%}.newspaper-story .newspaper-photo .ai-image-label{margin-left:auto}}

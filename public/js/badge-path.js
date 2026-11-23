@@ -8,19 +8,20 @@
  function geometry(){
   const box=grid.getBoundingClientRect();if(!box.width||!box.height)return;
   svg.setAttribute('viewBox',`0 0 ${box.width} ${box.height}`);
-  const items=steps.map(e=>{const r=e.getBoundingClientRect(),disc=e.querySelector('.badge-path-disc').getBoundingClientRect();return{x:disc.x-box.x+disc.width/2,y:disc.y-box.y+disc.height/2,top:r.top-box.top,bottom:r.bottom-box.top};});
+  const items=steps.map(e=>{const r=e.getBoundingClientRect(),disc=e.querySelector('.badge-path-disc').getBoundingClientRect();return{x:disc.x-box.x+disc.width/2,y:disc.y-box.y+disc.height/2,radius:disc.width/2+4,top:r.top-box.top,bottom:r.bottom-box.top};});
   let d='';segments=[];totalLength=0;
   for(let i=1;i<items.length;i++){
    const a=items[i-1],b=items[i];let segment;
    if(Math.abs(a.top-b.top)<3)segment=`M${a.x},${a.y}H${b.x}`;
    else{const mid=(a.bottom+b.top)/2,right=box.width-3,left=3,r=7;segment=`M${a.x},${a.y}H${right-r}Q${right},${a.y} ${right},${a.y+r}V${mid-r}Q${right},${mid} ${right-r},${mid}H${left+r}Q${left},${mid} ${left},${mid+r}V${b.y-r}Q${left},${b.y} ${left+r},${b.y}H${b.x}`;}
    const measure=document.createElementNS(ns,'path');measure.setAttribute('d',segment);svg.append(measure);const length=measure.getTotalLength();measure.remove();
-   segments.push({from:Number(steps[i-1].dataset.badgePoints),to:Number(steps[i].dataset.badgePoints),start:totalLength,length});totalLength+=length;d+=i===1?segment:segment.slice(segment.indexOf('H'));
+   const insetStart=Math.min(a.radius,length*.4),insetEnd=Math.min(b.radius,length*.4);
+   segments.push({from:Number(steps[i-1].dataset.badgePoints),to:Number(steps[i].dataset.badgePoints),start:totalLength,length,insetStart,insetEnd,visibleLength:Math.max(0,length-insetStart-insetEnd)});totalLength+=length;d+=i===1?segment:segment.slice(segment.indexOf('H'));
   }
   [base,old,glow].forEach(p=>p.setAttribute('d',d));
   if(pending){if(completed)paint(1);else if(animationStarted)paint(Math.min(1,(performance.now()-animationStarted)/2400));}
  }
- function distance(points){for(const s of segments){if(points<s.to)return s.start+s.length*Math.max(0,(points-s.from)/(s.to-s.from));}return totalLength;}
+ function distance(points){for(const s of segments){if(points<s.to)return s.start+s.insetStart+s.visibleLength*Math.max(0,(points-s.from)/(s.to-s.from));}return totalLength;}
  function refreshBadges(state){
   const total=state.total;let current=steps[0],next=null;
   steps.forEach(step=>{const earned=Number(step.dataset.badgePoints)<=total;step.classList.toggle('is-earned',earned);step.classList.toggle('is-locked',!earned);if(earned)current=step;else if(!next)next=step;});
@@ -39,7 +40,7 @@
   if(!pending||!segments.length)return;
   const previous=Math.min(pending.total,Math.max(0,pending.previous_total));
   const start=distance(previous),end=distance(pending.total),ease=1-Math.pow(1-Math.max(0,Math.min(1,fraction)),2),position=start+(end-start)*ease;
-  const active=segments.find(s=>position<s.start+s.length-.01)||segments[segments.length-1],before=active.start;
+  const active=segments.find(s=>position<s.start+s.length-s.insetEnd-.01)||segments[segments.length-1],before=active.start+active.insetStart;
   old.style.display=glow.style.display=orb.style.display='';old.style.strokeDasharray=before+' '+(totalLength+1);
   glow.style.strokeDasharray=Math.max(0,position-before)+' '+(totalLength+1);glow.style.strokeDashoffset=String(-before);
   const point=base.getPointAtLength(position);orb.setAttribute('cx',point.x);orb.setAttribute('cy',point.y);
