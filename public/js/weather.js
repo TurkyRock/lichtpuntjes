@@ -83,24 +83,11 @@
         const labels = en() ? ['Cosy weather expected','A little sun expected','Nice and bright expected','Lots of sunshine expected'] : ['Knusweer verwacht','Af en toe zon verwacht','Lekker licht verwacht','Volop zon verwacht'];
         const levelLabel = level === null ? text('Zonverwachting nog niet beschikbaar', 'Sunshine forecast not yet available') : labels[level];
         write('weatherLevel', levelLabel);
-        const needle = page.querySelector('#weatherNeedle');
-        needle.hidden = level === null;
-        if (level !== null) needle.style.transform = 'rotate(' + [315,45,225,135][level] + 'deg)';
-        page.querySelector('#weatherDial').setAttribute('aria-label', text('Lichtwijzer: ', 'Light meter: ') + levelLabel + (level === null ? '' : ' · ' + number(day.light_fraction * 100) + text('% van de daglichttijd zon', '% of daylight with sunshine')));
         write('weatherMax', temperature(day.max));
-        write('weatherSun', duration(day.sun));
-        write('weatherLightDuration', duration(day.light));
-        const fraction = numeric(day.light_fraction) ? Math.max(0, Math.min(1, day.light_fraction)) : null;
-        const fill = page.querySelector('#weatherLightFill');
-        fill.style.width = fraction === null ? '0%' : fraction * 100 + '%';
-        const comparison = fraction === null
-            ? text('Zonverwachting nog niet beschikbaar.', 'Sunshine forecast not yet available.')
-            : number(fraction * 100) + text('% van de daglichttijd zonneschijn verwacht.', '% of daylight with sunshine expected.');
-        write('weatherLightShare', comparison);
-        page.querySelector('#weatherLightTrack').setAttribute('aria-label', duration(day.sun) + text(' zonneschijn bij ', ' sunshine in ') + duration(day.light) + text(' daglicht. ', ' daylight. ') + comparison);
         ['10:00','14:00','20:00'].forEach((time, i) => {
             const hour = day.hours.find(item => item.time === time);
             const partIcon = page.querySelector('#weatherPart' + i + 'Icon');
+            if (!partIcon) return;
             if (hour) paintIcon(partIcon, hour.code, time !== '20:00');
             else partIcon.textContent = '—';
             write('weatherPart' + i + 'Temp', temperature(hour?.temperature));
@@ -108,7 +95,32 @@
             write('weatherPart' + i + 'Rain', number(hour?.rain_probability));
         });
         write('weatherRain', number(day.rain, 1) + ' mm');
-        write('weatherDaylight', text('Zon op ', 'Sunrise ') + (day.sunrise || '—') + ' · ' + text('zon onder ', 'sunset ') + (day.sunset || '—'));
+        write('weatherOutfitTitle', index === 0 ? text('Wat doe ik vandaag aan?', 'What should I wear today?') : text('Wat trek ik deze dag aan?', 'What should I wear this day?'));
+        const daytime = day.hours.filter(h => h.time >= '08:00' && h.time <= '20:00');
+        const temperatures = daytime.map(h => h.temperature).filter(numeric);
+        const low = temperatures.length ? Math.min(...temperatures) : day.min;
+        const high = temperatures.length ? Math.max(...temperatures) : day.max;
+        let outfit = !numeric(low) || !numeric(high) ? text('Nog te weinig gegevens voor kledingadvies. Bekijk de verwachting voordat je vertrekt.', 'Not enough data for clothing advice. Check the forecast before leaving.')
+            : low < 5 ? text('Een warme jas, een trui en dichte schoenen. Neem een sjaal mee voor de frisse uren.', 'A warm coat, a jumper and closed shoes. Bring a scarf for the chilly hours.')
+            : low < 12 ? text('Een jas met een trui of vest eronder. Met laagjes kun je onderweg iets uitdoen.', 'A jacket with a jumper or cardigan underneath. Layers let you adjust along the way.')
+            : low < 18 ? text('Een lichte jas of vest over je shirt is fijn voor de koelere uren.', 'A light jacket or cardigan over your shirt works for the cooler hours.')
+            : text('Luchtige kleding is fijn. Neem een dun vest mee als je later thuiskomt.', 'Light clothing is comfortable. Bring a thin cardigan if you are returning late.');
+        if (numeric(day.rain) && day.rain >= 1) outfit += text(' Kies een waterdichte jas en schoenen die tegen een bui kunnen.', ' Choose a waterproof jacket and shoes that can handle a shower.');
+        write('weatherOutfit', outfit);
+        const localParts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {timeZone:'Europe/Amsterdam',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',hourCycle:'h23'}).formatToParts().map(p => [p.type,p.value]));
+        const todayDate = localParts.year + '-' + localParts.month + '-' + localParts.day;
+        const hourStart = time => String(Number(time.slice(0, 2)) - 1).padStart(2, '0') + ':00';
+        const candidates = daytime.filter(hour => {
+            const start = hourStart(hour.time);
+            return (day.date !== todayDate || hour.time > localParts.hour + ':00')
+                && day.sunrise && day.sunset && start >= day.sunrise && hour.time <= day.sunset
+                && numeric(hour.rain_probability) && hour.rain_probability <= 30
+                && numeric(hour.rain) && hour.rain <= 0.1 && numeric(hour.code) && hour.code < 51;
+        });
+        const best = candidates.sort((a,b) => a.rain_probability - b.rain_probability || (b.sun || 0) - (a.sun || 0))[0];
+        const start = best ? hourStart(best.time) : '';
+        write('weatherOutdoorTime', best ? text('Rond ' + start + '–' + best.time + ' lijkt het overwegend droog. Fijn voor een klein ommetje.', 'Around ' + start + '–' + best.time + ' looks mostly dry. A chance for a short walk.') : text('Nog geen duidelijk droog daglichtmoment in de resterende verwachting. Bekijk de uren of maak het binnen fijn met een mooi verhaal.', 'No clear dry daylight window in the remaining forecast. Check the hours or enjoy a lovely story indoors.'));
+
         let message;
         if (numeric(day.rain) && day.rain >= 2 && numeric(day.max) && day.max < 12) message = text('Koud en nat buiten? Warme sokken aan, een dekentje erbij. Tijd om lekker tegen elkaar te kruipen.', 'Cold and wet outside? Time for warm socks, a blanket and someone to snuggle up with.');
         else if (numeric(day.rain) && day.rain >= 2) message = text('De planten krijgen een drankje. Jij verdient iets warms en een fijn verhaal.', 'The plants are getting a drink. You deserve something warm and a lovely story.');
@@ -119,32 +131,14 @@
         }
         else message = text('De zon neemt wat rust. Een klein gelukje hoeft dat niet te doen.', 'The sun is taking a rest. Your little moments of joy do not have to.');
         write('weatherMessage', message);
-        const season = page.dataset.season || 'autumn';
-        const outside = {
-            spring: text('Spot de eerste bloesem of een frisgroen blaadje. Een klein ommetje kan al iets moois opleveren.', 'Look for blossom or a fresh green leaf. A little walk can bring something lovely.'),
-            summer: text('Een rustig ommetje of een kleine picknick. Zoek een fijn plekje en neem iets te drinken mee.', 'A quiet walk or a little picnic. Find a lovely spot and bring something to drink.'),
-            autumn: text('Zoek het mooiste herfstblaadje op je route. De frisse lucht doet goed!', 'Look for the prettiest autumn leaf along your route. Fresh air feels good!'),
-            winter: text('Even naar buiten voor frisse lucht. Warme jas aan, en daarna weer fijn naar binnen.', 'Step outside for a breath of fresh air. Wrap up warmly, then enjoy coming back inside.'),
-        };
-        write('weatherOutside', numeric(day.rain) && day.rain >= 2 ? text('Zoek in de uurverwachting een droog moment voor jouw kleine buitenplan.', 'Look for a dry moment in the hourly forecast for your little outdoor plan.') : outside[season]);
-        write('weatherInside', season === 'summer'
-            ? text('Zet een koel drankje klaar, lees iets leuks en geniet van het moment.', 'Pour a cool drink, read something lovely and enjoy the moment.')
-            : season === 'spring' ? text('Zet iets fris op tafel, stuur iemand een lief berichtje en geniet van een rustig moment.', 'Put something fresh on the table, send someone a kind message and enjoy a quiet moment.')
-            : text('Zet iets warms, lees iets leuks en maak het even fijn voor jezelf.', 'Make something warm, read something lovely and take a little time for yourself.'));
         page.querySelectorAll('#weatherWeek button').forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
         const hours = page.querySelector('#weatherHours');
         hours.replaceChildren();
-        const now = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {
-            timeZone: 'Europe/Amsterdam', year: 'numeric', month: '2-digit', day: '2-digit',
-            hour: '2-digit', hourCycle: 'h23',
-        }).formatToParts().map(({type, value}) => [type, value]));
-        const currentTime = day.date === `${now.year}-${now.month}-${now.day}` ? now.hour + ':00' : null;
-        let currentCard;
+        const currentTime = day.date === todayDate ? localParts.hour + ':00' : null;
         for (const hour of day.hours) {
             const card = node('div', undefined, 'weather-hour');
             const time = node('strong', hour.time);
-            if (!currentCard && hour.time === currentTime) {
-                currentCard = card;
+            if (hour.time === currentTime) {
                 card.setAttribute('aria-current', 'time');
                 time.textContent += text(' · Nu', ' · Now');
             }
@@ -152,9 +146,17 @@
             hours.append(card);
         }
         if (!day.hours.length) hours.append(node('p', text('Nog geen uurverwachting beschikbaar.', 'Hourly forecast not yet available.')));
-        hours.scrollLeft = 0;
-        if (currentCard) hours.scrollLeft = currentCard.getBoundingClientRect().left - hours.getBoundingClientRect().left;
+        scrollToCurrentHour();
     }
+    function scrollToCurrentHour() {
+        const hours = page.querySelector('#weatherHours');
+        const current = hours.querySelector('[aria-current="time"]');
+        hours.scrollLeft = 0;
+        if (current) hours.scrollLeft = current.getBoundingClientRect().left - hours.getBoundingClientRect().left;
+    }
+    page?.querySelector('#weatherHourlyDetails').addEventListener('toggle', event => {
+        if (event.currentTarget.open) scrollToCurrentHour();
+    });
     function render(data) {
         forecast = data;
         const week = page.querySelector('#weatherWeek');
@@ -180,19 +182,19 @@
         page.querySelector('#weatherForecastDetails').hidden = false;
         renderDay(0);
         page.querySelector('#weatherStatus').classList.toggle('weather-status-notice', Boolean(data.stale));
-        write('weatherStatus', data.stale ? text('De weerbron is tijdelijk niet bereikbaar. Je ziet de laatst opgehaalde verwachting; controleer de ophaaltijd onderaan.', 'The weather provider is temporarily unavailable. Showing the last forecast; check the fetch time below.') : text('Verwachting voor ', 'Forecast for ') + data.name + text(' · tijden in Nederland.', ' · Netherlands local time.'));
+        write('weatherStatus', data.stale ? text('Je ziet de laatst opgehaalde verwachting. De ophaaltijd staat onderaan.', 'Showing the last forecast. The update time is at the bottom.') : '');
     }
     async function load() {
         const request = ++generation;
+        const option = select?.selectedOptions[0];
+        const place = locationPoint
+            ? {...locationPoint, name:text('Jouw omgeving','Your area')}
+            : option ? {latitude:option.dataset.latitude, longitude:option.dataset.longitude, name:option.textContent} : null;
         if (page) {
-            const option = select.selectedOptions[0];
-            page.dispatchEvent(new CustomEvent('weather:placechange', {detail: locationPoint ? {...locationPoint,name:text('Jouw omgeving','Your area')} : {latitude:option.dataset.latitude,longitude:option.dataset.longitude,name:option.textContent}}));
-        }
-        if (page) {
-            page.querySelector('#weatherContent').hidden = true;
-            page.querySelector('#weatherForecastDetails').hidden = true;
             page.querySelector('#weatherStatus').classList.remove('weather-status-notice');
-            write('weatherStatus', text('De weersverwachting wordt opgehaald…', 'Fetching the forecast…'));
+            write('weatherStatus', forecast
+                ? text('Nieuwe verwachting ophalen…', 'Fetching the new forecast…')
+                : text('De weersverwachting wordt opgehaald…', 'Fetching the forecast…'));
         }
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), 25000);
@@ -203,12 +205,16 @@
             if (!Array.isArray(data.days) || !data.days.length) throw new Error('Invalid weather response');
             if (request !== generation) return;
             updateLinks(data);
-            if (page) render(data);
+            if (page) {
+                if (place) page.dispatchEvent(new CustomEvent('weather:placechange', {detail: place}));
+                render(data);
+            }
         } catch {
             if (request !== generation) return;
-            updateLinks(null);
+            if (!forecast) updateLinks(null);
             page?.querySelector('#weatherStatus').classList.add('weather-status-notice');
-            write('weatherStatus', text('Het weer is even niet beschikbaar. Probeer het straks opnieuw met de knop Toon. Ook zonder voorspelling is er een lichtpuntje te vinden.', 'The forecast is temporarily unavailable. Try again using Show. There is a bright side even without a forecast.'));
+            const retry = text('Ophalen mislukt. Probeer opnieuw met Toon.', 'Could not load the forecast. To retry, choose Show.');
+            write('weatherStatus', forecast ? retry + text(' Je ziet nog het weer voor ', ' Still showing the forecast for ') + forecast.name + '.' : retry);
         } finally { clearTimeout(timer); }
     }
     page?.querySelector('.weather-location').addEventListener('submit', event => {

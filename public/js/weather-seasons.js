@@ -16,7 +16,7 @@
         const english = document.documentElement.lang === 'en';
         page.querySelector('#weatherSeasonLabel').textContent = names[season][english ? 1 : 0];
         const photo = page.querySelector('#weatherNaturePhoto');
-        const nextPhoto = '/images/weather/' + season + '-nature.png';
+        const nextPhoto = '/images/weather/' + season + '-postcard.webp';
         if (photo.getAttribute('src') !== nextPhoto) photo.src = nextPhoto;
         const descriptions = {
             spring: ['Bloesem en een groen pad in de lente', 'Blossom and a green path in spring'],

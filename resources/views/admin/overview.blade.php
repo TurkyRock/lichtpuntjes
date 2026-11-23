@@ -1,7 +1,7 @@
 @extends('community.layout')
 @section('title','Beheer | Jouw Lichtpuntjes')
 @section('content')
-<div class="admin-heading"><p class="admin-eyebrow">Jouw Lichtpuntjes · achter de schermen</p><h1>De zonneschijncentrale</h1><p>Welkom terug, {{ auth()->user()->name }}. Dit vraagt vandaag jouw aandacht.</p></div>
+<div class="admin-heading"><p class="admin-eyebrow">Jouw Lichtpuntjes · achter de schermen</p><h1 class="admin-overview-title">De zonneschijncentrale</h1><p>Welkom terug, {{ auth()->user()->name }}. Dit vraagt vandaag jouw aandacht.</p></div>
 <div class="admin-metrics">
 @foreach([['Gebruikers',$counts['users'],'/beheer/gebruikers'],['Artikelen op de site',$counts['articles'],'/beheer/artikelen'],['Open meldingen',$counts['reports'],'/beheer/lichtpuntjes?status=reported']] as [$label,$value,$url])
 <a class="panel admin-metric" href="{{ $url }}"><span>{{ $label }}</span><strong>{{ $value }}</strong><span>Bekijken →</span></a>

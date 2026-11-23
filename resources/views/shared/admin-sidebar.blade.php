@@ -1,6 +1,7 @@
 @php($adminEn=app()->getLocale()==='en')
 <aside class="account-sidebar admin-sidebar" aria-label="{{ $adminEn?'Administration':'Beheer' }}">
 <p class="account-sidebar-title">{{ $adminEn?'Administration':'Beheer' }}</p>
+<details class="admin-section-menu"><summary>{{ $adminEn ? 'Administration sections' : 'Beheeronderdelen' }}</summary>
 <nav aria-label="{{ $adminEn?'Administration sections':'Beheeronderdelen' }}">
 @foreach([
  ['/beheer', $adminEn?'Overview':'Overzicht','home'],
@@ -8,6 +9,7 @@
  ['/beheer/sociaal',$adminEn?'Social publishing':'Sociaal','stories'],
  ['/beheer/opslag',$adminEn?'Storage & maintenance':'Opslag & onderhoud','articles'],
  ['/beheer/artikelen',$adminEn?'Articles':'Artikelen','articles'],
+ ['/beheer/nieuwsbronnen',$adminEn?'News sources':'Nieuwsbronnen','articles'],
  ['/beheer/lichtpuntjes',$adminEn?'Community stories':'Eigen lichtpuntjes','stories'],
  ['/beheer/momentjes',$adminEn?'Public moments':'Momentjes','stories'],
  ['/beheer/profielfotos',$adminEn?'Profile photos':'Profielfoto’s','users'],
@@ -28,7 +30,16 @@
 @endif
 </svg><span>{{ $adminLabel }}</span></a>
 @endforeach
-<a href="/beheer/meldingen">Meldingen van bijdragen</a></nav></aside>
+<a href="/beheer/meldingen">Meldingen van bijdragen</a></nav></details></aside>
+<script nonce="{{ request()->attributes->get('csp_nonce') }}">
+(() => {
+    const menu = document.querySelector('.admin-section-menu');
+    const compact = matchMedia('(max-width: 800px)');
+    const sync = () => { menu.open = !compact.matches; };
+    compact.addEventListener('change', sync);
+    sync();
+})();
+</script>
 
 @php($storageAlert=\Illuminate\Support\Facades\Cache::get('site-storage-report'))
 @if($storageAlert && ($storageAlert['warning'] || $storageAlert['paused']))<p class="errors" role="alert"><a href="/beheer/opslag">Opslag: {{ $storageAlert['percent'] }}% gebruikt{{ $storageAlert['paused']?' · nieuwsimport gepauzeerd':'' }}</a></p>@endif

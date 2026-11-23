@@ -32,7 +32,7 @@ class WeatherTest extends TestCase
 
     public function test_page_and_navigation_render_in_both_languages_without_api_call(): void
     {
-        foreach (['nl'=>'Hang wat licht aan je dag', 'en'=>'Hang a little light in your day'] as $lang=>$heading) {
+        foreach (['nl'=>'Even een frisse neus', 'en'=>'A little fresh air'] as $lang=>$heading) {
             $this->get('/weer?lang='.$lang)->assertOk()->assertSee($heading)->assertSee('data-weather-link', false)->assertDontSee('data-nav-nl="Mijn verhaal"', false);
         }
         Http::assertNothingSent();
@@ -114,8 +114,8 @@ class WeatherTest extends TestCase
     {
         foreach (['spring','summer','autumn','winter'] as $season) {
             $this->get('/weer?season='.$season)->assertOk()->assertSee('data-season="'.$season.'"', false)
-                ->assertSee('/images/weather/'.$season.'-nature.png', false)->assertSee('Zeven keer kans op licht!');
-            $this->assertFileExists(public_path('images/weather/'.$season.'-nature.png'));
+                ->assertSee('/images/weather/'.$season.'-postcard.webp', false)->assertSee('De komende zeven dagen');
+            $this->assertFileExists(public_path('images/weather/'.$season.'-postcard.webp'));
             $this->assertFileExists(public_path('images/weather/'.$season.'-art.png'));
         }
         $this->get('/weer?season[]=summer')->assertOk()->assertSee('data-season="autumn"', false);

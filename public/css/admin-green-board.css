@@ -55,3 +55,82 @@
 @media(forced-colors:active){.admin-paper.account-scrapbook .account-shell{border:1px solid CanvasText}.admin-paper .admin-sidebar nav a::before,.admin-paper .admin-content .panel::before,.admin-paper .admin-content button::before{display:none}.admin-paper .admin-sidebar nav a[aria-current=page]{background:Highlight;color:HighlightText}.admin-paper .admin-content :is(button,.button){background:ButtonFace;color:ButtonText;border:1px solid ButtonText}}
 /* Clear legacy border-image layers so the shared paper colours stay authoritative. */
 .admin-paper.account-scrapbook .admin-sidebar::before,.admin-paper.account-scrapbook .admin-content .panel::before,.admin-paper.account-scrapbook .admin-sidebar nav a::before{border:0;border-image:none;transform:none;box-shadow:none}
+
+.admin-section-menu > summary {
+  padding: 10px 5px;
+  min-height: 44px;
+  font: 700 15px/1.5 system-ui, sans-serif;
+  cursor: pointer;
+}
+@media (width > 800px) {
+  .admin-section-menu[open] > summary { display: none; }
+}
+@media (max-width: 800px) {
+  .admin-paper.account-scrapbook .account-shell { display: block; }
+  .admin-paper.account-scrapbook .admin-sidebar nav {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+  .admin-paper.account-scrapbook .admin-sidebar {
+    position: static;
+    padding: 2px 12px;
+    margin-bottom: 12px;
+  }
+  .admin-sidebar .account-sidebar-title { display: none; }
+  .admin-section-menu[open] { padding-bottom: 10px; }
+  .admin-paper .admin-content .admin-overview-title {
+    font-size: clamp(20px, 6vw, 27px);
+    overflow-wrap: normal;
+    hyphens: auto;
+  }
+  .admin-paper .admin-content .admin-overview-title span { display: none; }
+  .admin-content :is(.admin-table-scroll, .article-admin-scroll) { overflow: visible; }
+  .admin-content table.admin-mobile-table { display: block; min-width: 0; max-width: 100%; }
+  .admin-content .admin-mobile-table caption { display: block; text-align: left; }
+  .admin-content .admin-mobile-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .admin-content .admin-mobile-table tbody { display: grid; gap: 12px; }
+  .admin-content .admin-mobile-table tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px 12px;
+    min-width: 0;
+    padding: 13px;
+    border: 1px solid #c8d3bc;
+    border-radius: 9px;
+    background: #fffdf4;
+  }
+  .admin-content .admin-mobile-table tbody :is(td, th) {
+    display: block;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .admin-content .admin-mobile-table td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    color: #43604e;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .admin-content .admin-mobile-table :is([colspan], .admin-card-title, .admin-card-actions) {
+    grid-column: 1 / -1;
+  }
+  .admin-content .admin-mobile-table .admin-card-title { max-width: none; }
+  .admin-content .admin-mobile-table .admin-card-id { font-size: 12px; color: #43604e; }
+  .admin-content .admin-mobile-table .admin-card-id::before { content: '#'; }
+  .admin-content .admin-mobile-table .admin-card-actions button {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    white-space: normal;
+  }
+}

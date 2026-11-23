@@ -100,15 +100,10 @@
  .home-unified .highlight-secondary>.mobile-highlight-heading{display:block;margin:0;font:400 30px/1.15 Georgia,serif;color:#193f37}
  .home-unified .daily-highlights .highlight-main .highlight-art{min-height:0;height:auto;aspect-ratio:auto}
  .home-unified .daily-highlights .highlight-main .highlight-art>a{position:absolute;inset:7px;width:auto;height:auto;min-height:0;max-height:none;aspect-ratio:auto}
+ .home-unified .daily-highlights .highlight-small{grid-template-columns:41% minmax(0,1fr)}
+ .home-unified .daily-highlights .highlight-small .highlight-art img{object-position:center}
 }
 @media(max-width:1023px){
  .home-unified .daily-highlights>.highlight-secondary{display:contents}
  .home-unified .highlight-secondary>.mobile-highlight-heading{display:none}
-}
-
-/* Keep the complete small-card photo: the paper frame follows its natural ratio. */
-@media(min-width:1024px){
- .home-unified .daily-highlights .highlight-small .highlight-art{align-self:start;display:block;padding:7px;aspect-ratio:auto;height:auto;min-height:0}
- .home-unified .daily-highlights .highlight-small .highlight-art>a{position:relative;inset:auto;display:block;width:100%;height:auto;min-height:0;max-height:none;aspect-ratio:auto}
- .home-unified .daily-highlights .highlight-small .highlight-art img{position:relative;inset:auto;display:block;width:100%;height:auto;max-height:none;aspect-ratio:auto;object-fit:contain}
 }

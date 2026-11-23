@@ -108,3 +108,7 @@ body:has(.moment-gallery)>main{max-width:1380px;margin-top:26px}
 .moment-sensitive-confirm[hidden]{display:none}
 
 .moment-write-form .moment-consent{font-size:14px;line-height:1.5}
+
+.moment-gallery .moment-gallery-empty { grid-column: 1 / -1; padding: clamp(18px, 5vw, 30px); }
+.moment-gallery-empty h2 { margin: 0 0 10px; }
+.moment-gallery-empty p { margin: 0 0 16px; }
