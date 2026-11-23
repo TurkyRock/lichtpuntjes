@@ -42,7 +42,7 @@ class PublicStoryController extends Controller {
   $category=$article->origin==='community'?'community':$article->category;$seo=StorySeo::meta($locale,$category,1,$article);
   $story=app(NewsEngagementController::class)->story($request,$article)->getData(true);
   $story['content_updated_at']=$article->content_updated_at?->toDateString();
-  $feed=['articles'=>[],'pagination'=>['current_page'=>1,'last_page'=>1,'per_page'=>12,'total'=>0,'from'=>null,'to'=>null]];
+  $feed=['articles'=>[],'pagination'=>['current_page'=>1,'last_page'=>1,'per_page'=>9,'total'=>0,'from'=>null,'to'=>null]];
   $relatedArticles=Article::visible()->whereKeyNot($article->id)->orderByRaw('CASE WHEN category = ? THEN 0 ELSE 1 END',[$article->category])->latest('published_at')->latest('id')->limit(9)->get()->filter(fn($a)=>StorySeo::readable($a))->take(3);
   $seoRelated=$relatedArticles->map(fn($a)=>app(NewsEngagementController::class)->story($request,$a)->getData(true))->values()->all();
   return view('lichtpunt',['seo'=>$seo,'feed'=>$feed,'seoArticle'=>$article,'seoStory'=>$story,'category'=>$category,'locale'=>$locale,'relatedArticles'=>$relatedArticles,'seoRelated'=>$seoRelated]);

@@ -74,8 +74,8 @@ class NewsEngagementController extends Controller {
         }
         if ($personalized) $query->orderByDesc('personal.personal_score');
         $query->orderByRaw($order);
-        $items=$query->paginate(12,['articles.*'],'page',(int)($input['page']??1));
-        if ($items->currentPage()>$items->lastPage()) $items=$query->paginate(12,['articles.*'],'page',$items->lastPage());
+        $items=$query->paginate(9,['articles.*'],'page',(int)($input['page']??1));
+        if ($items->currentPage()>$items->lastPage()) $items=$query->paginate(9,['articles.*'],'page',$items->lastPage());
         $liked=$request->user()?DB::table('user_article_likes')->where('user_id',$request->user()->id)->whereIn('article_id',$items->getCollection()->pluck('id'))->pluck('article_id')->all():[];
         return response()->json([
             'personalized'=>$personalized, 'nearby'=>$nearby,

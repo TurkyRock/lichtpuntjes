@@ -20,9 +20,31 @@
 .highlight-copy h2 a{color:#153e39;text-decoration:none}.highlight-copy h2 a:hover{text-decoration:underline;text-underline-offset:3px}
 .highlight-teaser{font-size:13px;line-height:1.5;color:#536862;margin:0 0 8px}
 .highlight-read{font-size:12px;font-weight:650;text-decoration:none;margin-top:auto}
+.daily-return-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0 0 8px}
+.daily-return-card{position:relative;isolation:isolate;display:flex;align-items:center;gap:14px;min-width:0;min-height:112px;padding:14px 18px;background:#fff9e9 url('/images/scrap-paper-ivory.webp') center/cover;border:2px solid #efd06c;border-radius:9px 5px 10px 6px;box-shadow:0 3px 6px #36523b18}
+.daily-return-card::after{content:"";position:absolute;inset:5px;z-index:-1;border:1px dashed #d9c991;border-radius:6px;pointer-events:none}
+.daily-return-moment{border-color:#a9bd99}.daily-return-moment::after{border-color:#bec9b2}
+.daily-return-icon{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:50%;background:#f4d677;color:#315744;font:700 34px/1 Georgia,serif}
+.daily-return-moment .daily-return-icon{background:#dfe8d5;font-size:38px}
+.daily-return-copy{min-width:0}.daily-return-copy h2{margin:0 0 3px;color:#153f35;font:700 22px/1.15 Georgia,serif}.daily-return-copy p{margin:0 0 5px;color:#4d675a;font-size:14px;line-height:1.4}.daily-return-copy a{font-size:14px;font-weight:650;text-underline-offset:3px}
 .highlight-small .highlight-copy{padding:12px}.highlight-small h2{font-size:20px;line-height:1.15}
 .highlight-small .highlight-teaser{font-size:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .article-content .article-photo img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;object-position:center}
+
+.home-unified #grid>.homepage-daily-prompts{grid-column:1/-1;min-width:0;margin:4px 0 10px}
+.home-unified .homepage-daily-prompts>h2{margin:0 0 10px;color:#153e39;font:700 28px/1.15 Georgia,serif;letter-spacing:-.35px}
+.home-unified .homepage-prompt-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.home-unified .homepage-prompt{min-width:0;padding:15px 17px;background:#fff9e9 url('/images/scrap-paper-ivory.webp') center/cover;border:2px solid #efcc69;border-radius:7px;box-shadow:0 2px 5px #36523b18}
+.home-unified .homepage-prompt--story{border-color:#a5b997}
+.home-unified .homepage-prompt-tag{display:inline-block;padding:4px 9px;background:#f3d983 url('/images/button-paper-grain.svg');color:#254b3d;font-size:11px;font-weight:750}
+.home-unified .homepage-prompt h3{margin:6px 0 7px;color:#153e39;font:700 23px/1.12 Georgia,serif;letter-spacing:-.25px}
+.home-unified .homepage-prompt p{margin:0 0 11px;color:#536862;font-size:14px;line-height:1.45}
+.home-unified .homepage-prompt-actions{display:flex;align-items:center;flex-wrap:wrap;gap:9px}
+.home-unified .homepage-prompt-actions>a:not(.homepage-prompt-button){font-size:13px;font-weight:700}
+.home-unified .homepage-prompt-button{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:8px 14px;background:#315744;color:#fffdf2;border-radius:4px;font-size:14px;font-weight:700;text-decoration:none}
+.home-unified .homepage-prompt-button--quiet{background:#e4ebd6;color:#214d3b}
+.home-unified .homepage-prompt-button:hover{filter:brightness(.94)}
+.home-unified .homepage-prompt :is(a,button):focus-visible{outline:3px solid #96701f;outline-offset:3px}
 
 /* The existing category and sorting toolbar. */
 .daily-highlights+.news-toolbar{margin-top:0}
@@ -40,6 +62,7 @@
  .news-toolbar .filters{flex-wrap:wrap}
 }
 @media(max-width:700px){
+ .daily-return-cards{grid-template-columns:minmax(0,1fr);gap:8px;margin:0 0 10px}.home-unified .homepage-daily-prompts{margin:8px 0 6px;padding:0 2px}.home-unified .homepage-daily-prompts>h2{margin-bottom:7px;font-size:23px}.home-unified .homepage-prompt-grid{grid-template-columns:1fr;gap:8px}.home-unified .homepage-prompt{padding:12px 13px}.home-unified .homepage-prompt h3{font-size:21px}.home-unified .homepage-prompt p{font-size:13px;margin-bottom:8px}.home-unified .homepage-prompt-button{min-height:40px;font-size:13px}.daily-return-card{min-height:0;padding:12px 13px;gap:10px}.daily-return-icon{width:36px;height:36px;font-size:28px}.daily-return-moment .daily-return-icon{font-size:31px}.daily-return-copy h2{font-size:19px}.daily-return-copy p,.daily-return-copy a{font-size:13px}
  .daily-highlights{grid-template-columns:minmax(0,1fr)}.highlight-main{grid-column:1;grid-row:auto}
  .daily-highlights .highlight-main .highlight-art>a{height:auto;aspect-ratio:4/3;max-height:300px}
  .highlight-small{grid-template-columns:40% minmax(0,1fr)}

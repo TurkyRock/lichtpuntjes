@@ -10,7 +10,6 @@
 
 @media(max-width:480px){.personal-news-switch nav{flex-wrap:wrap;max-width:100%;border-radius:18px}.personal-news-switch nav a{padding:7px 8px}}
 
-/* The interests action belongs to the feed choices; the weather note uses the spare space. */
 .personal-news-switch{align-items:center;gap:14px 24px;padding-block:10px 14px}
 .personal-news-choices{flex:1 1 560px;min-width:0}
 .personal-news-switch nav{width:fit-content;max-width:100%;flex-wrap:wrap;gap:0;padding:3px;border-radius:24px}
@@ -19,13 +18,15 @@
 .personal-news-switch nav .news-preference-edit::before{display:none}
 .personal-news-switch nav .interests-unset{animation:interests-warmth 3.5s ease-in-out infinite}
 .personal-news-choices p{margin:8px 0 0}
-:is(.home-weather-invitation,.home-interests-invitation){display:flex;align-items:center;gap:12px;flex:0 1 310px;padding:12px 17px;color:#244b3d;text-decoration:none;background:#fff9e9 url('/images/scrap-paper-ivory.webp') center/cover;border-radius:5px 9px 6px 8px;box-shadow:0 3px 5px #36523b18;min-height:70px}
-:is(.home-weather-invitation,.home-interests-invitation) img{flex:none;width:40px;height:40px}:is(.home-weather-invitation,.home-interests-invitation) strong{display:block;font:700 19px/1.25 Georgia,serif;margin-bottom:4px}
-:is(.home-weather-invitation,.home-interests-invitation)>span>span{display:block;font:600 13px/1.4 system-ui,sans-serif;text-decoration:underline;text-underline-offset:3px}:is(.home-weather-invitation,.home-interests-invitation):hover{background-color:#fff1c7}
-.home-weather-invitation{margin-left:auto}
-.home-interests-invitation{flex-basis:350px}
-
+.home-interest-strip{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:8px 0 13px;padding:11px 16px;color:#254b3d;background:#fff9e9 url('/images/scrap-paper-ivory.webp') center/cover;border-left:4px solid #e6c759;box-shadow:0 2px 5px #36523b18}
+.home-interest-mark{flex:none;color:#bd9632;font:700 23px/1 Georgia,serif}
+.home-interest-copy{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 9px;min-width:0;flex:1}
+.home-interest-copy strong{font:700 17px/1.25 Georgia,serif}
+.home-interest-copy>span{color:#536862;font-size:12px}
+.home-interest-strip>a{flex:none;padding:7px 11px;color:#fffdf2;background:#315744;border-radius:3px;font-size:12px;font-weight:700;text-decoration:none}
+.home-interest-strip>a:hover{background:#234a39}
 @keyframes interests-warmth{0%,100%{box-shadow:0 0 0 2px #f4d76d22,0 0 7px #f4ce5044}50%{box-shadow:0 0 0 4px #f4d76d33,0 0 16px #f4ce5077}}
-@media(max-width:1023px){.personal-news-choices{flex-basis:100%}.personal-news-switch nav{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-radius:20px;gap:3px}.personal-news-switch nav a{font-size:12px;padding:8px 7px}.personal-news-switch nav .news-preference-edit{grid-column:1/-1;margin:0;font-size:12px}:is(.home-weather-invitation,.home-interests-invitation){flex-basis:100%;margin:0;width:100%;min-height:62px;padding:10px 14px}:is(.home-weather-invitation,.home-interests-invitation) strong{font-size:18px}}
+@media(max-width:1023px){.personal-news-choices{flex-basis:100%}.personal-news-switch nav{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-radius:20px;gap:3px}.personal-news-switch nav a{font-size:12px;padding:8px 7px}.personal-news-switch nav .news-preference-edit{grid-column:1/-1;margin:0;font-size:12px}.home-interest-strip{gap:9px;margin:7px 0 10px;padding:9px 11px}.home-interest-copy{display:block}.home-interest-copy strong{display:block;font-size:16px}.home-interest-copy>span{display:block;font-size:11px}.home-interest-strip>a{padding:8px 9px;font-size:11px}}
+@media(max-width:480px){.personal-news-switch nav{flex-wrap:wrap;max-width:100%;border-radius:18px}.personal-news-switch nav a{padding:7px 8px}.home-interest-strip{align-items:flex-start}.home-interest-mark{padding-top:3px}.home-interest-strip>a{align-self:center;max-width:45%;text-align:center;line-height:1.25}}
 @media(prefers-reduced-motion:reduce){.personal-news-switch nav .interests-unset{animation:none;box-shadow:0 0 9px #f4ce5044}}
-@media(forced-colors:active){:is(.home-weather-invitation,.home-interests-invitation),.personal-news-switch nav .news-preference-edit{border:1px solid LinkText;box-shadow:none;animation:none}}
+@media(forced-colors:active){.home-interest-strip,.home-interest-strip>a{border:1px solid LinkText;box-shadow:none}.personal-news-switch nav .news-preference-edit{border:1px solid LinkText;filter:none}.personal-news-switch nav .news-preference-edit::before{display:none}}

@@ -2,13 +2,13 @@
 .hero.daily-welcome.paper-welcome{display:block;grid-template-rows:none;min-height:0;height:auto;padding:7px 8px;margin:12px 0 12px;background:#edf3e9;border-radius:20px;position:relative;isolation:isolate}
 .paper-welcome .welcome-paper{position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:100%;min-width:0;max-width:none;min-height:170px;padding:23px 12%;text-align:center;float:none}
 .welcome-paper::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:url('/images/lichtpunt-paper-welcome.png');background-image:image-set(url('/images/lichtpunt-paper-welcome.webp') type('image/webp'),url('/images/lichtpunt-paper-welcome.png') type('image/png'));background-position:center;background-size:100% 100%;background-repeat:no-repeat}
-.paper-welcome #headline{font:600 clamp(30px,3.1vw,38px)/1.12 Georgia,serif;letter-spacing:-1.2px;color:#153e39;margin:0;position:relative;width:100%;max-width:none;padding:0;float:none;overflow-wrap:normal;text-wrap:balance}
+.paper-welcome #headline{font:600 clamp(34px,3.3vw,44px)/1.12 Georgia,serif;letter-spacing:-1.2px;color:#153e39;margin:0;position:relative;width:100%;max-width:none;padding:0;float:none;overflow-wrap:normal;text-wrap:balance}
 .lp-title-word{position:relative;isolation:isolate;display:inline-block;padding:0 .10em;white-space:nowrap}
 .lp-title-word::before{content:none}
 .lp-title-i{position:relative;display:inline-block}
 .lp-title-i::after{content:"";position:absolute;top:.045em;left:50%;transform:translateX(-50%);width:.27em;height:.27em;border:.055em solid #fffce4;border-radius:50%;background:#f7cb38;box-shadow:0 0 .16em .05em #fffbe8,0 0 .36em .14em #ffdc6888;pointer-events:none;z-index:2}
 .lp-title-rays{position:absolute;top:.18em;left:50%;width:2em;height:2em;transform:translate(-50%,-50%);pointer-events:none;z-index:-1;background:repeating-conic-gradient(from 8deg,#d7a636b0 0deg 1deg,transparent 1deg 24deg);mask-image:radial-gradient(circle,transparent 0 15%,#000 23% 40%,transparent 65%);-webkit-mask-image:radial-gradient(circle,transparent 0 15%,#000 23% 40%,transparent 65%)}
-.paper-welcome .welcome-subtitle{font:600 14px/1.45 system-ui,sans-serif;color:#153e39;width:100%;max-width:850px;margin:0}
+.paper-welcome .welcome-subtitle{font:600 16px/1.5 system-ui,sans-serif;color:#153e39;width:100%;max-width:850px;margin:0}
 .daily-welcome-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;gap:12px;width:100%;max-width:660px;position:relative;z-index:1;margin:1px 0 0;padding:0}
 .daily-welcome-actions :is(button,.daily-account){display:flex;align-items:center;justify-content:center;gap:7px;grid-column:auto;min-width:0;min-height:44px;border:0;border-radius:0;padding:9px 12px;text-decoration:none;font:600 13px/1.3 system-ui,sans-serif;text-align:center;position:relative;isolation:isolate;background:transparent;filter:drop-shadow(0 3px 2px #26453a40);transition:filter .15s ease,transform .15s ease}
 .daily-welcome-actions svg,.daily-welcome-actions img{width:18px;height:18px;flex:none}
@@ -41,10 +41,9 @@
 }
 @media(min-width:951px){.paper-welcome .welcome-paper{min-height:190px}}
 /* Compact actions stay in the blank paper between the flower cutouts. */
-.paper-welcome .daily-welcome-actions{grid-template-columns:1fr 1.15fr 1fr 1.4fr;width:74%;max-width:600px;gap:9px}
-.daily-welcome-actions :nth-child(4)::before{transform:scaleX(-1)}
-@media(min-width:701px){.paper-welcome .daily-welcome-actions :is(button,.daily-account){font-size:11px;padding:8px 5px;gap:5px;min-height:40px;white-space:nowrap}}
+.paper-welcome .daily-welcome-actions{grid-template-columns:repeat(3,minmax(0,1fr));width:min(74%,520px);max-width:520px;gap:12px;margin-inline:auto}
+@media(min-width:701px){.paper-welcome .daily-welcome-actions :is(button,.daily-account){font-size:13px;padding:9px 8px;gap:6px;min-height:44px;white-space:nowrap}}
 @media(min-width:701px){.daily-welcome-actions svg,.daily-welcome-actions img{width:15px;height:15px}}
-@media(min-width:701px) and (max-width:950px){.paper-welcome .daily-welcome-actions{width:62%;grid-template-columns:repeat(2,minmax(0,1fr));max-width:360px}}
-@media(max-width:700px){.paper-welcome .daily-welcome-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%;max-width:480px}.paper-welcome .daily-welcome-actions :is(button,.daily-account){font-size:12px;min-height:44px}}
+@media(min-width:701px) and (max-width:950px){.paper-welcome .daily-welcome-actions{width:74%;grid-template-columns:repeat(3,minmax(0,1fr));max-width:520px}}
+@media(max-width:700px){.paper-welcome .daily-welcome-actions{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;width:100%;max-width:520px}.paper-welcome .daily-welcome-actions :is(button,.daily-account){font-size:12px;min-height:46px;padding:8px 4px}.paper-welcome .welcome-subtitle{font-size:15px}}
 </style>
