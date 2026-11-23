@@ -76,15 +76,21 @@ class HourlyNewsCollection extends Command
                 if(!is_array($saved)||($saved['version']??null)!==1||!is_array($saved['selected']??null)||!is_int($saved['target']??null)||!is_string($saved['hour']??null))throw new \RuntimeException('Ongeldige voortgang.');
                 $this->state=$saved;
             }
+            if(!empty($this->state['retry_at'])){
+                $retryAt=\Carbon\CarbonImmutable::parse($this->state['retry_at']);
+                if($retryAt->isFuture()){$this->info('NewsData heeft tijdelijk een aanvraaglimiet bereikt. Hervatten vanaf '.$retryAt->timezone('Europe/Amsterdam')->format('d-m H:i').'.');return self::SUCCESS;}
+                $this->state['retry_at']=null;$this->save();
+            }
             $hour=now('UTC')->format('Y-m-d-H');
             if($this->state&&($this->state['finished']??false)&&$this->state['hour']===$hour){$this->info('Deze uurronde is al afgerond. Er worden geen extra artikelen geplaatst.');return self::SUCCESS;}
             if(!$this->state||($this->state['finished']??false)){
                 if($this->state){File::ensureDirectoryExists(dirname($this->path).'/completed');File::replace(dirname($this->path).'/completed/'.$this->state['hour'].'.json',json_encode($this->state,JSON_THROW_ON_ERROR));}
-                $this->state=['version'=>1,'hour'=>$hour,'started_at'=>now()->toIso8601String(),'target'=>$this->target,'selected'=>[],'finished'=>false];$this->save();
+                $this->state=['version'=>1,'hour'=>$hour,'started_at'=>now()->toIso8601String(),'target'=>$this->target,'selected'=>[],'cursors'=>[],'exhausted'=>[],'visits'=>[],'retry_at'=>null,'finished'=>false];$this->save();
             }elseif($this->state['target']!==$this->target){$this->error('Er staat nog een ronde open met --per-category='.$this->state['target'].'. Rond die eerst af.');return self::FAILURE;}
+            $this->state+=['cursors'=>[],'exhausted'=>[],'visits'=>[],'retry_at'=>null];
             if($this->state['hour']!==$hour)$this->line('Een eerdere ronde is nog niet compleet; eerst die ronde afmaken.');
             $this->info('Doel: '.$this->target.' nieuwe artikelen met beeld per categorie, '.($this->target*6).' in totaal. Bestaande artikelen blijven behouden.');
-            $cursors=[];$exhausted=[];$visits=[];$imageFailed=[];$pages=0;$assessed=false;
+            $cursors=$this->state['cursors'];$exhausted=$this->state['exhausted'];$visits=$this->state['visits'];$imageFailed=[];$pages=0;$assessed=false;
             while(true){
                 if(!\App\Support\NewsImportWindow::isOpen())return $this->paused(\App\Support\NewsImportWindow::PAUSED,self::SUCCESS);
                 $counts=$this->counts();$missing=array_keys(array_filter($counts,fn($count)=>$count<$this->target));
@@ -137,8 +143,12 @@ class HourlyNewsCollection extends Command
                 usort($sources,fn($a,$b)=>(($visits[$a]??0)<=>($visits[$b]??0))?:($counts[$a]<=>$counts[$b]));$cat=$sources[0];
                 $page=$importer->fetchPage($cursors[$cat]??null,$cat);$pages++;$visits[$cat]=($visits[$cat]??0)+1;
                 if(empty($page['next'])||$page['next']===($cursors[$cat]??null))$exhausted[]=$cat;
-                $cursors[$cat]=$page['next']??null;$this->line(StorySeo::CATEGORIES[$cat][0].': '.count($page['created']).' nieuwe kandidaten opgehaald.');
+                $cursors[$cat]=$page['next']??null;$this->state['cursors']=$cursors;$this->state['exhausted']=array_values(array_unique($exhausted));$this->state['visits']=$visits;$this->save();
+                $this->line(StorySeo::CATEGORIES[$cat][0].': '.count($page['created']).' nieuwe kandidaten opgehaald.');
             }
+        }catch(\App\Services\NewsDataRateLimitException $e){
+            $this->state['retry_at']=$e->retryAt->toIso8601String();$this->save();
+            $this->report();$this->warn('NewsData heeft de aanvraag tijdelijk begrensd (HTTP 429). Voortgang bewaard; volgende poging vanaf '.$e->retryAt->timezone('Europe/Amsterdam')->format('d-m H:i').'.');return self::SUCCESS;
         }catch(\App\Services\LocalAiPending $e){
             return $this->paused('Lokale AI-opdracht staat klaar. Wachten is normaal; de minuutplanning hervat de ronde automatisch.',self::SUCCESS);
         }catch(\Throwable $e){

@@ -54,6 +54,15 @@ class NewsImporter {
         }
         if($cursor)$query['page']=$cursor;
         try{$r=Http::withOptions(['allow_redirects'=>false])->connectTimeout(10)->timeout(45)->get('https://newsdata.io/api/1/latest',$query);}catch(\Throwable $e){throw new RuntimeException('NewsData verbinding mislukt.');}
+        if($r->status()===429){
+            // A 429 is a provider cooldown, not a reason to retry on every scheduler tick.
+            $retryAt=Carbon::now('UTC')->addMinutes(15);
+            $retryHeader=$r->header('Retry-After');
+            if(is_string($retryHeader)&&trim($retryHeader)!==''){
+                try{$candidate=ctype_digit(trim($retryHeader))?Carbon::now('UTC')->addSeconds(max(60,(int)$retryHeader)):Carbon::parse($retryHeader,'UTC');if($candidate->isFuture())$retryAt=$candidate->toImmutable();}catch(\Throwable $e){}
+            }
+            throw new NewsDataRateLimitException($retryAt);
+        }
         if(!$r->successful())throw new RuntimeException('NewsData HTTP '.$r->status().'.');
         $data=$r->json();if(($data['status']??'')!=='success'||!is_array($data['results']??null))throw new RuntimeException('NewsData gaf geen geldige resultaten.');
         $created=[];
