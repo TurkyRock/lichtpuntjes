@@ -14,10 +14,6 @@
   state=next;
   if(grid&&next.badge_new_points>0){
    const steps=[...grid.querySelectorAll('.badge-path-step')],current=[...steps].reverse().find(e=>Number(e.dataset.badgePoints)<=next.total)||steps[0];
-   const banner=document.querySelector('.badge-progress-update');
-   if(banner&&current){banner.hidden=false;banner.querySelector('[data-badge-update-title]').textContent=next.new_badges?.length?(en?'You have earned a new badge!':'Wat straal jij vandaag!'):(en?'Your light trail has grown.':'Je lichtspoor is weer gegroeid.');
-    const following=steps.find(e=>Number(e.dataset.badgePoints)>next.total);banner.querySelector('[data-badge-update-detail]').textContent=next.total+(en?' bright points. ':' lichtpunten. ')+(following?(en?'Another ':'Nog ')+(Number(following.dataset.badgePoints)-next.total)+(en?' to ':' tot ')+following.dataset.badgeName+'.':(en?'Every badge earned!':'Alle badges behaald!'));
-    banner.querySelector('[data-badge-update-link]').href='#'+current.id;}
    if(current&&current!==target){observer?.disconnect();target=current;visibleGrid=false;if(observer)observer.observe(current);else visibleGrid=true;}
   }
   document.querySelectorAll('a[href]').forEach(link=>{

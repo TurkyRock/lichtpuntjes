@@ -28,8 +28,14 @@
 .weather-compact .weather-fineprint{margin:0;padding:0}.weather-compact .weather-fineprint summary{padding:17px 2px}.weather-compact .weather-hour-section{padding:18px;margin:0 0 18px}.weather-compact .weather-hour-section h2{font-size:24px;margin:0}.weather-compact .weather-source{font:12px/1.5 system-ui;margin:18px 0 0}.weather-compact .weather-maps{margin:0 0 20px;gap:16px}.weather-compact .weather-map-card h2{font-size:23px}
 .weather-outside .weather-daily-advice{grid-template-columns:1.3fr 1fr}
 .weather-outside .weather-outdoor{order:-1}
-.weather-outside .weather-outdoor h2{font-size:30px}
-@media(max-width:720px){main:has(.weather-compact){padding:0 12px}.weather-page.weather-compact{padding:20px 16px}.weather-compact .weather-heading{display:block}.weather-compact .weather-location{width:100%;margin-top:18px}.weather-compact .weather-location>div{width:auto;flex:1;min-width:180px}.weather-compact .weather-location-hint{max-width:none;width:100%}.weather-compact .weather-daily-advice{grid-template-columns:1fr}.weather-compact .weather-today{padding:18px}.weather-compact .weather-today-copy{grid-template-columns:90px 1fr;gap:6px 12px}.weather-compact .weather-temperature{font-size:52px}.weather-compact #weatherLevel{font-size:21px}.weather-compact .weather-message{font-size:15px}.weather-compact .weather-week{grid-template-columns:repeat(7,minmax(75px,1fr));overflow-x:auto;padding-bottom:8px}.weather-compact .weather-daypart h3{font-size:16px}.weather-compact .weather-daypart>.weather-small{font-size:12px}.weather-compact .weather-part-value{gap:4px}.weather-compact .weather-part-value strong{font-size:26px}.weather-compact .weather-part-value svg{width:32px;height:32px}.weather-compact .weather-maps{grid-template-columns:1fr}}
+.weather-outside .weather-outdoor{display:grid;grid-template-columns:minmax(0,1fr) clamp(110px,26%,184px);align-items:center;gap:12px}
+.weather-outside .weather-outdoor>div{min-width:0}
+.weather-outside .weather-outdoor h2{font-size:27px;margin:0 0 10px}
+.weather-walk-photo{position:relative;z-index:1;width:100%;margin:0;transform:rotate(-2deg);filter:drop-shadow(1px 4px 3px #31472842)}
+.weather-walk-photo::before{content:"";position:absolute;z-index:2;left:calc(50% - 28px);top:-7px;width:56px;height:16px;background:#d3b97ab5 url('/images/button-paper-grain.svg');transform:rotate(-5deg);clip-path:polygon(0 7%,100% 0,98% 100%,2% 94%)}
+.weather-outside .weather-walk-photo .weather-stamp{height:auto;aspect-ratio:4/3;padding:7px}
+.weather-outside .weather-walk-photo img{display:block;width:100%;height:100%;object-fit:cover}
+@media(max-width:720px){main:has(.weather-compact){padding:0 12px}.weather-page.weather-compact{padding:20px 16px}.weather-compact .weather-heading{display:block}.weather-compact .weather-location{width:100%;margin-top:18px}.weather-compact .weather-location>div{width:auto;flex:1;min-width:180px}.weather-compact .weather-location-hint{max-width:none;width:100%}.weather-compact .weather-daily-advice{grid-template-columns:1fr}.weather-compact .weather-today{padding:18px}.weather-compact .weather-today-copy{grid-template-columns:90px 1fr;gap:6px 12px}.weather-compact .weather-temperature{font-size:52px}.weather-compact #weatherLevel{font-size:21px}.weather-compact .weather-message{font-size:15px}.weather-compact .weather-week{grid-template-columns:repeat(7,minmax(75px,1fr));overflow-x:auto;padding-bottom:8px}.weather-compact .weather-daypart h3{font-size:16px}.weather-compact .weather-daypart>.weather-small{font-size:12px}.weather-compact .weather-part-value{gap:4px}.weather-compact .weather-part-value strong{font-size:26px}.weather-compact .weather-part-value svg{width:32px;height:32px}.weather-compact .weather-maps{grid-template-columns:1fr}.weather-outside .weather-outdoor{grid-template-columns:minmax(0,1fr) 108px;gap:10px}.weather-outside .weather-outdoor h2{font-size:23px}}
 @media(prefers-reduced-motion:reduce){.weather-compact *{transition:none!important}}
 
 .weather-compact .weather-location-hint{position:static;height:auto;overflow:visible;clip-path:none}.weather-compact .weather-location-feedback{position:static;width:100%;font-size:14px}
@@ -176,6 +182,10 @@
   .weather-outside .weather-stamp {
     aspect-ratio: 10 / 11;
     padding: 9px;
+  }
+  .weather-outside .weather-walk-photo .weather-stamp {
+    aspect-ratio: 4 / 3;
+    padding: 7px;
   }
   .weather-outside .weather-nature-photo::before {
     width: 76px;

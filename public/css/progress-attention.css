@@ -3,8 +3,6 @@
 .lightpoint-attention-count{display:inline-block!important;flex:none;min-width:20px;padding:3px 5px;margin:0 0 0 4px!important;border-radius:10px;background:#f4d379;color:#29452f!important;font:650 10px/1.25 system-ui,sans-serif;white-space:nowrap}
 .site-header .lightpoint-attention-count{position:absolute;top:-4px;right:-4px}
 .account-menu-grouped a.has-unread-lightpoints{flex-wrap:wrap}
-.badge-progress-update{margin:12px 0 18px;padding:17px 20px;background:#fff7dc;border-left:3px solid #d7b954;color:#294a37}
-.badge-progress-update strong{display:block;font:400 24px/1.25 Georgia,serif}.badge-progress-update p{margin:8px 0 0;font-size:14px}
 .badge-path-route .badge-path-earned-route{stroke:#dfb448;stroke-width:2.8;opacity:1}
 .badge-path-route .badge-path-progress-route{stroke:#dfb448;stroke-width:2.8;stroke-linecap:round;filter:drop-shadow(0 0 4px #e4bd55b0)}
 .badge-path-route .badge-path-light-orb{fill:#fff4c9;stroke:#d0a43b;stroke-width:1.5;filter:drop-shadow(0 0 6px #e6bb43)}

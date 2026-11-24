@@ -5,7 +5,6 @@ $next=$progress['next'];
 @endphp
 @push('page-styles')<link rel="stylesheet" href="/css/badge-path.css?v={{ filemtime(public_path('css/badge-path.css')) }}"><script src="/js/badge-path.js?v={{ filemtime(public_path('js/badge-path.js')) }}" defer></script>@endpush
 <section class="badge-path" aria-label="{{ $en?'Your badge collection':'Jouw badgeverzameling' }}">
-<div class="badge-progress-update" role="status" hidden><strong data-badge-update-title></strong><p data-badge-update-detail></p><a data-badge-update-link>{{ $en?'View your new progress':'Bekijk je nieuwe voortgang' }} ↗</a></div>
 <div class="badge-path-summary">
 <div class="badge-path-total"><strong>{{ $progress['points'] }}</strong><span>{{ $en?'bright points':'lichtpunten' }}</span></div>
 <div class="badge-path-count"><strong>{{ $progress['earned_count'] }} <span>{{ $en?'of':'van' }}</span> {{ $progress['total_badges'] }}</strong><span>{{ $en?'badges earned':'badges behaald' }}</span></div>
