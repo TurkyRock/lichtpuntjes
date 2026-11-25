@@ -101,9 +101,11 @@ class HourlyNewsCollection extends Command
                     if(!app(\App\Services\NewsFeeds\Rights::class)->permitted($ready)){$ready->update(['status'=>'draft','reason'=>'Bronrechten niet vastgesteld; geen nieuw beeld of publicatie.']);continue;}
                     if(app(NewsDuplicates::class)->hideIfDuplicate($ready)){$ready->save();continue;}
                     try {
-                        $this->line('#'.$ready->id.' passende afbeelding maken/controleren');
-                        $ready->update(['photo'=>array_merge($ready->photo??[],['requested_style'=>LichtpuntIllustrationPrompt::PHOTO_STYLE])]);
-                        if(!$photos->attach($ready)){$imageFailed[]=$ready->id;continue;}
+                        if(data_get($ready->photo,'style')!==LichtpuntIllustrationPrompt::PHOTO_STYLE||!$photos->current($ready)){
+                            $this->line('#'.$ready->id.' passende afbeelding maken/controleren');
+                            $ready->update(['photo'=>array_merge($ready->photo??[],['requested_style'=>LichtpuntIllustrationPrompt::PHOTO_STYLE])]);
+                            if(!$photos->attach($ready)){$imageFailed[]=$ready->id;continue;}
+                        }
                         $ready->refresh();if(!$photos->current($ready)){$imageFailed[]=$ready->id;continue;}
                     }catch(\App\Services\ImagePendingException $e){return $this->paused($e->getMessage().' Voortgang bewaard.',self::SUCCESS);}
                     catch(\App\Services\LocalAiPending $e){return $this->paused('Lokale tekst-/beeldopdracht staat in de wachtrij. Voortgang bewaard.',self::SUCCESS);}
