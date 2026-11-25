@@ -1,6 +1,6 @@
 <?php
 return [
-    'enabled'=>true,
+    'enabled'=>(bool) env('NEWS_FEEDS_ENABLED', false),
     'strict_publisher_rights'=>true,
     'international_per_hour'=>2,
     'regional_per_hour'=>2,
