@@ -173,6 +173,7 @@ PROMPT;
         if ($response->status()===429) {
             $a->decrement('attempts');
             if(app(LaptopImages::class)->enabled())throw app(AiAvailability::class)->pause(429,is_array($response->json())?$response->json():[],$response->header('Retry-After'));
+            throw new GeminiTemporaryException('Gemini HTTP 429.');
         } // Quota is geen inhoudelijke mislukking.
         if (!$response->successful()) throw new RuntimeException('Gemini HTTP '.$response->status().'.');
         if ($response->json('candidates.0.finishReason')!=='STOP') throw new RuntimeException('Gemini gaf geen complete samenvatting.');

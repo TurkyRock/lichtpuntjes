@@ -37,25 +37,6 @@ class HourlyNewsCollection extends Command
         $this->line('Voortgang bewaard. Hervat met: php -d memory_limit=512M artisan news:hourly --per-category='.$this->target);
         return $exit;
     }
-    private function assess(NewsImporter $importer,Article $article):void {
-        $retry=0;
-        while(true){
-            try{$importer->assess($article,true,'news_ready');return;}
-            catch(\App\Services\LocalAiPending $e){throw $e;}
-            catch(GeminiTemporaryException $e){
-                $seconds=$retry++===0?60:300;
-                // Report only known status codes, never upstream bodies or request details.
-                preg_match('/^Gemini HTTP (408|429|500|502|503|504)\.$/D', $e->getMessage(), $status);
-                $cause = isset($status[1]) ? 'HTTP '.$status[1] : 'verbindingsfout of time-out';
-                $this->warn('#'.$article->id.' Gemini tijdelijk niet beschikbaar ('.$cause.'). Nieuwe poging over '.$seconds.' seconden.');
-                for($elapsed=0;$elapsed<$seconds;$elapsed+=5){
-                    if(microtime(true)+5>=$this->deadline)throw new \RuntimeException('De uitvoeringstijd van deze ronde is voorbij.');
-                    Sleep::for(5)->seconds();
-                }
-                $article->refresh();if($article->hidden_at)return;
-            }
-        }
-    }
     public function handle(NewsImporter $importer,ArticlePhotoFinder $photos):int {
         if(!\App\Support\NewsImportWindow::isOpen()){$this->info(\App\Support\NewsImportWindow::PAUSED);return self::SUCCESS;}
         if($this->option('resume')){
@@ -79,19 +60,19 @@ class HourlyNewsCollection extends Command
                 if(!is_array($saved)||($saved['version']??null)!==1||!is_array($saved['selected']??null)||!is_int($saved['target']??null)||!is_string($saved['hour']??null))throw new \RuntimeException('Ongeldige voortgang.');
                 $this->state=$saved;
             }
+            $hour=now('UTC')->format('Y-m-d-H');
+            if($this->option('resume')&&(!$this->state||$this->state['hour']!==$hour||($this->state['finished']??false)))return self::SUCCESS;
             if(!empty($this->state['retry_at'])){
                 $retryAt=\Carbon\CarbonImmutable::parse($this->state['retry_at']);
                 if($retryAt->isFuture()){$this->info('NewsData heeft tijdelijk een aanvraaglimiet bereikt. Hervatten vanaf '.$retryAt->timezone('Europe/Amsterdam')->format('d-m H:i').'.');return self::SUCCESS;}
                 $this->state['retry_at']=null;$this->save();
             }
-            $hour=now('UTC')->format('Y-m-d-H');
             if($this->state&&($this->state['finished']??false)&&$this->state['hour']===$hour){$this->info('Deze uurronde is al afgerond. Er worden geen extra artikelen geplaatst.');return self::SUCCESS;}
-            if(!$this->state||($this->state['finished']??false)){
+            if(!$this->state||$this->state['hour']!==$hour){
                 if($this->state){File::ensureDirectoryExists(dirname($this->path).'/completed');File::replace(dirname($this->path).'/completed/'.$this->state['hour'].'.json',json_encode($this->state,JSON_THROW_ON_ERROR));}
                 $this->state=['version'=>1,'hour'=>$hour,'started_at'=>now()->toIso8601String(),'target'=>$this->target,'selected'=>[],'cursors'=>[],'exhausted'=>[],'visits'=>[],'retry_at'=>null,'finished'=>false];$this->save();
             }elseif($this->state['target']!==$this->target){$this->error('Er staat nog een ronde open met --per-category='.$this->state['target'].'. Rond die eerst af.');return self::FAILURE;}
             $this->state+=['cursors'=>[],'exhausted'=>[],'visits'=>[],'retry_at'=>null];
-            if($this->state['hour']!==$hour)$this->line('Een eerdere ronde is nog niet compleet; eerst die ronde afmaken.');
             $this->info('Doel: '.$this->target.' nieuwe artikelen met beeld per categorie, '.($this->target*6).' in totaal. Bestaande artikelen blijven behouden.');
             $cursors=$this->state['cursors'];$exhausted=$this->state['exhausted'];$visits=$this->state['visits'];$imageFailed=[];$pages=0;$assessed=false;
             while(true){
@@ -128,7 +109,18 @@ class HourlyNewsCollection extends Command
                 if($candidate){
                     if($assessed&&!config('news.use_local_text_ai'))Sleep::for(max(0,(int)config('news_hourly.assessment_delay',8)))->seconds();$assessed=true;
                     $this->line('#'.$candidate->id.' positief nieuws beoordelen');
-                    try{$this->assess($importer,$candidate);}
+                    try{$importer->assess($candidate,true,'news_ready');}
+                    catch(GeminiTemporaryException $e){
+                        preg_match('/^Gemini HTTP (408|429|500|502|503|504)\.$/D',$e->getMessage(),$status);
+                        $cause=$e instanceof \App\Services\AiWaitException?$e->reason:(isset($status[1])?'HTTP '.$status[1]:'verbindingsfout of time-out');
+                        $this->state['finished']=true;
+                        $this->state['finished_at']=now()->toIso8601String();
+                        $this->state['finish_reason']='gemini_unavailable';
+                        $this->save();
+                        $this->warn('#'.$candidate->id.' Gemini tijdelijk niet beschikbaar ('.$cause.'). Ronde afgesloten; op het volgende geplande uur proberen we opnieuw.');
+                        $this->report();
+                        return self::SUCCESS;
+                    }
                     catch(\App\Services\NewsServiceException $e){
                         if(!config('news.use_local_text_ai')||!str_starts_with($e->getMessage(),'Lokale AI-opdracht mislukt')&&!str_starts_with($e->getMessage(),'Lokaal antwoord heeft een ongeldig formaat'))throw $e;
                         $candidate->update(['status'=>'error','attempts'=>3,'reason'=>'Lokale AI leverde na de beschikbare pogingen geen geldig antwoord. Technisch overgeslagen, niet inhoudelijk afgekeurd.']);
@@ -157,7 +149,6 @@ class HourlyNewsCollection extends Command
         }catch(\App\Services\LocalAiPending $e){
             return $this->paused('Lokale AI-opdracht staat klaar. Wachten is normaal; de minuutplanning hervat de ronde automatisch.',self::SUCCESS);
         }catch(\Throwable $e){
-            if($e->getMessage()==='De uitvoeringstijd van deze ronde is voorbij.')return $this->paused('Uitvoeringstijd bereikt. De volgende uitvoering gaat verder met deze ronde.');
             Log::warning('Hourly news paused',['exception'=>get_class($e)]);
             $message=preg_match('/^(Gemini HTTP \d{3}\.|NewsData HTTP \d{3}\.)$/',$e->getMessage())?$e->getMessage():'Controleer nieuws-/AI-verbinding, configuratie en het Laravel-logboek.';
             if($this->state)return $this->paused('Uurronde onderbroken. '.$message,self::FAILURE);
