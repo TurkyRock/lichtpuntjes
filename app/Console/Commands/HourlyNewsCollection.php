@@ -44,7 +44,10 @@ class HourlyNewsCollection extends Command
             catch(\App\Services\LocalAiPending $e){throw $e;}
             catch(GeminiTemporaryException $e){
                 $seconds=$retry++===0?60:300;
-                $this->warn((config('news.use_local_text_ai')?'Lokale laptop-AI':'Gemini').' tijdelijk niet beschikbaar; nieuwe poging over '.$seconds.' seconden.');
+                // Report only known status codes, never upstream bodies or request details.
+                preg_match('/^Gemini HTTP (408|429|500|502|503|504)\.$/D', $e->getMessage(), $status);
+                $cause = isset($status[1]) ? 'HTTP '.$status[1] : 'verbindingsfout of time-out';
+                $this->warn('#'.$article->id.' Gemini tijdelijk niet beschikbaar ('.$cause.'). Nieuwe poging over '.$seconds.' seconden.');
                 for($elapsed=0;$elapsed<$seconds;$elapsed+=5){
                     if(microtime(true)+5>=$this->deadline)throw new \RuntimeException('De uitvoeringstijd van deze ronde is voorbij.');
                     Sleep::for(5)->seconds();
