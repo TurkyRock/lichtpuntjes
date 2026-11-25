@@ -7,6 +7,6 @@ return [
  'lease_seconds'=>180,
  'retention_hours'=>24,
  'max_claims'=>3,
- // First evaluate the local model: approval/rejection of user text needs a human.
- 'human_review'=>(bool)env('LOCAL_AI_HUMAN_REVIEW',true),
+ // Clear AI decisions can be applied automatically; uncertainty still routes to a person.
+ 'human_review'=>(bool)env('LOCAL_AI_HUMAN_REVIEW',false),
 ];

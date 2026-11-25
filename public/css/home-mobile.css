@@ -91,10 +91,10 @@
  .home-unified #grid>.card>.picture{display:block;position:relative;grid-column:2;grid-row:1;width:100%;height:clamp(45px,11.5cqw,74px);min-height:0;aspect-ratio:auto;margin:0;padding:0;border:0;border-radius:6px;background:#e6e9db;mask:none;-webkit-mask:none;overflow:hidden;filter:none}
  .home-unified #grid>.card>.picture img{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
  .home-unified #grid>.card .cardbody{display:block;grid-column:1;grid-row:1;min-width:0;padding:0;border:0}
- .home-unified #grid>.card .cardbody h3{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:0;margin:0;color:var(--daily-ink);font:700 clamp(13px,3.8cqw,23px)/1.17 DailyLight,Georgia,serif;letter-spacing:-.2px;overflow-wrap:normal}
+ .home-unified #grid>.card .cardbody h3{display:block;overflow:visible;min-height:0;margin:0;color:var(--daily-ink);font:700 clamp(16px,4.5cqw,20px)/1.16 DailyLight,Georgia,serif;letter-spacing:-.2px;overflow-wrap:anywhere;hyphens:auto}
  .home-unified #grid>.card .cardbody h3 a{color:inherit;text-decoration:none}
  .home-unified #grid>.card :is(.teaser,.card-metadata,.card-actions,.category,.photo-credit){display:none}
- .home-unified #grid .mobile-card-read{display:inline-flex;align-items:center;min-height:27px;margin:0;padding:0;border:0;background:none;color:var(--daily-ink);font:400 clamp(12px,2.9cqw,18px)/1.2 DailyLight,Georgia,serif;text-decoration:underline;text-decoration-color:#d5b24c;text-underline-offset:4px}
+ .home-unified #grid .mobile-card-read{display:none}
  .home-unified .no-photo{display:grid;place-items:center;width:100%;height:100%;min-height:0;padding:3px;background:#e5e9d8;color:#516149;font:11px/1.2 system-ui,sans-serif;text-align:center}
  .home-unified .mobile-feed-more{display:flex;align-items:center;justify-content:center;gap:13px;margin:13px 0 19px}
  .home-unified .mobile-feed-more::before,.home-unified .mobile-feed-more::after{content:'';height:1px;flex:1;background:var(--daily-gold)}

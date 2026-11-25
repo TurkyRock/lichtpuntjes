@@ -24,7 +24,7 @@ Schedule::command('news:daily')->dailyAt('07:00')->timezone('Europe/Amsterdam')-
 \Illuminate\Support\Facades\Schedule::command('profiles:cleanup')->dailyAt('03:15')->withoutOverlapping();
 
 // Local AI is asynchronous: resume only unfinished rounds, never create a new round between hours.
-if(config('news_hourly.enabled')&&config('local-ai.enabled')) {
+if(config('news_hourly.enabled')&&config('news.use_local_text_ai')) {
  Schedule::command('news:hourly --resume --per-category='.(int)config('news_hourly.per_category',3))
   ->everyMinute()->when(fn()=>\App\Support\NewsImportWindow::isOpen())->withoutOverlapping(5)->runInBackground()->appendOutputTo(storage_path('logs/news-hourly.log'));
 }

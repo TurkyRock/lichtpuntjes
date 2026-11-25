@@ -12,6 +12,18 @@ $next=$progress['next'];
 @if($next)<div class="badge-path-next">@include('shared.paper-badge',['badge'=>$next])<div><span>{{ $en?'Next badge':'Volgende badge' }}</span><strong>{{ $next['name'] }}</strong><span>{{ $en?'Another ':'Nog ' }}<b>{{ $next['points']-$progress['points'] }}</b> {{ $en?'bright points':'lichtpunten' }}</span></div></div>@else<div class="badge-path-next"><strong>{{ $en?'Every badge earned!':'Alle badges behaald!' }}</strong><span>{{ $en?'Keep sharing a little light.':'Blijf een beetje licht doorgeven.' }}</span></div>@endif
 <progress value="{{ $progress['progress'] }}" max="100" aria-label="{{ $en?'Progress towards your next badge':'Voortgang naar je volgende badge' }}">{{ $progress['progress'] }}%</progress>
 </div>
+<div class="badge-earn-invites" aria-label="{{ $en?'Share a moment or write a story':'Deel een momentje of schrijf een verhaal' }}">
+<article class="badge-earn-invite badge-earn-invite-moment">
+<span class="badge-earn-invite-label">{{ $en?'A little moment':'Een klein moment' }}</span>
+<h2>{{ $en?'What made your day a little brighter?':'Wat maakte jouw dag lichter?' }}</h2>
+<a href="/mijn-momentjes?lang={{ $en?'en':'nl' }}#new-moment">{{ $en?'Share a moment':'Deel een momentje' }} <span aria-hidden="true">→</span></a>
+</article>
+<article class="badge-earn-invite badge-earn-invite-story">
+<span class="badge-earn-invite-label">{{ $en?'Your own story':'Een eigen verhaal' }}</span>
+<h2>{{ $en?'What good initiative deserves more attention?':'Welk mooi initiatief verdient aandacht?' }}</h2>
+<a href="/lichtpuntje/schrijven?lang={{ $en?'en':'nl' }}">{{ $en?'Write a story':'Schrijf een verhaal' }} <span aria-hidden="true">→</span></a>
+</article>
+</div>
 <ol class="badge-path-grid">
 @foreach($progress['stages'] as $stage)
 @php

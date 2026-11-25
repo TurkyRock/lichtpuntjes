@@ -8,7 +8,7 @@
 <a href="/weer?lang={{ $locale }}">{{ $locale==='en'?'See your local weather':'Bekijk jouw weer' }} →</a>
 </div>
 </article>
-<article class="daily-return-card daily-return-moment">
+<article class="daily-return-card daily-return-moment{{ $dailyMoment?->user ? ' has-author' : '' }}">
 <span class="daily-return-icon" aria-hidden="true">“</span>
 <div class="daily-return-copy">
 <h2>{{ $locale==='en'?'Today’s little moment':'Momentje van vandaag' }}</h2>
@@ -19,5 +19,11 @@
 @endif
 <a href="/momentjes?lang={{ $locale }}">{{ $locale==='en'?'Read the moments':'Lees de Momentjes' }} →</a>
 </div>
+@if($dailyMoment?->user)
+<div class="daily-return-author">
+@if($dailyMoment->user->avatarUrl())<img src="{{ $dailyMoment->user->avatarUrl() }}" width="30" height="30" loading="lazy" alt="">@else<span class="daily-return-author-initial" aria-hidden="true">{{ mb_strtoupper(mb_substr($dailyMoment->user->name,0,1)) }}</span>@endif
+<span>{{ $dailyMoment->user->name }}</span>
+</div>
+@endif
 </article>
 </section>

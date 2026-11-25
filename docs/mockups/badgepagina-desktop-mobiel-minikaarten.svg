@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1510" viewBox="0 0 1700 1510" role="img" aria-labelledby="title desc">
+ <title id="title">Badgepagina voorbeeld voor desktop en mobiel met twee mini-kaarten</title>
+ <desc id="desc">Een ontwerp in de huidige papierstijl van Jouw Lichtpuntjes, met uitnodigingen om een momentje of verhaal te delen boven de badges.</desc>
+ <defs>
+  <filter id="shadow" x="-15%" y="-10%" width="130%" height="130%"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#35513c" flood-opacity=".16"/></filter>
+  <pattern id="grain" width="90" height="90" patternUnits="userSpaceOnUse"><circle cx="12" cy="18" r="1" fill="#b9ad8b" opacity=".17"/><circle cx="53" cy="64" r="1.1" fill="#b9ad8b" opacity=".13"/><circle cx="76" cy="29" r=".8" fill="#b9ad8b" opacity=".15"/></pattern>
+ </defs>
+ <rect width="1700" height="1510" fill="#f7f6ee"/><rect width="1700" height="1510" fill="url(#grain)"/>
+ <text x="48" y="63" fill="#21473c" font-family="Georgia,serif" font-size="37" font-weight="bold">Badgepagina met twee mini-kaarten</text>
+ <text x="50" y="94" fill="#63746a" font-family="Arial,sans-serif" font-size="17">Volledige voorbeeldopmaak · dezelfde papiertextuur, zachte groentinten en gele accenten</text>
+ <text x="56" y="133" fill="#546b59" font-family="Arial,sans-serif" font-size="14" font-weight="bold" letter-spacing="1">DESKTOP</text>
+ <text x="1245" y="133" fill="#546b59" font-family="Arial,sans-serif" font-size="14" font-weight="bold" letter-spacing="1">MOBIEL</text>
+
+ <!-- Desktop full page -->
+ <g transform="translate(45 153)" filter="url(#shadow)">
+  <rect width="1155" height="1305" rx="28" fill="#e5ebdb"/>
+  <rect x="20" y="18" width="205" height="1267" rx="17" fill="#f6f0df"/>
+  <path d="M22 98q40-16 76 0t70 0t56 0v20H22z" fill="#e1d6ba" opacity=".55"/>
+  <text x="45" y="65" fill="#244d42" font-family="Georgia,serif" font-size="24" font-weight="bold">☀ MIJN ACCOUNT</text>
+  <rect x="35" y="130" width="176" height="42" rx="9" fill="#f4d978"/><text x="55" y="157" fill="#294b3e" font-family="Georgia,serif" font-size="17">⌂  Overzicht</text>
+  <text x="42" y="211" fill="#597052" font-family="Arial,sans-serif" font-size="13" font-weight="bold">DELEN</text>
+  <text x="48" y="251" fill="#315744" font-family="Georgia,serif" font-size="16">✎  Deel een lichtpuntje</text>
+  <text x="48" y="290" fill="#315744" font-family="Georgia,serif" font-size="16">☼  Mijn momentjes</text>
+  <text x="48" y="329" fill="#315744" font-family="Georgia,serif" font-size="16">▤  Mijn verhalen</text>
+  <path d="M36 355h175" stroke="#b4c1a6"/>
+  <text x="42" y="397" fill="#597052" font-family="Arial,sans-serif" font-size="13" font-weight="bold">MIJN ACTIVITEIT</text>
+  <rect x="35" y="414" width="176" height="48" rx="10" fill="#f3d875"/><text x="51" y="443" fill="#284b40" font-family="Georgia,serif" font-size="16" font-weight="bold">♜  Lichtpunten &amp; badges</text>
+  <text x="48" y="501" fill="#315744" font-family="Georgia,serif" font-size="16">♡  Mijn reacties</text>
+  <text x="48" y="541" fill="#315744" font-family="Georgia,serif" font-size="16">＋  Puntenoverzicht</text>
+  <text x="48" y="581" fill="#315744" font-family="Georgia,serif" font-size="16">▱  Mijn donaties</text>
+  <path d="M36 609h175" stroke="#b4c1a6"/>
+  <text x="42" y="650" fill="#597052" font-family="Arial,sans-serif" font-size="13" font-weight="bold">ACCOUNT</text>
+  <text x="48" y="694" fill="#315744" font-family="Georgia,serif" font-size="16">➤  Nodig iemand uit</text>
+  <text x="48" y="734" fill="#315744" font-family="Georgia,serif" font-size="16">⚙  Mijn gegevens</text>
+  <text x="48" y="774" fill="#315744" font-family="Georgia,serif" font-size="16">▤  Prullenbak</text>
+  <text x="38" y="1220" fill="#9caa7c" font-family="Georgia,serif" font-size="35">❀</text>
+
+  <!-- main column -->
+  <text x="257" y="77" fill="#1e473d" font-family="Georgia,serif" font-size="43">Lichtpunten &amp; badges</text>
+  <path d="M258 91q60 5 125-1t115 2t90-2" stroke="#a8b996" stroke-width="7" fill="none"/>
+  <text x="1087" y="66" fill="#e9c447" font-family="Georgia,serif" font-size="53">☼</text>
+  <rect x="257" y="111" width="855" height="115" rx="4" fill="#f1d978"/>
+  <path d="M257 121l19-5 31 5 30-5 32 5 31-5 32 5 32-5 33 5 32-5 31 5 33-5 31 5 30-5 34 5 32-5 31 5 32-5 32 5 30-5 32 5 32-5 31 5 32-5 31 5 32-5 30 5 34-5 31 5 32-5 31 5 31-5 33 5 32-5 33 5 31-5 32 5 30-5 32 5 31-5 33 5 31-5 31 5 32-5 35 5v88H257z" fill="#faefc1" opacity=".58"/>
+  <text x="278" y="166" fill="#22473d" font-family="Georgia,serif" font-size="29" font-weight="bold">15</text><text x="278" y="195" fill="#425f50" font-family="Arial,sans-serif" font-size="16">lichtpunten</text>
+  <text x="411" y="166" fill="#22473d" font-family="Georgia,serif" font-size="24" font-weight="bold">3 <tspan font-size="16" font-weight="normal">van</tspan> 24</text><text x="411" y="195" fill="#425f50" font-family="Arial,sans-serif" font-size="16">badges behaald</text>
+  <text x="571" y="177" fill="#247267" font-family="Georgia,serif" font-size="38">☻</text><text x="617" y="162" fill="#425f50" font-family="Arial,sans-serif" font-size="15">Jouw huidige badge</text><text x="617" y="188" fill="#244b40" font-family="Arial,sans-serif" font-size="16" font-weight="bold">Glimlachstarter</text>
+  <text x="837" y="177" fill="#688f65" font-family="Georgia,serif" font-size="38">☻</text><text x="883" y="162" fill="#425f50" font-family="Arial,sans-serif" font-size="15">Volgende badge</text><text x="883" y="188" fill="#244b40" font-family="Arial,sans-serif" font-size="16" font-weight="bold">Opkikker · nog 5</text>
+  <line x1="278" y1="210" x2="1090" y2="210" stroke="#384e42" stroke-width="4" stroke-linecap="round"/><line x1="278" y1="210" x2="744" y2="210" stroke="#678c70" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- two subtle paper cards immediately above badges -->
+  <g transform="translate(257 245)">
+   <rect width="417" height="111" rx="8" fill="#fff9e9" stroke="#e2c960" stroke-width="2"/>
+   <path d="M8 8h401v95H8z" fill="url(#grain)" opacity=".58"/>
+   <rect x="17" y="13" width="120" height="20" rx="4" fill="#f1d978"/><text x="26" y="27" fill="#315744" font-family="Arial,sans-serif" font-size="11" font-weight="bold">EEN KLEIN MOMENT</text>
+   <text x="17" y="58" fill="#23493e" font-family="Georgia,serif" font-size="19" font-weight="bold">Wat maakte jouw dag lichter?</text>
+   <text x="17" y="86" fill="#226c60" font-family="Arial,sans-serif" font-size="14" font-weight="bold">Deel een momentje →</text>
+  </g>
+  <g transform="translate(688 245)">
+   <rect width="424" height="111" rx="8" fill="#fff9e9" stroke="#aec19f" stroke-width="2"/>
+   <rect x="17" y="13" width="135" height="20" rx="4" fill="#dce7d6"/><text x="26" y="27" fill="#315744" font-family="Arial,sans-serif" font-size="11" font-weight="bold">EEN EIGEN VERHAAL</text>
+   <text x="17" y="58" fill="#23493e" font-family="Georgia,serif" font-size="18" font-weight="bold">Welk initiatief verdient aandacht?</text>
+   <text x="17" y="86" fill="#226c60" font-family="Arial,sans-serif" font-size="14" font-weight="bold">Schrijf een verhaal →</text>
+  </g>
+
+  <!-- desktop badge rows -->
+  <path d="M319 429H1047V620H319v190h728v190H319" fill="none" stroke="#a8bda2" stroke-width="2" stroke-dasharray="8 8"/>
+  <g font-family="Arial,sans-serif" text-anchor="middle">
+   <g transform="translate(260 375)"><text x="24" y="20" fill="#71806e" font-size="13">01</text><circle cx="106" cy="70" r="53" fill="#fffdf5"/><path d="M78 75q28-32 56 0M106 75v35" stroke="#618353" stroke-width="10" fill="none" stroke-linecap="round"/><text x="106" y="150" fill="#284b40" font-size="17" font-weight="bold">Zonnespriet</text><text x="106" y="178" fill="#63756a" font-size="15">0 lichtpunten</text><text x="106" y="208" fill="#617c67" font-size="13" font-weight="bold">Vrijgespeeld</text><text x="106" y="244" fill="#317064" font-size="14">▸ Over deze badge</text></g>
+   <g transform="translate(455 375)"><text x="24" y="20" fill="#71806e" font-size="13">02</text><circle cx="106" cy="70" r="53" fill="#fffdf5"/><rect x="79" y="31" width="54" height="80" rx="20" fill="#73a79b"/><rect x="94" y="47" width="24" height="49" rx="8" fill="#f2d36d"/><text x="106" y="150" fill="#284b40" font-size="17" font-weight="bold">Lichtknopje</text><text x="106" y="178" fill="#63756a" font-size="15">1 lichtpunt</text><text x="106" y="208" fill="#617c67" font-size="13" font-weight="bold">Vrijgespeeld</text><text x="106" y="244" fill="#317064" font-size="14">▸ Over deze badge</text></g>
+   <g transform="translate(650 375)"><text x="24" y="20" fill="#71806e" font-size="13">03</text><circle cx="106" cy="70" r="54" fill="#f2d36d"/><path d="M75 70q31 35 62 0" stroke="#24675d" stroke-width="9" fill="none" stroke-linecap="round"/><text x="106" y="150" fill="#284b40" font-size="17" font-weight="bold">Glimlachstarter</text><text x="106" y="178" fill="#63756a" font-size="15">5 lichtpunten</text><rect x="66" y="192" width="80" height="22" fill="#f4dc86"/><text x="106" y="208" fill="#315744" font-size="13" font-weight="bold">Hier sta je</text><text x="106" y="244" fill="#317064" font-size="14">▸ Over deze badge</text></g>
+   <g transform="translate(845 375)"><text x="24" y="20" fill="#71806e" font-size="13">04</text><circle cx="106" cy="70" r="53" fill="#d3e4dc"/><circle cx="88" cy="58" r="11" fill="#fff9e9"/><circle cx="124" cy="58" r="11" fill="#fff9e9"/><circle cx="88" cy="58" r="4" fill="#315744"/><circle cx="124" cy="58" r="4" fill="#315744"/><path d="M77 78q29 32 58 0" stroke="#315744" stroke-width="7" fill="none" stroke-linecap="round"/><text x="106" y="150" fill="#284b40" font-size="17" font-weight="bold">Opkikker</text><text x="106" y="178" fill="#63756a" font-size="15">20 lichtpunten</text><text x="106" y="208" fill="#617c67" font-size="13" font-weight="bold">Volgende badge</text><text x="106" y="244" fill="#317064" font-size="14">▸ Over deze badge</text></g>
+  </g>
+  <text x="286" y="696" fill="#71806e" font-family="Arial,sans-serif" font-size="13">05</text><text x="482" y="696" fill="#71806e" font-family="Arial,sans-serif" font-size="13">06</text><text x="677" y="696" fill="#71806e" font-family="Arial,sans-serif" font-size="13">07</text><text x="872" y="696" fill="#71806e" font-family="Arial,sans-serif" font-size="13">08</text>
+  <g font-family="Arial,sans-serif" text-anchor="middle" fill="#345348"><text x="366" y="801" font-size="17" font-weight="bold">Zonnestraal</text><text x="561" y="801" font-size="17" font-weight="bold">Goednieuwsbezorger</text><text x="756" y="801" font-size="17" font-weight="bold">Sfeermaker</text><text x="951" y="801" font-size="17" font-weight="bold">Complimentenkanon</text><text x="366" y="830" font-size="15" fill="#63756a">50 lichtpunten</text><text x="561" y="830" font-size="15" fill="#63756a">100 lichtpunten</text><text x="756" y="830" font-size="15" fill="#63756a">175 lichtpunten</text><text x="951" y="830" font-size="15" fill="#63756a">275 lichtpunten</text></g>
+  <path d="M319 885H1047V1053H319v175h728" fill="none" stroke="#a8bda2" stroke-width="2" stroke-dasharray="8 8"/>
+  <g font-family="Arial,sans-serif" text-anchor="middle" fill="#345348"><text x="366" y="1060" font-size="13" fill="#71806e">09</text><text x="561" y="1060" font-size="13" fill="#71806e">10</text><text x="756" y="1060" font-size="13" fill="#71806e">11</text><text x="951" y="1060" font-size="13" fill="#71806e">12</text><text x="366" y="1175" font-size="17" font-weight="bold">Wandelend zonnetje</text><text x="561" y="1175" font-size="17" font-weight="bold">Geluksverspreider</text><text x="756" y="1175" font-size="17" font-weight="bold">Lichtpuntlegende</text><text x="951" y="1175" font-size="17" font-weight="bold">Gezelligheidscentrale</text><text x="366" y="1205" font-size="15" fill="#63756a">400 lichtpunten</text><text x="561" y="1205" font-size="15" fill="#63756a">600 lichtpunten</text><text x="756" y="1205" font-size="15" fill="#63756a">850 lichtpunten</text><text x="951" y="1205" font-size="15" fill="#63756a">1200 lichtpunten</text></g>
+ </g>
+
+ <!-- Mobile full page -->
+ <g transform="translate(1230 153)" filter="url(#shadow)">
+  <rect width="430" height="1305" rx="35" fill="#e5ebdb" stroke="#d8decc" stroke-width="2"/>
+  <rect x="15" y="16" width="400" height="1273" rx="24" fill="#f7f5ec"/>
+  <text x="38" y="62" fill="#21483d" font-family="Georgia,serif" font-size="29">Lichtpunten &amp; badges</text>
+  <path d="M39 75q54 3 103-1t94 2" stroke="#a8b996" stroke-width="5" fill="none"/>
+  <rect x="34" y="94" width="362" height="130" rx="6" fill="#f1d978"/>
+  <text x="53" y="132" fill="#22473d" font-family="Georgia,serif" font-size="31" font-weight="bold">15</text><text x="54" y="158" fill="#425f50" font-family="Arial,sans-serif" font-size="14">lichtpunten</text>
+  <text x="171" y="132" fill="#22473d" font-family="Georgia,serif" font-size="23" font-weight="bold">3 van 24</text><text x="171" y="158" fill="#425f50" font-family="Arial,sans-serif" font-size="14">badges behaald</text>
+  <text x="53" y="194" fill="#315744" font-family="Arial,sans-serif" font-size="14">Huidige badge: <tspan font-weight="bold">Glimlachstarter</tspan></text>
+  <line x1="53" y1="211" x2="378" y2="211" stroke="#394e42" stroke-width="3"/><line x1="53" y1="211" x2="190" y2="211" stroke="#668c70" stroke-width="4"/>
+  <g transform="translate(34 243)">
+   <rect width="362" height="99" rx="8" fill="#fff9e9" stroke="#e2c960" stroke-width="2"/>
+   <rect x="13" y="10" width="120" height="19" rx="4" fill="#f1d978"/><text x="21" y="24" fill="#315744" font-family="Arial,sans-serif" font-size="10" font-weight="bold">EEN KLEIN MOMENT</text>
+   <text x="13" y="52" fill="#23493e" font-family="Georgia,serif" font-size="18" font-weight="bold">Wat maakte jouw dag lichter?</text>
+   <text x="13" y="80" fill="#226c60" font-family="Arial,sans-serif" font-size="14" font-weight="bold">Deel een momentje →</text>
+  </g>
+  <g transform="translate(34 354)">
+   <rect width="362" height="99" rx="8" fill="#fff9e9" stroke="#aec19f" stroke-width="2"/>
+   <rect x="13" y="10" width="134" height="19" rx="4" fill="#dce7d6"/><text x="21" y="24" fill="#315744" font-family="Arial,sans-serif" font-size="10" font-weight="bold">EEN EIGEN VERHAAL</text>
+   <text x="13" y="52" fill="#23493e" font-family="Georgia,serif" font-size="18" font-weight="bold">Welk initiatief verdient aandacht?</text>
+   <text x="13" y="80" fill="#226c60" font-family="Arial,sans-serif" font-size="14" font-weight="bold">Schrijf een verhaal →</text>
+  </g>
+  <text x="35" y="488" fill="#71806e" font-family="Arial,sans-serif" font-size="13" font-weight="bold" letter-spacing="1">JOUW BADGES</text>
+  <!-- two-column mobile badge cards -->
+  <path d="M62 574H368V780H62" fill="none" stroke="#a8bda2" stroke-width="2" stroke-dasharray="7 7"/>
+  <g font-family="Arial,sans-serif" text-anchor="middle">
+   <g transform="translate(37 505)"><text x="19" y="18" fill="#71806e" font-size="11">01</text><circle cx="91" cy="66" r="38" fill="#fffdf5"/><path d="M72 69q19-24 38 0M91 69v26" stroke="#618353" stroke-width="7" fill="none" stroke-linecap="round"/><text x="91" y="125" fill="#284b40" font-size="15" font-weight="bold">Zonnespriet</text><text x="91" y="148" fill="#63756a" font-size="13">0 lichtpunten</text><text x="91" y="173" fill="#617c67" font-size="11" font-weight="bold">Vrijgespeeld</text></g>
+   <g transform="translate(222 505)"><text x="19" y="18" fill="#71806e" font-size="11">02</text><circle cx="91" cy="66" r="38" fill="#fffdf5"/><rect x="73" y="37" width="36" height="58" rx="13" fill="#73a79b"/><rect x="85" y="49" width="12" height="34" rx="5" fill="#f2d36d"/><text x="91" y="125" fill="#284b40" font-size="15" font-weight="bold">Lichtknopje</text><text x="91" y="148" fill="#63756a" font-size="13">1 lichtpunt</text><text x="91" y="173" fill="#617c67" font-size="11" font-weight="bold">Vrijgespeeld</text></g>
+   <g transform="translate(37 715)"><text x="19" y="18" fill="#71806e" font-size="11">03</text><circle cx="91" cy="66" r="39" fill="#f2d36d"/><path d="M70 66q21 25 42 0" stroke="#24675d" stroke-width="7" fill="none" stroke-linecap="round"/><text x="91" y="125" fill="#284b40" font-size="14" font-weight="bold">Glimlachstarter</text><text x="91" y="148" fill="#63756a" font-size="13">5 lichtpunten</text><rect x="54" y="157" width="74" height="20" fill="#f4dc86"/><text x="91" y="171" fill="#315744" font-size="11" font-weight="bold">Hier sta je</text></g>
+   <g transform="translate(222 715)"><text x="19" y="18" fill="#71806e" font-size="11">04</text><circle cx="91" cy="66" r="38" fill="#d3e4dc"/><circle cx="78" cy="59" r="8" fill="#fff9e9"/><circle cx="104" cy="59" r="8" fill="#fff9e9"/><path d="M76 77q15 16 30 0" stroke="#315744" stroke-width="5" fill="none" stroke-linecap="round"/><text x="91" y="125" fill="#284b40" font-size="15" font-weight="bold">Opkikker</text><text x="91" y="148" fill="#63756a" font-size="13">20 lichtpunten</text><text x="91" y="173" fill="#617c67" font-size="11" font-weight="bold">Volgende badge</text></g>
+  </g>
+  <text x="35" y="946" fill="#71806e" font-family="Arial,sans-serif" font-size="12">05</text><text x="220" y="946" fill="#71806e" font-family="Arial,sans-serif" font-size="12">06</text>
+  <circle cx="125" cy="1020" r="35" fill="#fffdf5"/><text x="125" y="1080" fill="#284b40" font-family="Arial,sans-serif" font-size="14" font-weight="bold" text-anchor="middle">Zonnestraal</text><text x="125" y="1101" fill="#63756a" font-family="Arial,sans-serif" font-size="12" text-anchor="middle">50 lichtpunten</text>
+  <circle cx="310" cy="1020" r="35" fill="#fffdf5"/><text x="310" y="1080" fill="#284b40" font-family="Arial,sans-serif" font-size="14" font-weight="bold" text-anchor="middle">Goednieuwsbezorger</text><text x="310" y="1101" fill="#63756a" font-family="Arial,sans-serif" font-size="12" text-anchor="middle">100 lichtpunten</text>
+  <path d="M62 1151H368" stroke="#a8bda2" stroke-width="2" stroke-dasharray="7 7"/>
+  <text x="39" y="1215" fill="#63756a" font-family="Arial,sans-serif" font-size="13">De badges blijven het hoofdonderdeel;</text>
+  <text x="39" y="1238" fill="#63756a" font-family="Arial,sans-serif" font-size="13">de uitnodigingen staan er rustig boven.</text>
+ </g>
+</svg>

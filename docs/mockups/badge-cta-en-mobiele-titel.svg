@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1120" viewBox="0 0 1600 1120" role="img" aria-labelledby="title desc">
+  <title id="title">Twee badges uitnodigingen en een voorbeeld van een mobiele artikeltitel</title>
+  <desc id="desc">Ontwerpvoorbeelden in de papierstijl van Jouw Lichtpuntjes.</desc>
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#344a39" flood-opacity=".14"/></filter>
+    <pattern id="grain" width="90" height="90" patternUnits="userSpaceOnUse"><circle cx="12" cy="18" r="1" fill="#c6b995" opacity=".18"/><circle cx="53" cy="64" r="1.2" fill="#c6b995" opacity=".16"/><circle cx="76" cy="29" r=".8" fill="#c6b995" opacity=".15"/></pattern>
+  </defs>
+  <rect width="1600" height="1120" fill="#f8f7ef"/>
+  <rect width="1600" height="1120" fill="url(#grain)"/>
+  <text x="58" y="68" fill="#19443c" font-family="Georgia,serif" font-size="38" font-weight="bold">Twee subtiele uitnodigingen boven de badges</text>
+  <text x="60" y="101" fill="#62736a" font-family="Arial,sans-serif" font-size="18">Kies wat het best past; beide leiden naar de bestaande deelpagina’s.</text>
+
+  <!-- Variant 1 -->
+  <g transform="translate(55 135)" filter="url(#shadow)">
+    <rect width="725" height="405" rx="22" fill="#e4ead9"/>
+    <text x="28" y="38" fill="#315744" font-family="Arial,sans-serif" font-size="15" font-weight="bold" letter-spacing="1">VOORBEELD 1 · PAPIERSTROOK</text>
+    <text x="28" y="82" fill="#19443c" font-family="Georgia,serif" font-size="30" font-weight="bold">Lichtpunten &amp; badges</text>
+    <rect x="28" y="101" width="669" height="79" rx="5" fill="#f1d978"/>
+    <path d="M28 108l14-4 19 4 21-5 18 4 22-3 18 4 24-5 18 4 23-4 18 3 20-4 21 4 19-4 22 3 21-4 19 4 20-3 20 4 21-4 22 3 20-4 19 4 20-4 22 3 20-3 20 4 21-4 21 3 18-3 20 4 21-4 20 3 19-3 18 4 21-4 18 3 17-3 19 4 16-4 18 3v60H28z" fill="#f8edbd" opacity=".65"/>
+    <text x="48" y="132" fill="#19443c" font-family="Georgia,serif" font-size="22" font-weight="bold">Nog een lichtpuntje verdienen?</text>
+    <text x="48" y="158" fill="#53685d" font-family="Arial,sans-serif" font-size="15">Deel iets moois met de community.</text>
+    <text x="442" y="145" fill="#216b5d" font-family="Arial,sans-serif" font-size="15" font-weight="bold">Deel een momentje →</text>
+    <text x="442" y="166" fill="#216b5d" font-family="Arial,sans-serif" font-size="15" font-weight="bold">Schrijf een verhaal →</text>
+    <text x="29" y="220" fill="#72816f" font-family="Arial,sans-serif" font-size="14">BADGES</text>
+    <g font-family="Arial,sans-serif" text-anchor="middle">
+      <g transform="translate(42 235)"><circle cx="65" cy="45" r="34" fill="#fffdf5"/><path d="M48 49q17-22 34 0M65 49v20" stroke="#54764e" stroke-width="7" fill="none" stroke-linecap="round"/><text x="65" y="101" fill="#27483b" font-size="14" font-weight="bold">Zonnespriet</text><text x="65" y="122" fill="#63756a" font-size="13">0 lichtpunten</text></g>
+      <g transform="translate(202 235)"><circle cx="65" cy="45" r="34" fill="#fffdf5"/><rect x="51" y="23" width="28" height="45" rx="8" fill="#74a59a"/><rect x="59" y="34" width="12" height="23" rx="4" fill="#f1d978"/><text x="65" y="101" fill="#27483b" font-size="14" font-weight="bold">Lichtknopje</text><text x="65" y="122" fill="#63756a" font-size="13">1 lichtpunt</text></g>
+      <g transform="translate(362 235)"><circle cx="65" cy="45" r="34" fill="#f1d978"/><path d="M45 47q20 23 40 0" stroke="#236b5e" stroke-width="6" fill="none" stroke-linecap="round"/><text x="65" y="101" fill="#27483b" font-size="14" font-weight="bold">Glimlachstarter</text><text x="65" y="122" fill="#63756a" font-size="13">5 lichtpunten</text></g>
+      <g transform="translate(522 235)"><circle cx="65" cy="45" r="34" fill="#d4e4dc"/><circle cx="55" cy="40" r="7" fill="#fff"/><circle cx="75" cy="40" r="7" fill="#fff"/><path d="M49 55q16 16 32 0" stroke="#315744" stroke-width="4" fill="none" stroke-linecap="round"/><text x="65" y="101" fill="#27483b" font-size="14" font-weight="bold">Opkikker</text><text x="65" y="122" fill="#63756a" font-size="13">20 lichtpunten</text></g>
+    </g>
+  </g>
+
+  <!-- Variant 2 -->
+  <g transform="translate(820 135)" filter="url(#shadow)">
+    <rect width="725" height="405" rx="22" fill="#e4ead9"/>
+    <text x="28" y="38" fill="#315744" font-family="Arial,sans-serif" font-size="15" font-weight="bold" letter-spacing="1">VOORBEELD 2 · TWEE MINI-KAARTEN</text>
+    <text x="28" y="82" fill="#19443c" font-family="Georgia,serif" font-size="30" font-weight="bold">Lichtpunten &amp; badges</text>
+    <g transform="translate(28 101)">
+      <rect width="325" height="104" rx="10" fill="#fff9e9" stroke="#efd06c" stroke-width="2"/>
+      <rect x="12" y="12" width="120" height="21" rx="4" fill="#f1d978"/><text x="22" y="27" fill="#315744" font-family="Arial,sans-serif" font-size="12" font-weight="bold">EEN KLEIN MOMENT</text>
+      <text x="14" y="57" fill="#19443c" font-family="Georgia,serif" font-size="18" font-weight="bold">Wat maakte jouw dag lichter?</text>
+      <text x="14" y="84" fill="#216b5d" font-family="Arial,sans-serif" font-size="14" font-weight="bold">Deel een momentje →</text>
+    </g>
+    <g transform="translate(371 101)">
+      <rect width="326" height="104" rx="10" fill="#fff9e9" stroke="#aec2a2" stroke-width="2"/>
+      <rect x="12" y="12" width="126" height="21" rx="4" fill="#dce7d6"/><text x="22" y="27" fill="#315744" font-family="Arial,sans-serif" font-size="12" font-weight="bold">EEN EIGEN VERHAAL</text>
+      <text x="14" y="57" fill="#19443c" font-family="Georgia,serif" font-size="18" font-weight="bold">Welk mooi initiatief verdient aandacht?</text>
+      <text x="14" y="84" fill="#216b5d" font-family="Arial,sans-serif" font-size="14" font-weight="bold">Schrijf een verhaal →</text>
+    </g>
+    <text x="29" y="241" fill="#72816f" font-family="Arial,sans-serif" font-size="14">BADGES</text>
+    <g font-family="Arial,sans-serif" text-anchor="middle">
+      <g transform="translate(42 255)"><circle cx="65" cy="38" r="31" fill="#fffdf5"/><path d="M48 42q17-22 34 0M65 42v17" stroke="#54764e" stroke-width="7" fill="none" stroke-linecap="round"/><text x="65" y="86" fill="#27483b" font-size="14" font-weight="bold">Zonnespriet</text><text x="65" y="106" fill="#63756a" font-size="13">0 lichtpunten</text></g>
+      <g transform="translate(202 255)"><circle cx="65" cy="38" r="31" fill="#fffdf5"/><rect x="51" y="18" width="28" height="40" rx="8" fill="#74a59a"/><rect x="59" y="27" width="12" height="21" rx="4" fill="#f1d978"/><text x="65" y="86" fill="#27483b" font-size="14" font-weight="bold">Lichtknopje</text><text x="65" y="106" fill="#63756a" font-size="13">1 lichtpunt</text></g>
+      <g transform="translate(362 255)"><circle cx="65" cy="38" r="31" fill="#f1d978"/><path d="M45 40q20 22 40 0" stroke="#236b5e" stroke-width="6" fill="none" stroke-linecap="round"/><text x="65" y="86" fill="#27483b" font-size="14" font-weight="bold">Glimlachstarter</text><text x="65" y="106" fill="#63756a" font-size="13">5 lichtpunten</text></g>
+      <g transform="translate(522 255)"><circle cx="65" cy="38" r="31" fill="#d4e4dc"/><circle cx="55" cy="34" r="7" fill="#fff"/><circle cx="75" cy="34" r="7" fill="#fff"/><path d="M49 48q16 16 32 0" stroke="#315744" stroke-width="4" fill="none" stroke-linecap="round"/><text x="65" y="86" fill="#27483b" font-size="14" font-weight="bold">Opkikker</text><text x="65" y="106" fill="#63756a" font-size="13">20 lichtpunten</text></g>
+    </g>
+  </g>
+
+  <!-- Mobile headline example -->
+  <text x="58" y="596" fill="#19443c" font-family="Georgia,serif" font-size="32" font-weight="bold">Mobiel: kop blijft helemaal leesbaar, kaart blijft compact</text>
+  <g transform="translate(58 620)" filter="url(#shadow)">
+    <rect width="500" height="445" rx="22" fill="#e4ead9"/>
+    <rect x="25" y="22" width="450" height="401" rx="18" fill="#fff9e9" stroke="#d7c9a6" stroke-width="2"/>
+    <rect x="45" y="42" width="410" height="198" rx="10" fill="#dfe8dc"/>
+    <circle cx="250" cy="124" r="48" fill="#f1d978"/><path d="M221 127q29-33 58 0M250 127v35" stroke="#54764e" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <rect x="45" y="257" width="110" height="23" rx="4" fill="#f1d978"/><text x="56" y="273" fill="#315744" font-family="Arial,sans-serif" font-size="12" font-weight="bold">NATUUR</text>
+    <text x="45" y="318" fill="#19443c" font-family="Georgia,serif" font-size="24" font-weight="bold">Geheimen ontdekt</text>
+    <text x="45" y="348" fill="#19443c" font-family="Georgia,serif" font-size="24" font-weight="bold">op de bodem van</text>
+    <text x="45" y="378" fill="#19443c" font-family="Georgia,serif" font-size="24" font-weight="bold">het meer</text>
+    <text x="45" y="407" fill="#63756a" font-family="Arial,sans-serif" font-size="14">Volledige kop · maximaal 3 regels</text>
+  </g>
+  <g transform="translate(600 640)">
+    <text x="0" y="0" fill="#315744" font-family="Arial,sans-serif" font-size="18" font-weight="bold">Zo blijft het leesbaar zonder extra scrollruimte:</text>
+    <circle cx="8" cy="40" r="4" fill="#d6b947"/><text x="24" y="46" fill="#52665b" font-family="Arial,sans-serif" font-size="17">Kleinere kop op mobiel, ongeveer 22–24 px.</text>
+    <circle cx="8" cy="78" r="4" fill="#d6b947"/><text x="24" y="84" fill="#52665b" font-family="Arial,sans-serif" font-size="17">Ruimte voor 3 regels; geen harde afkap met ellips.</text>
+    <circle cx="8" cy="116" r="4" fill="#d6b947"/><text x="24" y="122" fill="#52665b" font-family="Arial,sans-serif" font-size="17">Beeld iets lager houden, zodat de kop plek krijgt.</text>
+    <circle cx="8" cy="154" r="4" fill="#d6b947"/><text x="24" y="160" fill="#52665b" font-family="Arial,sans-serif" font-size="17">Richtlijn titel: circa 55–65 tekens.</text>
+    <text x="0" y="220" fill="#19443c" font-family="Georgia,serif" font-size="23" font-weight="bold">Over de maxlengte</text>
+    <text x="0" y="254" fill="#52665b" font-family="Arial,sans-serif" font-size="16">Een tekenlimiet is een vangrail voor nieuwe koppen,</text>
+    <text x="0" y="280" fill="#52665b" font-family="Arial,sans-serif" font-size="16">maar we korten bestaande titels niet blind af. De kaart</text>
+    <text x="0" y="306" fill="#52665b" font-family="Arial,sans-serif" font-size="16">moet de volledige titel tonen, ook als die soms vier</text>
+    <text x="0" y="332" fill="#52665b" font-family="Arial,sans-serif" font-size="16">regels nodig heeft.</text>
+  </g>
+</svg>

@@ -44,7 +44,7 @@ class HourlyNewsCollection extends Command
             catch(\App\Services\LocalAiPending $e){throw $e;}
             catch(GeminiTemporaryException $e){
                 $seconds=$retry++===0?60:300;
-                $this->warn((config('local-ai.enabled')?'Lokale laptop-AI':'Gemini').' tijdelijk niet beschikbaar; nieuwe poging over '.$seconds.' seconden.');
+                $this->warn((config('news.use_local_text_ai')?'Lokale laptop-AI':'Gemini').' tijdelijk niet beschikbaar; nieuwe poging over '.$seconds.' seconden.');
                 for($elapsed=0;$elapsed<$seconds;$elapsed+=5){
                     if(microtime(true)+5>=$this->deadline)throw new \RuntimeException('De uitvoeringstijd van deze ronde is voorbij.');
                     Sleep::for(5)->seconds();
@@ -67,7 +67,7 @@ class HourlyNewsCollection extends Command
         $raw=(string)($this->option('per-category')??config('news_hourly.per_category',3));
         if(!ctype_digit($raw)||(int)$raw<1||(int)$raw>20){$this->error('--per-category moet tussen 1 en 20 liggen.');return self::INVALID;}
         $this->target=(int)$raw;$this->path=(string)config('news_hourly.state_file');
-        $seconds=max(60,(int)config('news_hourly.max_seconds',3300));if(config('local-ai.enabled'))$seconds=min($seconds,45);$this->deadline=microtime(true)+$seconds;
+        $seconds=max(60,(int)config('news_hourly.max_seconds',3300));if(config('news.use_local_text_ai'))$seconds=min($seconds,45);$this->deadline=microtime(true)+$seconds;
         $lock=Cache::lock('lichtpunt-import',$seconds+900);
         if(!$lock->get()){$this->warn('Er loopt al een import. Deze uurronde wordt niet tegelijk gestart.');return self::SUCCESS;}
         try {
@@ -121,11 +121,11 @@ class HourlyNewsCollection extends Command
                 $candidate=Article::where('origin','news')->whereNull('hidden_at')->whereIn('status',['pending','error'])->where('attempts','<',3)
                     ->where(fn($q)=>$q->whereIn('category',$missing)->orWhereNull('category'))->latest('published_at')->latest('id')->first();
                 if($candidate){
-                    if($assessed&&!config('local-ai.enabled'))Sleep::for(max(0,(int)config('news_hourly.assessment_delay',8)))->seconds();$assessed=true;
+                    if($assessed&&!config('news.use_local_text_ai'))Sleep::for(max(0,(int)config('news_hourly.assessment_delay',8)))->seconds();$assessed=true;
                     $this->line('#'.$candidate->id.' positief nieuws beoordelen');
                     try{$this->assess($importer,$candidate);}
                     catch(\App\Services\NewsServiceException $e){
-                        if(!config('local-ai.enabled')||!str_starts_with($e->getMessage(),'Lokale AI-opdracht mislukt')&&!str_starts_with($e->getMessage(),'Lokaal antwoord heeft een ongeldig formaat'))throw $e;
+                        if(!config('news.use_local_text_ai')||!str_starts_with($e->getMessage(),'Lokale AI-opdracht mislukt')&&!str_starts_with($e->getMessage(),'Lokaal antwoord heeft een ongeldig formaat'))throw $e;
                         $candidate->update(['status'=>'error','attempts'=>3,'reason'=>'Lokale AI leverde na de beschikbare pogingen geen geldig antwoord. Technisch overgeslagen, niet inhoudelijk afgekeurd.']);
                         $this->warn('#'.$candidate->id.' technisch overgeslagen; een andere kandidaat wordt gezocht.');continue;
                     }
