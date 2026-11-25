@@ -23,8 +23,8 @@ Schedule::command('news:daily')->dailyAt('07:00')->timezone('Europe/Amsterdam')-
 })->purpose('Ruim verlopen niet-openbare profielfoto’s op');
 \Illuminate\Support\Facades\Schedule::command('profiles:cleanup')->dailyAt('03:15')->withoutOverlapping();
 
-// Local AI is asynchronous: resume only unfinished rounds, never create a new round between hours.
-if(config('news_hourly.enabled')&&config('news.use_local_text_ai')) {
+// Local text and laptop images can both pause an unfinished round.
+if(config('news_hourly.enabled')&&(config('news.use_local_text_ai')||app(\App\Services\LaptopImages::class)->enabled())) {
  Schedule::command('news:hourly --resume --per-category='.(int)config('news_hourly.per_category',3))
   ->everyMinute()->when(fn()=>\App\Support\NewsImportWindow::isOpen())->withoutOverlapping(5)->runInBackground()->appendOutputTo(storage_path('logs/news-hourly.log'));
 }
